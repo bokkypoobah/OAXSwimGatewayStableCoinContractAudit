@@ -1,0 +1,252 @@
+@startuml
+!define DAPPSYS
+'!define SHOW_PACKAGES
+
+!ifdef SHOW_PACKAGES
+    package ds/math.sol {
+        abstract class DSMath {
+            - add(x, y)
+            - sub(x, y)
+            - mul(x, y)
+            - min(x, y)
+            - max(x, y)
+            - imin(x, y)
+            - imax(x, y)
+            - wmul(x, y)
+            - rmul(x, y)
+            - wdiv(x, y)
+            - rdiv(x, y)
+            - rpow(x, n)
+        }
+    }
+
+    package ds/note.sol {
+        abstract class DSNote {
+            # LogNote(sig, guy, foo, bar, wad, fax)
+            ~ modifier note()
+        }
+    }
+
+    package ds/auth.sol {
+        interface DSAuthority
+        interface DSAuthEvents
+        abstract class DSAuth
+    }
+
+    package ds/guard.sol {
+        interface DSGuardEvents
+        class DSGuard
+        class DSGuardFactory
+    }
+
+    package ds/roles.sol {
+        abstract class DSRoles
+    }
+
+    package ds/stop.sol {
+        abstract class DSStop
+    }
+
+    package ds/erc20.sol {
+        interface ERC20Events
+        interface ERC20
+    }
+
+    package ds/multivault.sol {
+        interface DSMultiVaultEvents
+        interface DSMultiVault
+    }
+
+    package ds/vault.sol {
+        interface DSVault
+    }
+
+    package ds/base.sol {
+        class DSTokenBase
+    }
+
+    package ds/token.sol {
+        class DSToken
+    }
+!endif
+
+abstract class DSMath {
+}
+
+abstract class DSNote {
+}
+
+interface DSAuthority {
+    {abstract} canCall(src, dst, methodSig)
+}
+
+interface DSAuthEvents {
+    # LogSetAuthority(authority)
+    # LogSetOwner(owner)
+}
+
+abstract class DSAuth {
+    + DSAuthority authority
+    + address owner
+    __
+    + **DSAuth()**
+    + setOwner(owner) //auth//
+    + setAuthority(authority) //auth//
+    ~ modifier auth()
+    - isAuthorized(src, methodSig)
+}
+
+abstract class DSStop {
+    .. Inherited properties ..
+    + DSAuthority authority
+    + address owner
+
+    .. Own properties ..
+    + bool stopped
+    __
+    ~ modifier stoppable()
+    + start()
+    + stop()
+}
+
+interface DSGuardEvents {
+    # event LogPermit(src, dst, sig)
+    # event LogForbid(src, dst, sig)
+}
+
+class DSGuard {
+    + {field}ANY = bytes32(uint(- 1))
+    - {field} (bytes32 => (bytes32 => (bytes32 => bool))) acl
+    __
+    + function canCall(src, dst, sig)
+    ..
+    + permit(bytes32 src, bytes32 dst, bytes32 sig) //auth//
+    + forbid(bytes32 src, bytes32 dst, bytes32 sig) //auth//
+    + permit(address src, address dst, bytes32 sig)
+    + forbid(address src, address dst, bytes32 sig)
+}
+
+class DSGuardFactory {
+    + (address => bool) isGuard
+    --
+    + newGuard() -> DSGuard
+}
+
+abstract class DSRoles {
+    getUserRoles()
+    getCapabilityRoles()
+    isUserRoot()
+    isCapabilityPublic()
+    hasUserRole()
+
+    canCall()
+    setRootUser() auth
+    setUserRole() auth
+    setPublicCapability() auth
+    setRoleCapability() auth
+}
+
+abstract class DSStop {
+}
+
+interface ERC20Events {
+    # Approval(src, guy, wad)
+    # Transfer(src, dst, wad)
+}
+
+interface ERC20 {
+    totalSupply()
+    balanceOf(guy)
+    allowance(src, guy)
+    approve(guy, wad)
+    transfer(dst, wad)
+    transferFrom(src, dst, wad)
+}
+
+class DSTokenBase {
+    - uint256 _supply
+    - {field} (address => uint256) _balances
+    - {field} (address => (address => uint256))  _approvals
+    __
+    + totalSupply()
+    + balanceOf(guy)
+    + allowance(src, guy)
+    + approve(guy, wad)
+    + transfer(dst, wad)
+    + transferFrom(src, dst, wad)
+}
+
+class DSToken {
+    + bytes32 symbol
+    + uint256 decimals = 18
+    .. Optional ..
+    + bytes32 name = ""
+    __
+
+    + **DSToken(symbol)**
+    ~ Mint(guy, wad)
+    ~ Burn(guy, wad)
+
+    + approve(guy) //stoppable//
+    + approve(guy, wad) //stoppable//
+    + transferFrom(src, dst, wad) //stoppable//
+    + mint(guy, wad) //auth stoppable//
+    + burn(guy, wad) //auth stoppable//
+    + setName(name) //auth//
+
+    .. Convenience methods ..
+    + push(dst, wad)
+    + pull(src, wad)
+    + move(src, dst, wad)
+    + mint(wad)
+    + burn(wad)
+}
+
+class DSMultiVault {
+    + push(ERC20 token, dst, wad) //auth//
+    + pull(ERC20 token, src, wad) //auth//
+    + push(ERC20 token, dst)
+    + pull(ERC20 token, src)
+    + mint(DSToken token, wad) //auth//
+    + burn(DSToken token, wad) //auth//
+    + mint(DSToken token, guy, wad) //auth//
+    + burn(DSToken token, guy, wad) //auth//
+    + burn(DSToken token) //auth//
+}
+
+class DSVault {
+    + ERC20 token
+    __
+    + swap(ERC20 token_) //auth//
+    + push(dst, wad)
+    + pull(src, wad)
+    + push(dst)
+    + pull(src)
+    + mint(wad)
+    + burn(wad)
+    + burn()
+}
+
+DSAuthEvents <|-- DSAuth
+
+DSAuth <|-- DSGuard
+DSAuthority <|-- DSGuard
+DSGuardEvents <|-- DSGuard
+
+DSAuthority <|-- DSRoles
+DSAuth <|-- DSRoles
+
+DSNote <|-- DSStop
+DSAuth <|-- DSStop
+
+ERC20Events <|-- ERC20
+ERC20 <|-- DSTokenBase
+DSMath <|-- DSTokenBase
+
+DSTokenBase <|-- DSToken
+DSStop <|-- DSToken
+
+DSAuth <|-- DSMultiVault
+DSMultiVault <|-- DSVault
+
+@enduml

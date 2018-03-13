@@ -1,0 +1,57 @@
+@startuml
+
+object gate
+object gateRoles
+
+object token {
+    authority = fiatTokenGuard
+    erc20Authority = ?
+    tokenAuthority = ?
+}
+
+object fiatTokenGuard
+
+object noKycAmlRules
+object kycAmlStatus
+'object fullKycAmlRules
+
+object OPERATOR
+
+OPERATOR -- gateRoles
+'OPERATOR .. fiatTokenGuard
+gate .. fiatTokenGuard
+gate *-- "1" gateRoles
+gate *- "1" token
+token *-- "1" fiatTokenGuard
+'token *-- "1" noKycAmlRules
+'token *-- "1" noKycAmlRules
+'fullKycAmlRules *-- "1" kycAmlStatus
+
+newpage
+
+object gate
+object gateRoles
+
+object token {
+    authority = fiatTokenGuard
+    erc20Authority = noKycAmlRules
+    tokenAuthority = noKycAmlRules
+}
+
+object fiatTokenGuard
+
+object noKycAmlRules
+object kycAmlStatus
+object fullKycAmlRules
+
+object OPERATOR
+
+OPERATOR - gateRoles
+gate *-- "1" gateRoles
+gate *- "1" token
+token *-- "1" fiatTokenGuard
+token *-- "1" fullKycAmlRules
+token *-- "1" fullKycAmlRules
+fullKycAmlRules *-- "1" kycAmlStatus
+
+@enduml

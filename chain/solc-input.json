@@ -1,0 +1,104 @@
+{
+  "language": "Solidity",
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 500
+    },
+    "outputSelection": {
+      "dappsys.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "solovault.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "GateRoles.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "TokenAuth.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "Kyc.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "FiatToken.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "Gate.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      }
+    }
+  },
+  "sources": {
+    "dappsys.sol": {
+      "urls": [
+        "contracts/dappsys.sol"
+      ]
+    },
+    "solovault.sol": {
+      "urls": [
+        "contracts/solovault.sol"
+      ]
+    },
+    "GateRoles.sol": {
+      "urls": [
+        "contracts/GateRoles.sol"
+      ]
+    },
+    "TokenAuth.sol": {
+      "urls": [
+        "contracts/TokenAuth.sol"
+      ]
+    },
+    "Kyc.sol": {
+      "urls": [
+        "contracts/Kyc.sol"
+      ]
+    },
+    "FiatToken.sol": {
+      "urls": [
+        "contracts/FiatToken.sol"
+      ]
+    },
+    "Gate.sol": {
+      "urls": [
+        "contracts/Gate.sol"
+      ]
+    }
+  }
+}

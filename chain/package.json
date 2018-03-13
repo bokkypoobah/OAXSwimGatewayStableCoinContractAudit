@@ -1,0 +1,19 @@
+{
+  "name": "99-latest",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/oax/asset-gateway-poc.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chain-dsl": "file:../chain-dsl"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.0"
+  }
+}
