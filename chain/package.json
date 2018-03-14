@@ -1,5 +1,5 @@
 {
-  "name": "99-latest",
+  "name": "swim-chain",
   "version": "1.0.0",
   "repository": {
     "type": "git",
@@ -11,6 +11,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "mocha"
   },
   "devDependencies": {

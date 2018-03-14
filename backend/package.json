@@ -1,0 +1,45 @@
+{
+  "name": "02-money-in-backend",
+  "version": "1.0.0",
+  "main": "./lib/app.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "test": "mocha"
+  },
+  "binary": {
+    "backend": "./server.js"
+  },
+  "private": true,
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "debug": "^2.6.9",
+    "dotenv": "^4.0.0",
+    "express": "~4.15.5",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "jade": "^1.11.0",
+    "material-components-web": "^0.26.0",
+    "morgan": "^1.9.0",
+    "mysql2": "^1.5.1",
+    "oauth2orize": "^1.11.0",
+    "passport": "^0.4.0",
+    "passport-http": "^0.3.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^4.23.4",
+    "serve-favicon": "^2.4.5",
+    "validator": "9.2.0"
+  },
+  "author": "Cerulean Hu",
+  "license": "MIT",
+  "devDependencies": {
+    "chain-dsl": "file:../chain-dsl",
+    "chain": "file:../chain",
+    "chai-subset": "^1.6.0",
+    "mocha": "^4.0.1",
+    "supertest": "^3.0.0"
+  }
+}

@@ -55,7 +55,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath {
            Transfer event with the _from address set to 0x0 when tokens are created.
             (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md)
         */
-        Transfer(0x0, this, wad);
+        Transfer(0x0, guy, wad);
     }
 
     function withdraw(uint256 wad) public {

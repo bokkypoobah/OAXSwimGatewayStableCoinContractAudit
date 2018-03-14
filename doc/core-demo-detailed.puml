@@ -1,0 +1,99 @@
+@startuml
+title Asset Gateway Demo
+
+' We ignore KYC
+' We ignore gas fees
+
+actor "Customer\n" as c
+actor "Asset Gateway\noperator" as op
+database "Asset Gateway\nsystem" as sys
+control "Asset Gateway\ncontract" as agw
+control "Asset Gateway\nToken" as token
+
+'owner -> agw: deploy
+
+== onboarding ==
+c -> sys: register identity
+sys --> sys: associate identity with ethereum address
+
+== deposit ==
+c -> agw: deposit(amt)
+agw--> sys: //DepositRequested(customerEthAddr, amt)// event
+note over agw
+//DEPOSIT_REQUESTED// state
+end note
+
+op -> sys: list pending deposits
+sys --> op: pending deposits
+
+'alt direct
+    op -> agw: mintFor(customerEthAddr, amt)
+    activate agw
+    agw -> agw: mint(agwEthAddr, amt)
+    activate agw
+    agw --> sys: //Mint(agwEthAddr, amt)// event
+    agw --> sys: //Transfer(0x0, agwEthAddr, amt)// event
+    deactivate agw
+    agw -> agw: transfer(customerEthAddr, amt)
+    activate agw
+    agw --> sys: Transfer(agwEthAddr,customerEthAddr, amt)
+    agw --> c: transfer tokens
+    deactivate agw
+    note over agw
+    //TOKEN_MINTED// state
+    end note
+    deactivate agw
+'else two phase
+'    op -> agw: mintFor(customerEthAddr, amt)
+'    agw -> agw: mint(agwEthAddr, amt)
+'    agw --> sys: //Mint(agwEthAddr, amt)// event
+'    agw --> sys: //Transfer(0x0,agwEthAddr, amt)// event
+'    agw -> agw: approve(customerEthAddr, amt)
+'    agw --> sys: //Approval(agwEthAddr,customerEthAddr, amt)// event
+'
+'    note over agw
+'    //TOKEN_MINTED// state
+'    end note
+'    deactivate agw
+'
+'    c -> agw: transferFrom(agwEthAddr, customerEthAddr, amt)
+'    agw --> sys: //Transfer(agwEthAddr,customerEthAddr, amt)// event
+'    note over agw
+'    //TOKEN_TRANSFERRED// state
+'    end note
+'
+'end
+
+== withdraw ==
+c -> agw: withdraw(amt)
+agw --> sys: //WithdrawalRequested(customerEthAddr, amt)// event
+note over agw
+//WITHDRAWAL_REQUESTED// state
+end note
+c -> token: approve(agwEthAddr, amt)
+agw --> op: //amt// tokens
+agw -> sys: //Transfer(customerEthAddr, agwEthAddr, amt)// event
+note over agw
+//TOKEN_TRANSFERRED// state
+end note
+op -> sys: check pending withdrawals
+sys --> op: pending withdrawals
+
+op -> agw: burn(customerEthAddr, amt)
+agw -> agw: burn(amt)
+agw --> sys: //Burn(agwEthAddr, amt)// event
+agw --> sys: //Withdrawn(customerEthAddr, amt)// event
+note over agw
+//TOKEN_WITHDRAWN// state
+end note
+op -> c: transfer fiat
+c -> sys: list pending withdrawal
+
+
+left footer
+# Unresolved issues
+1. double minting
+2. double burning
+
+end footer
+@enduml
