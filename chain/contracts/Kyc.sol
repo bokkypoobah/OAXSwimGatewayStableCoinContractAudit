@@ -1,12 +1,18 @@
 pragma solidity ^0.4.19;
 
 
-import "dappsys.sol";       // DSAuth
-import "TokenAuth.sol"; // ERC20Authority, TokenAuthority
+import "dappsys.sol";
+
+
+// DSAuth
+import "TokenAuth.sol";
+
+
+// ERC20Authority, TokenAuthority
 
 
 contract KycAmlStatus is DSAuth {
-    mapping(address => bool) public kycVerified;
+    mapping (address => bool) public kycVerified;
 
     function KycAmlStatus(DSAuthority _authority)
     public

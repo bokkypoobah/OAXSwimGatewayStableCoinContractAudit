@@ -1,7 +1,10 @@
 pragma solidity ^0.4.4;
 
 
-import "dappsys.sol"; // auth, guard, roles
+import "dappsys.sol";
+
+
+// auth, guard, roles
 
 
 contract GateRoles is DSRoles {

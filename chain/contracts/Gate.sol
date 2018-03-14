@@ -1,7 +1,10 @@
 pragma solidity 0.4.19;
 
 
-import "dappsys.sol"; // auth, token, math
+import "dappsys.sol";
+
+
+// auth, token, math
 import "solovault.sol";
 import "GateRoles.sol";
 import "FiatToken.sol";
@@ -9,11 +12,15 @@ import "FiatToken.sol";
 
 contract Gate is DSSoloVault, ERC20Events, DSMath {
     uint256 public dailyLimit;
+
     uint256 public limitCounter;
+
     uint256 public lastLimitResetTime;
 
     event DepositRequested(address indexed by, uint256 amount);
+
     event WithdrawalRequested(address indexed from, uint256 amount);
+
     event Withdrawn(address indexed from, uint256 amount);
 
     function Gate(DSAuthority _authority, DSToken fiatToken, uint256 _dailyLimit)

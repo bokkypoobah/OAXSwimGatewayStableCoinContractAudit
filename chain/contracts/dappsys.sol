@@ -1,5 +1,8 @@
 pragma solidity 0.4.19;
+
+
 pragma solidity 0.4.19;
+
 
 /// math.sol -- mixin for inline numerical wizardry
 
@@ -66,8 +69,6 @@ contract DSMath {
 }
 
 
-
-
 /// erc20.sol -- API for the ERC20 token standard
 
 contract ERC20Events {
@@ -89,18 +90,16 @@ contract ERC20 is ERC20Events {
     function transfer(address dst, uint wad) public returns (bool);
 
     function transferFrom(
-        address src, address dst, uint wad
+    address src, address dst, uint wad
     ) public returns (bool);
 }
-
-
 
 
 /// auth.sol -- Authoriaation framework
 
 contract DSAuthority {
     function canCall(
-        address src, address dst, bytes4 sig
+    address src, address dst, bytes4 sig
     ) public view returns (bool);
 }
 
@@ -160,18 +159,16 @@ contract DSAuth is DSAuthEvents {
 }
 
 
-
-
 /// note.sol -- the `note' modifier, for logging calls as events
 
 contract DSNote {
     event LogNote(
-        bytes4   indexed sig,
-        address  indexed guy,
-        bytes32  indexed foo,
-        bytes32  indexed bar,
-        uint wad,
-        bytes fax
+    bytes4   indexed sig,
+    address  indexed guy,
+    bytes32  indexed foo,
+    bytes32  indexed bar,
+    uint wad,
+    bytes fax
     ) anonymous;
 
     modifier note {
@@ -179,8 +176,8 @@ contract DSNote {
         bytes32 bar;
 
         assembly {
-            foo := calldataload(4)
-            bar := calldataload(36)
+        foo := calldataload(4)
+        bar := calldataload(36)
         }
 
         LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
@@ -188,8 +185,6 @@ contract DSNote {
         _;
     }
 }
-
-
 
 
 /// stop.sol -- mixin for enable/disable functionality
@@ -213,21 +208,19 @@ contract DSStop is DSNote, DSAuth {
 }
 
 
-
-
 /// guard.sol -- simple whitelist implementation of DSAuthority
 
 contract DSGuardEvents {
     event LogPermit(
-        bytes32 indexed src,
-        bytes32 indexed dst,
-        bytes32 indexed sig
+    bytes32 indexed src,
+    bytes32 indexed dst,
+    bytes32 indexed sig
     );
 
     event LogForbid(
-        bytes32 indexed src,
-        bytes32 indexed dst,
-        bytes32 indexed sig
+    bytes32 indexed src,
+    bytes32 indexed dst,
+    bytes32 indexed sig
     );
 }
 
@@ -235,10 +228,10 @@ contract DSGuardEvents {
 contract DSGuard is DSAuth, DSAuthority, DSGuardEvents {
     bytes32 constant public ANY = bytes32(uint(- 1));
 
-    mapping(bytes32 => mapping(bytes32 => mapping(bytes32 => bool))) acl;
+    mapping (bytes32 => mapping (bytes32 => mapping (bytes32 => bool))) acl;
 
     function canCall(
-        address src_, address dst_, bytes4 sig
+    address src_, address dst_, bytes4 sig
     ) public view returns (bool) {
         var src = bytes32(src_);
         var dst = bytes32(dst_);
@@ -275,7 +268,7 @@ contract DSGuard is DSAuth, DSAuthority, DSGuardEvents {
 
 
 contract DSGuardFactory {
-    mapping(address => bool)  public  isGuard;
+    mapping (address => bool)  public  isGuard;
 
     function newGuard() public returns (DSGuard guard) {
         guard = new DSGuard();
@@ -285,19 +278,17 @@ contract DSGuardFactory {
 }
 
 
-
-
 /// roles.sol - roled based authentication
 
 contract DSRoles is DSAuth, DSAuthority
 {
-    mapping(address => bool) _root_users;
+    mapping (address => bool) _root_users;
 
-    mapping(address => bytes32) _user_roles;
+    mapping (address => bytes32) _user_roles;
 
-    mapping(address => mapping(bytes4 => bytes32)) _capability_roles;
+    mapping (address => mapping (bytes4 => bytes32)) _capability_roles;
 
-    mapping(address => mapping(bytes4 => bool)) _public_capabilities;
+    mapping (address => mapping (bytes4 => bool)) _public_capabilities;
 
     function getUserRoles(address who)
     public
@@ -406,16 +397,14 @@ contract DSRoles is DSAuth, DSAuthority
 }
 
 
-
-
 /// base.sol -- basic ERC20 implementation
 
 contract DSTokenBase is ERC20, DSMath {
     uint256                                            _supply;
 
-    mapping(address => uint256)                       _balances;
+    mapping (address => uint256)                       _balances;
 
-    mapping(address => mapping(address => uint256))  _approvals;
+    mapping (address => mapping (address => uint256))  _approvals;
 
     function DSTokenBase(uint supply) public {
         _balances[msg.sender] = supply;
@@ -462,8 +451,6 @@ contract DSTokenBase is ERC20, DSMath {
         return true;
     }
 }
-
-
 
 
 /// token.sol -- ERC20 implementation with minting and burning
@@ -550,8 +537,6 @@ contract DSToken is DSTokenBase(0), DSStop {
 }
 
 
-
-
 /// multivault.sol -- vault for holding different kinds of ERC20 tokens
 
 contract DSMultiVault is DSAuth {
@@ -593,8 +578,6 @@ contract DSMultiVault is DSAuth {
 }
 
 
-
-
 /// vault.sol -- vault for holding a single kind of ERC20 tokens
 
 contract DSVault is DSMultiVault {
@@ -632,8 +615,6 @@ contract DSVault is DSMultiVault {
         burn(DSToken(token));
     }
 }
-
-
 
 
 /// exec.sol - base contract used by anything that wants to do "untyped" calls
@@ -682,8 +663,6 @@ contract DSExec {
         return tryExec(t, c, v);
     }
 }
-
-
 
 
 /// thing.sol - `auth` with handy mixins. your things should be DSThings
