@@ -5,6 +5,8 @@ const {
     toWei,
     solc,
     ganacheWeb3,
+    expectThrow,
+    expectNoAsyncThrow,
 } = require('chain-dsl/test/helpers')
 
 const {
@@ -12,12 +14,14 @@ const {
     send,
     call,
     balance,
+    bytes32,
+    sig,
 } = require('chain-dsl')
 
 const deploy = require('../lib/deployer')
 
 describe('Deployment', function () {
-    let web3, snaps, accounts, DEPLOYER, OPERATOR, CUSTOMER, token
+    let web3, snaps, accounts, DEPLOYER, OPERATOR, CUSTOMER, token, fiatTokenGuard
 
     before('deployment', async () => {
         snaps = []
@@ -28,7 +32,7 @@ describe('Deployment', function () {
             CUSTOMER
         ] = accounts = await web3.eth.getAccounts()
 
-        ;({token} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
+        ;({token, fiatTokenGuard} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
     })
 
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
@@ -49,5 +53,14 @@ describe('Deployment', function () {
         const deploymentCost = (fromWei(spent)) * USD_PER_ETH
         console.log(`        (deployment cost: ${deploymentCost} USD)`)
         expect(deploymentCost).to.be.below(MAX_COST)
+    })
+
+    it("Only deployer can control DSGuard.", async () => {
+        await expectThrow(async () =>
+            send(fiatTokenGuard, CUSTOMER, "permit",
+                bytes32((CUSTOMER)), bytes32(address(token)), sig("mint")))
+        await expectNoAsyncThrow(async () =>
+            send(fiatTokenGuard, DEPLOYER, "permit",
+                bytes32((CUSTOMER)), bytes32(address(token)), sig("mint")))
     })
 })

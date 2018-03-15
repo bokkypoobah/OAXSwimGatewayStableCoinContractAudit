@@ -8,7 +8,16 @@ const {
     create
 } = require('chain-dsl')
 
-const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(10000)) => {
+let gateRoles
+let fiatTokenGuard
+let kycAmlStatus
+let noKycAmlRule
+let boundaryKycAmlRule
+let fullKycAmlRule
+let token
+
+
+const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(10000)) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
     const {
@@ -19,16 +28,28 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
         GateRoles,
         DSGuard,
         FiatToken,
+    } = contractRegistry
+
+    gateRoles = await deploy(GateRoles)
+    fiatTokenGuard = await deploy(DSGuard)
+    kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
+
+
+    noKycAmlRule = await deploy(NoKycAmlRule)
+    boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(kycAmlStatus))
+    fullKycAmlRule = await deploy(FullKycAmlRule, address(kycAmlStatus))
+    token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'))
+}
+
+const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(10000)) => {
+    const deploy = (...args) => create(web3, DEPLOYER, ...args)
+
+    await init(web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT)
+
+    const {
         Gate
     } = contractRegistry
 
-    const gateRoles = await deploy(GateRoles)
-    const fiatTokenGuard = await deploy(DSGuard)
-    const kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
-    const noKycAmlRule = await deploy(NoKycAmlRule)
-    const boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(kycAmlStatus))
-    const fullKycAmlRule = await deploy(FullKycAmlRule, address(kycAmlStatus))
-    const token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'))
     const gate = await deploy(Gate, address(gateRoles), address(token), LIMIT)
 
     // Allow decoding events emitted by token methods when called from within gate methods

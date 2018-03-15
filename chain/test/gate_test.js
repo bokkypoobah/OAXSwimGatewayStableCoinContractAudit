@@ -69,21 +69,29 @@ describe('Gate', () => {
         it('cannot mint for themselves', async () => {
             await expectThrow(async () =>
                 send(gate, CUSTOMER, mint, CUSTOMER, 123))
+            await expectThrow(async () =>
+                send(token, CUSTOMER, mint, CUSTOMER, 123))
         })
 
         it('cannot mint for others', async () => {
             await expectThrow(async () =>
                 send(gate, CUSTOMER1, mint, CUSTOMER2, 123))
+            await expectThrow(async () =>
+                send(token, CUSTOMER1, mint, CUSTOMER2, 123))
         })
 
         it('cannot mint for an operator', async () => {
             await expectThrow(async () =>
                 send(gate, CUSTOMER, mint, OPERATOR, 123))
+            await expectThrow(async () =>
+                send(token, CUSTOMER, mint, OPERATOR, 123))
         })
 
         it('cannot burn for themselves', async () => {
             await expectThrow(async () =>
                 send(gate, CUSTOMER, burn, CUSTOMER, 123))
+            await expectThrow(async () =>
+                send(token, CUSTOMER, burn, CUSTOMER, 123))
         })
 
         it("can request a deposit", async () => {
@@ -202,7 +210,7 @@ describe('Gate', () => {
 
             expect(events).containSubset([
                 {NAME: 'Mint', guy: CUSTOMER, wad: AMT.toString(10)},
-                {NAME: 'Transfer', src: ZERO_ADDR, dst: address(gate), wad: AMT.toString(10)}
+                {NAME: 'Transfer', src: ZERO_ADDR, dst: CUSTOMER, wad: AMT.toString(10)}
             ])
         })
 
