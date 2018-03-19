@@ -52,7 +52,7 @@ describe("Upgrade Fee", function () {
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
     afterEach(async () => web3.evm.revert(snaps.pop()))
 
-    context.only("Switch between a no fee scheme and a has fee scheme gateway does not break existing balances of the gateway.", async () => {
+    context("Switch between a no fee scheme and a has fee scheme gateway does not break existing balances of the gateway.", async () => {
         it("When switched to new gate with fee, old gate should have no control over token.", async () => {
             //on no fee gateway, mint 100 token to customer
             await send(gate, OPERATOR, mint, CUSTOMER, 100)
