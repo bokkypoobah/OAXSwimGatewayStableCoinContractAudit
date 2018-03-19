@@ -67,6 +67,8 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
         [OPERATOR_ROLE, gate, 'mint(address,uint256)'],
         [OPERATOR_ROLE, gate, 'burn(uint256)'],
         [OPERATOR_ROLE, gate, 'burn(address,uint256)'],
+        [OPERATOR_ROLE, gate, 'start()'],
+        [OPERATOR_ROLE, gate, 'stop()'],
         [OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)']
     ]
 
@@ -104,6 +106,56 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
     }
 }
 
+const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR, LIMIT = wad(10000)) => {
+    const deploy = (...args) => create(web3, DEPLOYER, ...args)
+    const {
+        GateWithFee
+    } = contractRegistry
+
+    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), LIMIT, FEE_COLLECTOR)
+
+    // Allow decoding events emitted by token methods when called from within gate methods
+    const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
+    gateWithFee.options.jsonInterface = gateWithFee.options.jsonInterface.concat(tokenEventABIs)
+
+    const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
+
+    const allowGateRole = ([role, contract, method]) =>
+        send(gateRoles, DEPLOYER, 'setRoleCapability',
+            role, address(contract), sig(method), true)
+
+    const gateRoleRules = [
+        [OPERATOR_ROLE, gateWithFee, 'mint(uint256)'],
+        [OPERATOR_ROLE, gateWithFee, 'mint(address,uint256)'],
+        [OPERATOR_ROLE, gateWithFee, 'burn(uint256)'],
+        [OPERATOR_ROLE, gateWithFee, 'burn(address,uint256)'],
+        [OPERATOR_ROLE, gateWithFee, 'start()'],
+        [OPERATOR_ROLE, gateWithFee, 'stop()']
+    ]
+
+    const permitFiatTokenGuard = ([src, dst, method]) =>
+        send(fiatTokenGuard, DEPLOYER, 'permit',
+            bytes32(address(src)), bytes32(address(dst)), sig(method))
+
+    const fiatTokenGuardRules = [
+        [gateWithFee, token, 'mint(uint256)'],
+        [gateWithFee, token, 'mint(address,uint256)'],
+        [gateWithFee, token, 'burn(uint256)'],
+        [gateWithFee, token, 'burn(address,uint256)'],
+        // [gateWithFee, token, 'setERC20Authority(address)'],
+        // [gateWithFee, token, 'setTokenAuthority(address)'],
+    ]
+
+    await Promise.all([
+        send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
+        ...gateRoleRules.map(allowGateRole),
+        ...fiatTokenGuardRules.map(permitFiatTokenGuard),
+    ])
+
+    return {gateWithFee}
+}
+
 module.exports = {
-    base
+    base,
+    deployGateWithFee
 }

@@ -8,12 +8,20 @@ import "dappsys.sol";
 import "solovault.sol";
 import "GateRoles.sol";
 import "FiatToken.sol";
+import "Gate.sol";
 
 
 contract GateWithFee is Gate {
     address feeCollector;
 
-    function setFeeCollector(address feeCollector_) auth {
+    function GateWithFee(DSAuthority _authority, DSToken fiatToken, uint256 _dailyLimit, address feeCollector_)
+    public
+    Gate(_authority, fiatToken, _dailyLimit)
+    {
+        feeCollector = feeCollector_;
+    }
+
+    function setFeeCollector(address feeCollector_) public auth {
         feeCollector = feeCollector_;
     }
 

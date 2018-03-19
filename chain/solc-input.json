@@ -61,6 +61,14 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
+      },
+      "GateWithFee.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
       }
     }
   },
@@ -98,6 +106,11 @@
     "Gate.sol": {
       "urls": [
         "contracts/Gate.sol"
+      ]
+    },
+    "GateWithFee.sol": {
+      "urls": [
+        "contracts/GateWithFee.sol"
       ]
     }
   }

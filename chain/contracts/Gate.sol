@@ -10,7 +10,7 @@ import "GateRoles.sol";
 import "FiatToken.sol";
 
 
-contract Gate is DSSoloVault, ERC20Events, DSMath {
+contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     uint256 public dailyLimit;
 
     uint256 public limitCounter;
@@ -34,7 +34,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath {
         setOwner(0x0);
     }
 
-    function resetLimit() internal {
+    function resetLimit() internal stoppable {
         assert(now - lastLimitResetTime >= 1 days);
         uint256 today = now - (now % 1 days);
         lastLimitResetTime = today;
@@ -51,11 +51,11 @@ contract Gate is DSSoloVault, ERC20Events, DSMath {
         _;
     }
 
-    function deposit(uint256 wad) public {
+    function deposit(uint256 wad) public stoppable {
         DepositRequested(msg.sender, wad);
     }
 
-    function mint(address guy, uint wad) public limited(wad) {
+    function mint(address guy, uint wad) public limited(wad) stoppable {
         super.mint(guy, wad);
         /* Because the EIP20 standard says so, we emit a Transfer event:
            A token contract which creates new tokens SHOULD trigger a
@@ -65,11 +65,11 @@ contract Gate is DSSoloVault, ERC20Events, DSMath {
         Transfer(0x0, guy, wad);
     }
 
-    function withdraw(uint256 wad) public {
+    function withdraw(uint256 wad) public stoppable {
         WithdrawalRequested(msg.sender, wad);
     }
 
-    function burn(address guy, uint wad) public limited(wad) {
+    function burn(address guy, uint wad) public limited(wad) stoppable {
         super.burn(guy, wad);
         Withdrawn(guy, wad);
     }
