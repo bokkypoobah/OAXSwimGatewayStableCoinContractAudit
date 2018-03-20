@@ -16,7 +16,7 @@ const {
 
 const deployer = require('../lib/deployer')
 
-describe.only("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
+describe("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
     this.timeout(7000)
 
     let web3, snaps, accounts,
@@ -76,6 +76,17 @@ describe.only("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
             await send(gateWithFee, OPERATOR, "burnWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
             expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(50)
+        })
+        it("Burn more than one can afford is not allowed.", async () => {
+            await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
+            //no checking on approve
+            await send(token, CUSTOMER1, "approve", address(gateWithFee), 10001)
+            await expectThrow(async () => {
+                await send(gateWithFee, OPERATOR, "burnWithFee", CUSTOMER1, 10001, 25)
+            })
+
         })
     })
 

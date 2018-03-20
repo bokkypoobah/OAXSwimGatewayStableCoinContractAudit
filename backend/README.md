@@ -62,7 +62,7 @@ Welcome to OAX Backend Web Server
 ## Test
 
 ```bash
-yarn test --watch
+yarn install --force && yarn test --watch
 ```
 
 ## Stop
