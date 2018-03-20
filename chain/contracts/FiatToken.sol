@@ -12,11 +12,13 @@ import "TokenAuth.sol";
 
 
 contract FiatToken is DSToken, ERC20Auth, TokenAuth {
+    uint8 public decimals;
 
-    function FiatToken(DSAuthority _authority, bytes32 symbol)
+    function FiatToken(DSAuthority _authority, bytes32 symbol, uint8 decimals_)
     DSToken(symbol)
     public
     {
+        decimals = decimals_;
         setAuthority(_authority);
         setOwner(0x0);
     }

@@ -42,7 +42,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
     noKycAmlRule = await deploy(NoKycAmlRule)
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(kycAmlStatus))
-    token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'))
+    token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), 2)
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
     const roleContractRules = [
@@ -52,6 +52,12 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
     ])
+
+
+    await send(token, DEPLOYER, 'setERC20Authority', address(noKycAmlRule))
+    await send(token, DEPLOYER, 'setTokenAuthority', address(noKycAmlRule))
+
+    return {token}
 }
 
 const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(10000)) => {
@@ -99,9 +105,6 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
         ...fiatTokenGuardRules.map(permitFiatTokenGuard),
     ])
 
-    await send(token, DEPLOYER, 'setERC20Authority', address(noKycAmlRule))
-    await send(token, DEPLOYER, 'setTokenAuthority', address(noKycAmlRule))
-
     return {
         kycAmlStatus,
         noKycAmlRule,
@@ -132,8 +135,10 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
     const gateRoleRules = [
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mint(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mint(address,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mintWithFee(address,uint256,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(address,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burnWithFee(address,uint256,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'start()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()']
     ]
@@ -161,6 +166,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
 }
 
 module.exports = {
+    init,
     base,
     deployGateWithFee
 }
