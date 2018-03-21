@@ -217,6 +217,7 @@ describe("Asset Gateway", function () {
 
                 // Difference from boundary KYC
                 await send(kycAmlStatus, OPERATOR, setKycVerified, CUSTOMER2, true)
+                await send(kycAmlStatus, OPERATOR, setKycVerified, OPERATOR, true)
 
                 await expectNoAsyncThrow(async () =>
                     send(token, CUSTOMER1, transfer, CUSTOMER2, AMT))

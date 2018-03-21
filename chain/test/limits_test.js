@@ -55,6 +55,7 @@ describe("Limits:", function () {
         ;({gate, token} = await deployer.base(web3, solc(__dirname, '../solc-input.json'),
             DEPLOYER,
             OPERATOR,
+            OPERATOR,
             DEFAULT_DAILY_LIMIT))
     })
 

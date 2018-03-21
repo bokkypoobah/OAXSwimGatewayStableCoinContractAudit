@@ -55,6 +55,10 @@ contract DSMath {
         z = add(mul(x, RAY), y / 2) / y;
     }
 
+    function div(uint x, uint y) internal pure returns (uint z) {
+        z = add(mul(x, 1), y / 2) / y;
+    }
+
     function rpow(uint x, uint n) internal pure returns (uint z) {
         z = n % 2 != 0 ? x : RAY;
 

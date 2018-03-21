@@ -21,7 +21,7 @@ const allowRoleForContract = ([sender, role, contract, method]) =>
     send(gateRoles, sender, 'setRoleCapability',
         role, address(contract), sig(method), true)
 
-const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(10000)) => {
+const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = null, LIMIT = wad(10000)) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
     const {
@@ -42,7 +42,11 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
     noKycAmlRule = await deploy(NoKycAmlRule)
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(kycAmlStatus))
-    token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), 2)
+
+    if (!FEE_COLLECTOR) {
+        FEE_COLLECTOR = OPERATOR
+    }
+    token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), FEE_COLLECTOR)
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
     const roleContractRules = [
@@ -60,10 +64,14 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(1000
     return {token}
 }
 
-const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT = wad(10000)) => {
+const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = null, LIMIT = wad(10000)) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
-    await init(web3, contractRegistry, DEPLOYER, OPERATOR, LIMIT)
+    if (!FEE_COLLECTOR) {
+        FEE_COLLECTOR = OPERATOR
+    }
+
+    await init(web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR, LIMIT)
 
     const {
         Gate
@@ -142,6 +150,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'start()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setFeeCollector(address)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTransferFee(uint256,uint256)'],
     ]
 
     const permitFiatTokenGuard = ([src, dst, method]) =>
@@ -153,6 +162,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [gateWithFee, token, 'mint(address,uint256)'],
         [gateWithFee, token, 'burn(uint256)'],
         [gateWithFee, token, 'burn(address,uint256)'],
+        [gateWithFee, token, 'setTransferFee(uint256,uint256)'],
         // [gateWithFee, token, 'setERC20Authority(address)'],
         // [gateWithFee, token, 'setTokenAuthority(address)'],
     ]

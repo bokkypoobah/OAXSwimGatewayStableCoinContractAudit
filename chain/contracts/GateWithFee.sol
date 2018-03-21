@@ -34,4 +34,12 @@ contract GateWithFee is Gate {
         super.burn(guy, sub(wad, fee));
         token.transferFrom(guy, feeCollector, fee);
     }
+
+    function setTransferFee(uint transferFeeAbs_, uint transferFeeBps_)
+    public
+    auth
+    {
+        FiatToken fiatToken = FiatToken(address(token));
+        fiatToken.setTransferFee(transferFeeAbs_, transferFeeBps_);
+    }
 }
