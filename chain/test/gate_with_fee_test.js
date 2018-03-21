@@ -152,7 +152,29 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(9975)
             expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
+            expect(await call(token, "balanceOf", OPERATOR)).eq(25)
         })
+    })
+
+    context.only("Mint, Burn and Transfer all have fees.", async () => {
+        it("Mint, Burn and Transfer fees don't duplicate.", async () => {
+            await send(gateWithFee, OPERATOR, "setTransferFee", 0, 25);
+            expect(await call(token, "transferFeeAbs")).eq(0)
+            expect(await call(token, "transferFeeBps")).eq(25)
+
+            await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
+
+            await send(token, CUSTOMER1, "transfer", CUSTOMER2, 5000)
+            expect(await call(token, "balanceOf", OPERATOR)).eq(13)
+
+            await send(token, CUSTOMER1, "approve", address(gateWithFee), 5000)
+            await send(gateWithFee, OPERATOR, "burnWithFee", CUSTOMER1, 5000, 25)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(50)
+            expect(await call(token, "balanceOf", OPERATOR)).eq(13) //token fee collector is operator
+        })
+
     })
 
 })
