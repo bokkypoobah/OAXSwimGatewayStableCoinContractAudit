@@ -140,7 +140,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burnWithFee(address,uint256,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'start()'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()']
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setFeeCollector(address)'],
     ]
 
     const permitFiatTokenGuard = ([src, dst, method]) =>

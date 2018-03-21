@@ -16,7 +16,7 @@ const {
 
 const deployer = require('../lib/deployer')
 
-describe("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
+describe.only("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
     this.timeout(7000)
 
     let web3, snaps, accounts,
@@ -51,6 +51,12 @@ describe("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
 
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
     afterEach(async () => web3.evm.revert(snaps.pop()))
+
+
+    it("Operator can change fee collector address.", async () => {
+        await send(gateWithFee, OPERATOR, "setFeeCollector", OPERATOR)
+        expect(await call(gateWithFee, "feeCollector")).eq(OPERATOR)
+    })
 
     context("Mint with dynamic fee", async () => {
         it("When a customer request to mint 10000 tokens and the fee is 25, \n" +
@@ -102,6 +108,10 @@ describe("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
             expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
         })
+    })
+
+    context("Transfer with dynamic fee", async () => {
+
     })
 
 })

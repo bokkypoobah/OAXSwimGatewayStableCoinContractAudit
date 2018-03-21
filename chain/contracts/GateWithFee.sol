@@ -12,7 +12,7 @@ import "Gate.sol";
 
 
 contract GateWithFee is Gate {
-    address feeCollector;
+    address public feeCollector;
 
     function GateWithFee(DSAuthority _authority, DSToken fiatToken, uint256 _dailyLimit, address feeCollector_)
     public
