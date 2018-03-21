@@ -61,6 +61,11 @@ describe("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
             expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
         })
+        it("0 fee is allowed", async () => {
+            await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 0)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(0)
+        })
     })
 
     context("Burn with dynamic fee", async () => {
@@ -87,6 +92,15 @@ describe("Gate with Mint and Burn Fee (TODO Transfer Fee)", function () {
                 await send(gateWithFee, OPERATOR, "burnWithFee", CUSTOMER1, 10001, 25)
             })
 
+        })
+        it("0 fee is allowed", async () => {
+            await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
+            await send(token, CUSTOMER1, "approve", address(gateWithFee), 10000)
+            await send(gateWithFee, OPERATOR, "burnWithFee", CUSTOMER1, 10000, 0)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
         })
     })
 
