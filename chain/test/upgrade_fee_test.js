@@ -72,7 +72,7 @@ describe("Upgrade Gate Regarding Fee", function () {
             expect(await call(token, "balanceOf", CUSTOMER)).eq(100)
         })
 
-        it("When switched to new gate with fee, old gate should have no control over token.", async () => {
+        it("When switched to new gate with fee, old gate should have no control over token and the new gate can mint against the token.", async () => {
             //on no fee gateway, mint 100 token to customer
             await send(gate, OPERATOR, mint, CUSTOMER, 100)
             expect(await call(token, "balanceOf", CUSTOMER)).eq(100)

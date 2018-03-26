@@ -156,7 +156,7 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
         })
     })
 
-    context.only("Mint, Burn and Transfer all have fees.", async () => {
+    context("Mint, Burn and Transfer all have fees.", async () => {
         it("Mint, Burn and Transfer fees don't duplicate.", async () => {
             await send(gateWithFee, OPERATOR, "setTransferFee", 0, 25);
             expect(await call(token, "transferFeeAbs")).eq(0)
