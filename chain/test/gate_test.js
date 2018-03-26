@@ -71,6 +71,8 @@ describe('Gate', () => {
                 send(gate, CUSTOMER, mint, CUSTOMER, 123))
             await expectThrow(async () =>
                 send(token, CUSTOMER, mint, CUSTOMER, 123))
+            await expectThrow(async () =>
+                send(token, CUSTOMER, "mint", 123))
         })
 
         it('cannot mint for others', async () => {

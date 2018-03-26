@@ -99,9 +99,10 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
             bytes32(address(src)), bytes32(address(dst)), sig(method))
 
     const fiatTokenGuardRules = [
-        [gate, token, 'mint(uint256)'],
+        [gate, token, 'setName(bytes32)'],
+        [gate, token, 'mint(uint256)'], //need this because it calls mint(address,uint256)
         [gate, token, 'mint(address,uint256)'],
-        [gate, token, 'burn(uint256)'],
+        [gate, token, 'burn(uint256)'],//need this because it calls burn(address,uint256)
         [gate, token, 'burn(address,uint256)'],
         // [gate, token, 'setERC20Authority(address)'],
         // [gate, token, 'setTokenAuthority(address)'],
@@ -139,7 +140,6 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
 
-
     const gateRoleRules = [
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mint(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mint(address,uint256)'],
@@ -158,9 +158,10 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
             bytes32(address(src)), bytes32(address(dst)), sig(method))
 
     const fiatTokenGuardRules = [
-        [gateWithFee, token, 'mint(uint256)'],
+        [gateWithFee, token, 'setName(bytes32)'],
+        [gateWithFee, token, 'mint(uint256)'], //need this because it calls mint(address,uint256)
         [gateWithFee, token, 'mint(address,uint256)'],
-        [gateWithFee, token, 'burn(uint256)'],
+        [gateWithFee, token, 'burn(uint256)'],//need this because it calls burn(address,uint256)
         [gateWithFee, token, 'burn(address,uint256)'],
         [gateWithFee, token, 'setTransferFee(uint256,uint256)'],
         // [gateWithFee, token, 'setERC20Authority(address)'],

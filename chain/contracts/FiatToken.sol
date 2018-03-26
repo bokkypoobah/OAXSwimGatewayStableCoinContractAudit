@@ -34,8 +34,6 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         return super.approve(guy, wad);
     }
 
-    event Temp(uint amt);
-
     function transfer(address to, uint wad)
     public
     authTransfer(to, wad)
