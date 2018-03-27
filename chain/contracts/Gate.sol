@@ -73,4 +73,12 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         super.burn(guy, wad);
         Withdrawn(guy, wad);
     }
+
+    function setERC20Authority(ERC20Authority _erc20Authority) public auth {
+        FiatToken(token).setERC20Authority(_erc20Authority);
+    }
+
+    function setTokenAuthority(TokenAuthority _tokenAuthority) public auth {
+        FiatToken(token).setTokenAuthority(_tokenAuthority);
+    }
 }

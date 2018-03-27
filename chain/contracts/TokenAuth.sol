@@ -34,8 +34,7 @@ contract ERC20Auth is ERC20, DSAuth {
         _;
     }
 
-    // FIXME it should be restricted by the `auth` modifier
-    function setERC20Authority(ERC20Authority _erc20Authority) public /*auth*/ {
+    function setERC20Authority(ERC20Authority _erc20Authority) public auth {
         erc20Authority = _erc20Authority;
     }
 }
@@ -61,8 +60,7 @@ contract TokenAuth is DSAuth {
         _;
     }
 
-    // FIXME it should be restricted by the `auth` modifier
-    function setTokenAuthority(TokenAuthority _tokenAuthority) public /*auth*/ {
+    function setTokenAuthority(TokenAuthority _tokenAuthority) public auth {
         tokenAuthority = _tokenAuthority;
     }
 }

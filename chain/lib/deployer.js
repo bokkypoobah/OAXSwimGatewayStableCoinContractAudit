@@ -57,10 +57,6 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         ...roleContractRules.map(allowRoleForContract),
     ])
 
-
-    await send(token, DEPLOYER, 'setERC20Authority', address(noKycAmlRule))
-    await send(token, DEPLOYER, 'setTokenAuthority', address(noKycAmlRule))
-
     return {token}
 }
 
@@ -92,6 +88,8 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         [DEPLOYER, OPERATOR_ROLE, gate, 'burn(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gate, 'start()'],
         [DEPLOYER, OPERATOR_ROLE, gate, 'stop()'],
+        [DEPLOYER, OPERATOR_ROLE, gate, 'setERC20Authority(address)'],
+        [DEPLOYER, OPERATOR_ROLE, gate, 'setTokenAuthority(address)'],
     ]
 
     const permitFiatTokenGuard = ([src, dst, method]) =>
@@ -104,8 +102,8 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         [gate, token, 'mint(address,uint256)'],
         [gate, token, 'burn(uint256)'],//need this because it calls burn(address,uint256)
         [gate, token, 'burn(address,uint256)'],
-        // [gate, token, 'setERC20Authority(address)'],
-        // [gate, token, 'setTokenAuthority(address)'],
+        [gate, token, 'setERC20Authority(address)'],
+        [gate, token, 'setTokenAuthority(address)'],
     ]
 
     await Promise.all([
@@ -113,6 +111,9 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         ...roleContractRules.map(allowRoleForContract),
         ...fiatTokenGuardRules.map(permitFiatTokenGuard),
     ])
+
+    await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
+    await send(gate, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
 
     return {
         kycAmlStatus,
@@ -149,6 +150,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burnWithFee(address,uint256,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'start()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setERC20Authority(address)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTokenAuthority(address)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setFeeCollector(address)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTransferFee(uint256,uint256)'],
     ]
@@ -163,9 +166,9 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [gateWithFee, token, 'mint(address,uint256)'],
         [gateWithFee, token, 'burn(uint256)'],//need this because it calls burn(address,uint256)
         [gateWithFee, token, 'burn(address,uint256)'],
+        [gateWithFee, token, 'setERC20Authority(address)'],
+        [gateWithFee, token, 'setTokenAuthority(address)'],
         [gateWithFee, token, 'setTransferFee(uint256,uint256)'],
-        // [gateWithFee, token, 'setERC20Authority(address)'],
-        // [gateWithFee, token, 'setTokenAuthority(address)'],
     ]
 
     await Promise.all([
@@ -173,6 +176,9 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         ...gateRoleRules.map(allowRoleForContract),
         ...fiatTokenGuardRules.map(permitFiatTokenGuard),
     ])
+
+    await send(gateWithFee, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
+    await send(gateWithFee, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
 
     return {gateWithFee}
 }

@@ -112,8 +112,8 @@ describe("Asset Gateway", function () {
     describe("with boundary KYC", async () => {
 
         before(async () => {
-            await send(token, DEPLOYER, 'setERC20Authority', address(boundaryKycAmlRule))
-            await send(token, DEPLOYER, 'setTokenAuthority', address(boundaryKycAmlRule))
+            await send(gate, OPERATOR, 'setERC20Authority', address(boundaryKycAmlRule))
+            await send(gate, OPERATOR, 'setTokenAuthority', address(boundaryKycAmlRule))
         })
 
         describe("CUSTOMER", async () => {
@@ -181,8 +181,8 @@ describe("Asset Gateway", function () {
 
     describe("with full KYC", async () => {
         before(async () => {
-            await send(token, DEPLOYER, 'setERC20Authority', address(fullKycAmlRule))
-            await send(token, DEPLOYER, 'setTokenAuthority', address(fullKycAmlRule))
+            await send(gate, OPERATOR, 'setERC20Authority', address(fullKycAmlRule))
+            await send(gate, OPERATOR, 'setTokenAuthority', address(fullKycAmlRule))
         })
 
         describe("CUSTOMER", async () => {
