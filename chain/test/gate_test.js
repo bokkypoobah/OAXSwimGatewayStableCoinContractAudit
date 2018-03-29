@@ -1,6 +1,7 @@
 const {
     expect,
     expectThrow,
+    expectNoAsyncThrow,
     toBN,
     solc,
     ganacheWeb3,
@@ -150,7 +151,7 @@ describe('Gate', () => {
             await send(gate, OPERATOR, mintForSelf, 10)
 
             await expectThrow(async () =>
-                send(gate, CUSTOMER, pull, address(gate), 1))
+                await send(gate, CUSTOMER, pull, address(gate), 1))
         })
     })
 
@@ -250,6 +251,39 @@ describe('Gate', () => {
                 {NAME: 'Burn', guy: CUSTOMER, wad: AMT.toString(10)},
                 {NAME: 'Withdrawn', from: CUSTOMER, amount: AMT.toString(10)}
             ])
+        })
+    })
+
+    context("Controls", () => {
+        it("Normal customer can't stop nor start token via gate.", async () => {
+            await expectThrow(async () => {
+                await send(gate, CUSTOMER1, "stopToken")
+            })
+            await expectThrow(async () => {
+                await send(gate, CUSTOMER1, "startToken")
+            })
+        })
+
+        it("Operator can stop and start token via gate.", async () => {
+
+            await send(gate, OPERATOR, mintForSelf, 10)
+            await send(gate, OPERATOR, approve, CUSTOMER, 3)
+
+            await send(gate, OPERATOR, "stopToken")
+            await expectThrow(async () => {
+                await send(token, CUSTOMER, pull, address(gate), 2)
+            })
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mintForSelf, 10)
+            })
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, approve, CUSTOMER, 3)
+            })
+
+            await send(gate, OPERATOR, "startToken")
+            await expectNoAsyncThrow(async () => {
+                await send(token, CUSTOMER, pull, address(gate), 2)
+            })
         })
     })
 })

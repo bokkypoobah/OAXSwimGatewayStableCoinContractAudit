@@ -81,4 +81,12 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     function setTokenAuthority(TokenAuthority _tokenAuthority) public auth {
         FiatToken(token).setTokenAuthority(_tokenAuthority);
     }
+
+    function stopToken() public auth note {
+        FiatToken(token).stop();
+    }
+
+    function startToken() public auth note {
+        FiatToken(token).start();
+    }
 }

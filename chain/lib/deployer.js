@@ -101,6 +101,8 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         [DEPLOYER, OPERATOR_ROLE, gate, 'burn(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gate, 'start()'],
         [DEPLOYER, OPERATOR_ROLE, gate, 'stop()'],
+        [DEPLOYER, OPERATOR_ROLE, gate, 'startToken()'],
+        [DEPLOYER, OPERATOR_ROLE, gate, 'stopToken()'],
         [DEPLOYER, OPERATOR_ROLE, gate, 'setERC20Authority(address)'],
         [DEPLOYER, OPERATOR_ROLE, gate, 'setTokenAuthority(address)'],
     ]
@@ -117,6 +119,8 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         [gate, token, 'burn(address,uint256)'],
         [gate, token, 'setERC20Authority(address)'],
         [gate, token, 'setTokenAuthority(address)'],
+        [gate, token, 'start()'],
+        [gate, token, 'stop()'],
     ]
 
     await Promise.all([
@@ -161,6 +165,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burnWithFee(address,uint256,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'startToken()'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stopToken()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'start()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setERC20Authority(address)'],
@@ -183,6 +189,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [gateWithFee, token, 'burn(address,uint256)'],
         [gateWithFee, token, 'setERC20Authority(address)'],
         [gateWithFee, token, 'setTokenAuthority(address)'],
+        [gateWithFee, token, 'start()'],
+        [gateWithFee, token, 'stop()'],
         [gateWithFee, token, 'setTransferFeeCollector(address)'],
         [gateWithFee, token, 'setTransferFeeController(address)'],
         [gateWithFee, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
