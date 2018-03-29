@@ -69,6 +69,14 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
+      },
+      "MockTransferFeeController.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
       }
     }
   },
@@ -111,6 +119,11 @@
     "GateWithFee.sol": {
       "urls": [
         "contracts/GateWithFee.sol"
+      ]
+    },
+    "MockTransferFeeController.sol": {
+      "urls": [
+        "contracts/test/MockTransferFeeController.sol"
       ]
     }
   }

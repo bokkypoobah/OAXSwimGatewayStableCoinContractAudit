@@ -166,6 +166,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setERC20Authority(address)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTokenAuthority(address)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setFeeCollector(address)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTransferFeeCollector(address)'],
+        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTransferFeeController(address)'],
         [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setDefaultTransferFee(uint256,uint256)'],
     ]
 
@@ -181,6 +183,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         [gateWithFee, token, 'burn(address,uint256)'],
         [gateWithFee, token, 'setERC20Authority(address)'],
         [gateWithFee, token, 'setTokenAuthority(address)'],
+        [gateWithFee, token, 'setTransferFeeCollector(address)'],
+        [gateWithFee, token, 'setTransferFeeController(address)'],
         [gateWithFee, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
     ]
 

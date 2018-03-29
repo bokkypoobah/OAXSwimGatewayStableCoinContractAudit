@@ -13,14 +13,14 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
     uint8 public constant decimals = 18;
 
-    TransferFeeControllerInterface transferFeeController;
+    TransferFeeControllerInterface public transferFeeController;
 
-    address public feeCollector;
+    address public transferFeeCollector;
 
     function FiatToken(
     DSAuthority _authority,
     bytes32 symbol,
-    address feeCollector_,
+    address transferFeeCollector_,
     TransferFeeControllerInterface transferFeeController_
     )
     DSToken(symbol)
@@ -28,7 +28,7 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
     {
         setAuthority(_authority);
         setOwner(0x0);
-        feeCollector = feeCollector_;
+        transferFeeCollector = transferFeeCollector_;
         transferFeeController = transferFeeController_;
     }
 
@@ -52,7 +52,7 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
     returns (bool) {
         uint fee = transferFeeController.calculateTransferFee(from, to, wad);
         bool transferToStatus = super.transferFrom(from, to, sub(wad, fee));
-        bool transferFeeStatus = super.transferFrom(from, feeCollector, fee);
+        bool transferFeeStatus = super.transferFrom(from, transferFeeCollector, fee);
         return (transferToStatus && transferFeeStatus);
     }
 
@@ -64,6 +64,19 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         super.burn(guy, wad);
     }
 
+    function setTransferFeeCollector(address feeCollector_)
+    public
+    auth
+    {
+        transferFeeCollector = feeCollector_;
+    }
+
+    function setTransferFeeController(TransferFeeControllerInterface transferFeeController_)
+    public
+    auth
+    {
+        transferFeeController = transferFeeController_;
+    }
 }
 
 

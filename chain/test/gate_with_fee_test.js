@@ -12,7 +12,8 @@ const {
     send,
     call,
     wad,
-    txEvents
+    txEvents,
+    create
 } = require('chain-dsl')
 
 const deployer = require('../lib/deployer')
@@ -161,6 +162,45 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(9975)
             expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
             expect(await call(token, "balanceOf", OPERATOR)).eq(25)
+        })
+
+        it("Gate can change transfer fee collector.", async () => {
+            expectThrow(async () => {
+                await send(gateWithFee, CUSTOMER1, "setTransferFeeCollector", CUSTOMER2);
+            })
+
+            await send(gateWithFee, OPERATOR, "setTransferFeeCollector", CUSTOMER2);
+            expect(await call(token, "transferFeeCollector")).eq(CUSTOMER2)
+        })
+
+        it("Gate can change transfer fee controller.", async () => {
+            const deploy = (...args) => create(web3, DEPLOYER, ...args)
+            const {
+                MockTransferFeeController
+            } = solc(__dirname, '../solc-input.json')
+            const mockTransferFeeController = await deploy(MockTransferFeeController)
+
+            expectThrow(async () => {
+                await send(gateWithFee, CUSTOMER1, "setTransferFeeController", address(mockTransferFeeController));
+            })
+
+            await send(gateWithFee, OPERATOR, "setTransferFeeController", address(mockTransferFeeController));
+            expect(await call(token, "transferFeeController")).eq(address(mockTransferFeeController))
+            expect(await call(mockTransferFeeController, "calculateTransferFee", null, null, 9116)).eq(10);
+
+            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+
+            await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
+
+            await send(token, CUSTOMER1, "transfer", CUSTOMER2, 10000)
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
+            expect(await call(token, "balanceOf", CUSTOMER2)).eq(9990)
+            expect(await call(token, "balanceOf", FEE_COLLECTOR)).eq(25)
+            expect(await call(token, "balanceOf", OPERATOR)).eq(10) //operator is transfer fee collector
         })
     })
 

@@ -37,6 +37,20 @@ contract GateWithFee is Gate {
         feeCollector = feeCollector_;
     }
 
+    function setTransferFeeCollector(address feeCollector_)
+    public
+    auth
+    {
+        (FiatToken(token)).setTransferFeeCollector(feeCollector_);
+    }
+
+    function setTransferFeeController(TransferFeeControllerInterface transferFeeController_)
+    public
+    auth
+    {
+        (FiatToken(token)).setTransferFeeController(transferFeeController_);
+    }
+
     function mintWithFee(address guy, uint wad, uint fee)
     public
     limited(wad)
