@@ -115,6 +115,12 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
 
     context("Transfer with dynamic fee", async () => {
         it("When abs=0, bps=25, fee for wad = 10000 is 25", async () => {
+            expectThrow(async () => {
+                await send(gateWithFee, DEPLOYER, "setDefaultTransferFee", 0, 25);
+            })
+            expectThrow(async () => {
+                await send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25);
+            })
             await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
