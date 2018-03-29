@@ -44,7 +44,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(kycAmlStatus))
 
-    transferFeeController = await deploy(TransferFeeController, wad(0), wad(0))
+    transferFeeController = await deploy(TransferFeeController, address(fiatTokenGuard), wad(0), wad(0))
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR

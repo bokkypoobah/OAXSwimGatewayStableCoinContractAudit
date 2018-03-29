@@ -18,7 +18,7 @@ const {
 
 const deployer = require('../lib/deployer')
 
-describe("Gate with Mint, Burn and Transfer Fee", function () {
+describe.only("Gate with Mint, Burn and Transfer Fee", function () {
     this.timeout(7000)
 
     let web3, snaps, accounts,
@@ -205,6 +205,12 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
     })
 
     context("Mint, Burn and Transfer all have fees.", async () => {
+        it("Normal customer can not set transfer fees.", async () => {
+            expectThrow(async () => {
+                await send(gateWithFee, CUSTOMER1, "setDefaultTransferFee", 0, 25);
+            })
+        })
+
         it("Mint, Burn and Transfer fees don't duplicate.", async () => {
             await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
