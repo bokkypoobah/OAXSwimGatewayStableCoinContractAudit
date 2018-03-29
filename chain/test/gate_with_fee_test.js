@@ -21,7 +21,9 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
     this.timeout(7000)
 
     let web3, snaps, accounts,
-        gateWithFee, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, token,
+        gateWithFee,
+        token,
+        transferFeeController,
         DEPLOYER,
         OPERATOR,
         FEE_COLLECTOR,
@@ -42,7 +44,7 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
 
             AMT = 100
 
-            ;({token} =
+            ;({token, transferFeeController} =
                 await deployer.init(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
 
             ;({gateWithFee} =
@@ -113,37 +115,37 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
 
     context("Transfer with dynamic fee", async () => {
         it("When abs=0, bps=25, fee for wad = 10000 is 25", async () => {
-            await send(gateWithFee, OPERATOR, "setTransferFee", 0, 25);
-            expect(await call(token, "transferFeeAbs")).eq(0)
-            expect(await call(token, "transferFeeBps")).eq(25)
-            expect(await call(token, "calculateTransferFee", 10000)).eq(25 * (1));
+            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(25 * (1));
         })
 
         it("When abs=1, bps=25, fee for wad = 10000 is 26", async () => {
-            await send(gateWithFee, OPERATOR, "setTransferFee", 1, 25);
-            expect(await call(token, "transferFeeAbs")).eq(1)
-            expect(await call(token, "transferFeeBps")).eq(25)
-            expect(await call(token, "calculateTransferFee", 10000)).eq(26 * (1));
+            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 1, 25);
+            expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(1)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(26 * (1));
         })
 
         it("When abs=1, bps=25, fee for wad = 9116 is 24", async () => {
-            await send(gateWithFee, OPERATOR, "setTransferFee", 1, 25);
-            expect(await call(token, "transferFeeAbs")).eq(1)
-            expect(await call(token, "transferFeeBps")).eq(25)
-            expect(await call(token, "calculateTransferFee", 9999)).eq(26 * (1));
-            expect(await call(token, "calculateTransferFee", 9998)).eq(26 * (1));
-            expect(await call(token, "calculateTransferFee", 9997)).eq(26 * (1));
-            expect(await call(token, "calculateTransferFee", 9996)).eq(26 * (1));
-            expect(await call(token, "calculateTransferFee", 9116)).eq(24 * (1));
+            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 1, 25);
+            expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(1)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9999)).eq(26 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9998)).eq(26 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9997)).eq(26 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9996)).eq(26 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9116)).eq(24 * (1));
         })
 
         it("When a customer transfers 10000 tokens to customer_two and the fee is 25 (0+25bps), \n" +
             "10000 tokens come off from the customer's wallet, \n" +
             "9975 tokens goes to customer_two, \n" +
             "and 25 tokens goes to the fee collector's wallet.", async () => {
-            await send(gateWithFee, OPERATOR, "setTransferFee", 0, 25);
-            expect(await call(token, "transferFeeAbs")).eq(0)
-            expect(await call(token, "transferFeeBps")).eq(25)
+            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
 
             await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
@@ -158,9 +160,9 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
 
     context("Mint, Burn and Transfer all have fees.", async () => {
         it("Mint, Burn and Transfer fees don't duplicate.", async () => {
-            await send(gateWithFee, OPERATOR, "setTransferFee", 0, 25);
-            expect(await call(token, "transferFeeAbs")).eq(0)
-            expect(await call(token, "transferFeeBps")).eq(25)
+            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
 
             await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)

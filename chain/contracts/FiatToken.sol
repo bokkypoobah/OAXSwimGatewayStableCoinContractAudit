@@ -10,21 +10,26 @@ import "TokenAuth.sol";
 
 
 contract FiatToken is DSToken, ERC20Auth, TokenAuth {
-    uint8 public constant decimals = 18;
-    //transfer fee is calculated by transferFeeAbs+amt*transferFeeBps
-    uint public transferFeeAbs;
 
-    uint public transferFeeBps;
+    uint8 public constant decimals = 18;
+
+    TransferFeeControllerInterface transferFeeController;
 
     address public feeCollector;
 
-    function FiatToken(DSAuthority _authority, bytes32 symbol, address feeCollector_)
+    function FiatToken(
+    DSAuthority _authority,
+    bytes32 symbol,
+    address feeCollector_,
+    TransferFeeControllerInterface transferFeeController_
+    )
     DSToken(symbol)
     public
     {
         setAuthority(_authority);
         setOwner(0x0);
         feeCollector = feeCollector_;
+        transferFeeController = transferFeeController_;
     }
 
     function approve(address guy, uint wad)
@@ -45,7 +50,7 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
     public
     authTransferFrom(from, to, wad)
     returns (bool) {
-        uint fee = calculateTransferFee(wad);
+        uint fee = transferFeeController.calculateTransferFee(from, to, wad);
         bool transferToStatus = super.transferFrom(from, to, sub(wad, fee));
         bool transferFeeStatus = super.transferFrom(from, feeCollector, fee);
         return (transferToStatus && transferFeeStatus);
@@ -59,18 +64,42 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         super.burn(guy, wad);
     }
 
-    function calculateTransferFee(uint wad)
+}
+
+
+contract TransferFeeControllerInterface is DSAuth {
+    function calculateTransferFee(address from, address to, uint wad)
+    public
+    view
+    returns (uint);
+}
+
+
+contract TransferFeeController is TransferFeeControllerInterface, DSMath {
+    //transfer fee is calculated by transferFeeAbs+amt*transferFeeBps
+    uint public defaultTransferFeeAbs;
+
+    uint public defaultTransferFeeBps;
+
+    function TransferFeeController(uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_)
+    public
+    {
+        defaultTransferFeeAbs = defaultTransferFeeAbs_;
+        defaultTransferFeeBps = defaultTransferFeeBps_;
+    }
+
+    function calculateTransferFee(address /*from*/, address /*to*/, uint wad)
     public
     view
     returns (uint){
-        return transferFeeAbs + div(mul(wad, transferFeeBps), 10000);
+        return defaultTransferFeeAbs + div(mul(wad, defaultTransferFeeBps), 10000);
     }
 
-    function setTransferFee(uint transferFeeAbs_, uint transferFeeBps_)
+    function setDefaultTransferFee(uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_)
     public
-    auth
+        //    auth
     {
-        transferFeeAbs = transferFeeAbs_;
-        transferFeeBps = transferFeeBps_;
+        defaultTransferFeeAbs = defaultTransferFeeAbs_;
+        defaultTransferFeeBps = defaultTransferFeeBps_;
     }
 }
