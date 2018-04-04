@@ -1,9 +1,6 @@
 pragma solidity 0.4.19;
 
 
-pragma solidity 0.4.19;
-
-
 /// math.sol -- mixin for inline numerical wizardry
 
 contract DSMath {
@@ -35,9 +32,9 @@ contract DSMath {
         return x >= y ? x : y;
     }
 
-    uint constant WAD = 10 ** 18;
+    uint internal constant WAD = 10 ** 18;
 
-    uint constant RAY = 10 ** 27;
+    uint internal constant RAY = 10 ** 27;
 
     function wmul(uint x, uint y) internal pure returns (uint z) {
         z = add(mul(x, y), WAD / 2) / WAD;
@@ -95,7 +92,8 @@ contract ERC20 is ERC20Events {
 
     function transferFrom(
     address src, address dst, uint wad
-    ) public returns (bool);
+    )
+    public returns (bool);
 }
 
 
@@ -104,7 +102,8 @@ contract ERC20 is ERC20Events {
 contract DSAuthority {
     function canCall(
     address src, address dst, bytes4 sig
-    ) public view returns (bool);
+    )
+    public view returns (bool);
 }
 
 
@@ -184,7 +183,7 @@ contract DSNote {
         bar := calldataload(36)
         }
 
-        LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
+        emit LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
 
         _;
     }
@@ -236,7 +235,9 @@ contract DSGuard is DSAuth, DSAuthority, DSGuardEvents {
 
     function canCall(
     address src_, address dst_, bytes4 sig
-    ) public view returns (bool) {
+    )
+    public view returns (bool)
+    {
         var src = bytes32(src_);
         var dst = bytes32(dst_);
 
@@ -520,7 +521,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
-        Mint(guy, wad);
+        emit Mint(guy, wad);
     }
 
     function burn(address guy, uint wad) public auth stoppable {
@@ -530,7 +531,7 @@ contract DSToken is DSTokenBase(0), DSStop {
 
         _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
-        Burn(guy, wad);
+        emit Burn(guy, wad);
     }
 
     bytes32   public  name = "";
@@ -672,4 +673,5 @@ contract DSExec {
 /// thing.sol - `auth` with handy mixins. your things should be DSThings
 
 contract DSThing is DSAuth, DSNote, DSMath {
+
 }

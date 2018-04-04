@@ -34,13 +34,6 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         setOwner(0x0);
     }
 
-    function resetLimit() internal stoppable {
-        assert(now - lastLimitResetTime >= 1 days);
-        uint256 today = now - (now % 1 days);
-        lastLimitResetTime = today;
-        limitCounter = 0;
-    }
-
     modifier limited(uint wad) {
         if (now - lastLimitResetTime >= 1 days) {
             resetLimit();
@@ -52,7 +45,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     }
 
     function deposit(uint256 wad) public stoppable {
-        DepositRequested(msg.sender, wad);
+        emit DepositRequested(msg.sender, wad);
     }
 
     function mint(address guy, uint wad) public limited(wad) stoppable {
@@ -66,12 +59,12 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     }
 
     function withdraw(uint256 wad) public stoppable {
-        WithdrawalRequested(msg.sender, wad);
+        emit WithdrawalRequested(msg.sender, wad);
     }
 
     function burn(address guy, uint wad) public limited(wad) stoppable {
         super.burn(guy, wad);
-        Withdrawn(guy, wad);
+        emit Withdrawn(guy, wad);
     }
 
     function setERC20Authority(ERC20Authority _erc20Authority) public auth {
@@ -88,5 +81,12 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     function startToken() public auth note {
         FiatToken(token).start();
+    }
+
+    function resetLimit() internal stoppable {
+        assert(now - lastLimitResetTime >= 1 days);
+        uint256 today = now - (now % 1 days);
+        lastLimitResetTime = today;
+        limitCounter = 0;
     }
 }

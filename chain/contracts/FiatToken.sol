@@ -81,10 +81,10 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
 
 contract TransferFeeControllerInterface {
-    function calculateTransferFee(address from, address to, uint wad)
-    public
-    view
-    returns (uint);
+    function calculateTransferFee(
+    address from,
+    address to,
+    uint wad) public view returns (uint);
 }
 
 
@@ -97,9 +97,8 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
     function TransferFeeController(
     DSAuthority _authority,
     uint defaultTransferFeeAbs_,
-    uint defaultTransferFeeBps_)
-    public
-    {
+    uint defaultTransferFeeBps_
+    ) public {
         setAuthority(_authority);
         setOwner(0x0);
         defaultTransferFeeAbs = defaultTransferFeeAbs_;
