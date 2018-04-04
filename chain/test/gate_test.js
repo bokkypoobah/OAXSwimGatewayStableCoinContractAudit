@@ -182,8 +182,10 @@ describe('Gate', () => {
             return withdrawalTransfers.concat(burns).concat(withdrawals)
         }
 
-        it('can mint', async () =>
-            send(gate, OPERATOR, mint, CUSTOMER, 123))
+        it('can mint', async () => {
+            await send(gate, OPERATOR, mint, CUSTOMER, 123)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(123)
+        })
 
         it('is the only actor who can mint', async () => {
             await expectThrow(async () =>
