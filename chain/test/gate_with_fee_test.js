@@ -18,8 +18,8 @@ const {
 
 const deployer = require('../lib/deployer')
 
-describe.only("Gate with Mint, Burn and Transfer Fee", function () {
-    this.timeout(7000)
+describe("Gate with Mint, Burn and Transfer Fee", function () {
+    this.timeout(8000)
 
     let web3, snaps, accounts,
         gateWithFee,

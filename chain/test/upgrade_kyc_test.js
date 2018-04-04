@@ -51,6 +51,7 @@ describe("Upgrade Gate Regarding Kyc", function () {
             gate,
             token,
             boundaryKycAmlRule,
+            fullKycAmlRule,
             kycAmlStatus
         } =
             await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
@@ -60,26 +61,11 @@ describe("Upgrade Gate Regarding Kyc", function () {
     afterEach(async () => web3.evm.revert(snaps.pop()))
 
     context("Switch between different kyc policies gateways does not break existing balances of the (swim) token.", async () => {
-        it("When switched from no kyc gate to boundary kyc gate, old gate should have no control over token.", async () => {
-            //on no fee gateway, mint 100 token to customer
-            await send(gate, OPERATOR, mint, CUSTOMER, 100)
-            expect(await call(token, "balanceOf", CUSTOMER)).eq(100)
 
-            //switch to has-fee gate
-            //switch step 1, deploy gate with fee
-            let {gateWithFee} = await deployer.deployGateWithFee(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR, DEPLOYER)
-            //switch step 2, pause old gate
-            await send(gate, OPERATOR, "stop")
-
-            //check no-fee gate has no control over token any more
-            await expectThrow(async () =>
-                await send(gate, OPERATOR, mint, CUSTOMER, 100)
-            )
-
-            expect(await call(token, "balanceOf", CUSTOMER)).eq(100)
-        })
-
-        it("When switched to new gate with fee, old gate should have no control over token and the new gate can mint against the token.", async () => {
+        it("When a gate's kyc policy change from no_key to boundary kyc, " +
+            "non kyc verified users are free to transfer but cannot mint until their are marked kyc verified;" +
+            "when the gate is further upgraded to full_kyc," +
+            "non kyc verified users could neither transfer nor burn until their are marked kyc verified.", async () => {
             //on no fee gateway, mint 100 token to customer
             await send(gate, OPERATOR, mint, CUSTOMER, 100)
             expect(await call(token, "balanceOf", CUSTOMER)).eq(100)
@@ -89,8 +75,10 @@ describe("Upgrade Gate Regarding Kyc", function () {
             await send(gate, OPERATOR, 'setERC20Authority', address(boundaryKycAmlRule))
             await send(gate, OPERATOR, 'setTokenAuthority', address(boundaryKycAmlRule))
 
-            //check customer balance == 100 on 'new' gateway
-            expect(await call(token, "balanceOf", CUSTOMER)).eq(100)
+
+            await send(token, CUSTOMER, "transfer", CUSTOMER2, 10)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(90)
+            expect(await call(token, "balanceOf", CUSTOMER2)).eq(10)
 
             await expectThrow(async () => {
                 await send(gate, OPERATOR, mint, CUSTOMER, 1000)
@@ -98,7 +86,29 @@ describe("Upgrade Gate Regarding Kyc", function () {
 
             await send(kycAmlStatus, OPERATOR, "setKycVerified", CUSTOMER, true)
             await send(gate, OPERATOR, mint, CUSTOMER, 1000)
-            expect(await call(token, "balanceOf", CUSTOMER)).eq(1100)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(1090)
+            expect(await call(token, "balanceOf", CUSTOMER2)).eq(10)
+
+            await send(gate, OPERATOR, 'setERC20Authority', address(fullKycAmlRule))
+            await send(gate, OPERATOR, 'setTokenAuthority', address(fullKycAmlRule))
+
+            await expectThrow(async () => {
+                await send(token, CUSTOMER, "transfer", CUSTOMER2, 10)
+                await send(token, CUSTOMER2, "transfer", CUSTOMER, 10)
+            })
+
+            await send(token, CUSTOMER2, "approve", address(gate), 10)
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, "burn", CUSTOMER2, 10)
+            })
+
+            await send(kycAmlStatus, OPERATOR, "setKycVerified", CUSTOMER2, true)
+            await send(token, CUSTOMER2, "transfer", CUSTOMER, 10)
+            await send(token, CUSTOMER, "transfer", CUSTOMER2, 10)
+            expect(await call(token, "balanceOf", CUSTOMER2)).eq(10)
+
+            await send(gate, OPERATOR, "burn", CUSTOMER2, 4)
+            expect(await call(token, "balanceOf", CUSTOMER2)).eq(6)
         })
     })
 
