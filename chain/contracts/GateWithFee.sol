@@ -16,13 +16,7 @@ contract GateWithFee is Gate {
 
     TransferFeeController transferFeeController;
 
-    function GateWithFee(
-    DSAuthority _authority,
-    DSToken fiatToken,
-    uint256 _dailyLimit,
-    address feeCollector_,
-    TransferFeeController transferFeeController_
-    )
+    function GateWithFee(DSAuthority _authority, DSToken fiatToken, uint256 _dailyLimit, address feeCollector_, TransferFeeController transferFeeController_)
     public
     Gate(_authority, fiatToken, _dailyLimit)
     {

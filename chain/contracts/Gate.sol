@@ -17,9 +17,6 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     uint256 public lastLimitResetTime;
 
-    //TODO move me out to a separate storage to be immune from gate upgrade data loss
-    mapping (address => bool) public frozenAddress;
-
     event DepositRequested(address indexed by, uint256 amount);
 
     event WithdrawalRequested(address indexed from, uint256 amount);
@@ -47,16 +44,11 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         _;
     }
 
-    modifier freezable(address address_) {
-        require(!frozenAddress[address_]);
-        _;
-    }
-
-    function deposit(uint256 wad) public stoppable freezable(msg.sender) {
+    function deposit(uint256 wad) public stoppable {
         DepositRequested(msg.sender, wad);
     }
 
-    function mint(address guy, uint wad) public limited(wad) stoppable freezable(guy) {
+    function mint(address guy, uint wad) public limited(wad) stoppable {
         super.mint(guy, wad);
         /* Because the EIP20 standard says so, we emit a Transfer event:
            A token contract which creates new tokens SHOULD trigger a
@@ -66,11 +58,11 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         Transfer(0x0, guy, wad);
     }
 
-    function withdraw(uint256 wad) public stoppable freezable(msg.sender) {
+    function withdraw(uint256 wad) public stoppable {
         WithdrawalRequested(msg.sender, wad);
     }
 
-    function burn(address guy, uint wad) public limited(wad) stoppable freezable(guy) {
+    function burn(address guy, uint wad) public limited(wad) stoppable {
         super.burn(guy, wad);
         Withdrawn(guy, wad);
     }
@@ -89,14 +81,6 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     function startToken() public auth note {
         FiatToken(token).start();
-    }
-
-    function freezeAddress(address address_) public auth {
-        frozenAddress[address_] = true;
-    }
-
-    function unfreezeAddress(address address_) public auth {
-        frozenAddress[address_] = false;
     }
 
     function resetLimit() internal stoppable {
