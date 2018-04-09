@@ -17,6 +17,9 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     uint256 public lastLimitResetTime;
 
+    //TODO move me out to a separate storage to be immune from gate upgrade data loss
+    mapping (address => bool) public frozenAddress;
+
     event DepositRequested(address indexed by, uint256 amount);
 
     event WithdrawalRequested(address indexed from, uint256 amount);
@@ -44,11 +47,16 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         _;
     }
 
-    function deposit(uint256 wad) public stoppable {
-        emit DepositRequested(msg.sender, wad);
+    modifier freezable(address address_) {
+        require(!frozenAddress[address_]);
+        _;
     }
 
-    function mint(address guy, uint wad) public limited(wad) stoppable {
+    function deposit(uint256 wad) public stoppable freezable(msg.sender) {
+        DepositRequested(msg.sender, wad);
+    }
+
+    function mint(address guy, uint wad) public limited(wad) stoppable freezable(guy) {
         super.mint(guy, wad);
         /* Because the EIP20 standard says so, we emit a Transfer event:
            A token contract which creates new tokens SHOULD trigger a
@@ -58,13 +66,13 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         Transfer(0x0, guy, wad);
     }
 
-    function withdraw(uint256 wad) public stoppable {
-        emit WithdrawalRequested(msg.sender, wad);
+    function withdraw(uint256 wad) public stoppable freezable(msg.sender) {
+        WithdrawalRequested(msg.sender, wad);
     }
 
-    function burn(address guy, uint wad) public limited(wad) stoppable {
+    function burn(address guy, uint wad) public limited(wad) stoppable freezable(guy) {
         super.burn(guy, wad);
-        emit Withdrawn(guy, wad);
+        Withdrawn(guy, wad);
     }
 
     function setERC20Authority(ERC20Authority _erc20Authority) public auth {
@@ -81,6 +89,14 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     function startToken() public auth note {
         FiatToken(token).start();
+    }
+
+    function freezeAddress(address address_) public auth {
+        frozenAddress[address_] = true;
+    }
+
+    function unfreezeAddress(address address_) public auth {
+        frozenAddress[address_] = false;
     }
 
     function resetLimit() internal stoppable {

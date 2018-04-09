@@ -183,7 +183,7 @@ contract DSNote {
         bar := calldataload(36)
         }
 
-        emit LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
+        LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
 
         _;
     }
@@ -521,7 +521,7 @@ contract DSToken is DSTokenBase(0), DSStop {
     function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
-        emit Mint(guy, wad);
+        Mint(guy, wad);
     }
 
     function burn(address guy, uint wad) public auth stoppable {
@@ -531,7 +531,7 @@ contract DSToken is DSTokenBase(0), DSStop {
 
         _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
-        emit Burn(guy, wad);
+        Burn(guy, wad);
     }
 
     bytes32   public  name = "";
