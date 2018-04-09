@@ -89,6 +89,21 @@ const defaultGateOperatorMethods = [
     ['unfreezeAddress(address)'],
 ]
 
+
+const defaultTokenGuardRules = [
+    ['setName(bytes32)'],
+    ['mint(uint256)'], //need this because it calls mint(address,uint256)
+    ['mint(address,uint256)'],
+    ['burn(uint256)'],//need this because it calls burn(address,uint256)
+    ['burn(address,uint256)'],
+    ['setERC20Authority(address)'],
+    ['setTokenAuthority(address)'],
+    ['start()'],
+    ['stop()'],
+    ['setTransferFeeCollector(address)'],
+    ['setTransferFeeController(address)'],
+]
+
 const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = null, LIMIT = wad(10000)) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
@@ -120,22 +135,16 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         send(fiatTokenGuard, DEPLOYER, 'permit',
             bytes32(address(src)), bytes32(address(dst)), sig(method))
 
-    const fiatTokenGuardRules = [
-        [gate, token, 'setName(bytes32)'],
-        [gate, token, 'mint(uint256)'], //need this because it calls mint(address,uint256)
-        [gate, token, 'mint(address,uint256)'],
-        [gate, token, 'burn(uint256)'],//need this because it calls burn(address,uint256)
-        [gate, token, 'burn(address,uint256)'],
-        [gate, token, 'setERC20Authority(address)'],
-        [gate, token, 'setTokenAuthority(address)'],
-        [gate, token, 'start()'],
-        [gate, token, 'stop()'],
-    ]
+    const mapTokenGuardRules = ([methodSig]) => {
+        return [gate, token, methodSig]
+    }
+
+    const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules)
 
     await Promise.all([
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
-        ...fiatTokenGuardRules.map(permitFiatTokenGuard),
+        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
     ])
 
     await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
@@ -187,25 +196,20 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         send(fiatTokenGuard, DEPLOYER, 'permit',
             bytes32(address(src)), bytes32(address(dst)), sig(method))
 
-    const fiatTokenGuardRules = [
-        [gateWithFee, token, 'setName(bytes32)'],
-        [gateWithFee, token, 'mint(uint256)'], //need this because it calls mint(address,uint256)
-        [gateWithFee, token, 'mint(address,uint256)'],
-        [gateWithFee, token, 'burn(uint256)'],//need this because it calls burn(address,uint256)
-        [gateWithFee, token, 'burn(address,uint256)'],
-        [gateWithFee, token, 'setERC20Authority(address)'],
-        [gateWithFee, token, 'setTokenAuthority(address)'],
-        [gateWithFee, token, 'start()'],
-        [gateWithFee, token, 'stop()'],
-        [gateWithFee, token, 'setTransferFeeCollector(address)'],
-        [gateWithFee, token, 'setTransferFeeController(address)'],
+    const mapTokenGuardRules = ([methodSig]) => {
+        return [gateWithFee, token, methodSig]
+    }
+
+    const gateWithFeeGuardRules = [
         [gateWithFee, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
     ]
+
+    const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)
 
     await Promise.all([
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
-        ...fiatTokenGuardRules.map(permitFiatTokenGuard),
+        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
     ])
 
     await send(gateWithFee, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
