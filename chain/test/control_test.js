@@ -17,12 +17,13 @@ const deployer = require('../lib/deployer')
 const mint = 'mint(address,uint256)'
 
 describe("Control", function () {
-    this.timeout(5000)
+    this.timeout(8000)
 
     let web3, snaps, accounts,
         gate,
         token,
         kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule,
+        addressControlStatus,
         DEPLOYER,
         OPERATOR,
         CUSTOMER,
@@ -48,7 +49,8 @@ describe("Control", function () {
             token,
             boundaryKycAmlRule,
             fullKycAmlRule,
-            kycAmlStatus
+            kycAmlStatus,
+            addressControlStatus
         } =
             await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
     })
@@ -101,7 +103,7 @@ describe("Control", function () {
         })
     })
 
-    context.only("Per address control", async () => {
+    context("Per address control", async () => {
         it("Operator can freeze/unfreeze an address from any action in and out of this address.", async () => {
             await expectNoAsyncThrow(async () => {
                 await send(gate, OPERATOR, mint, CUSTOMER, 10)
@@ -110,7 +112,7 @@ describe("Control", function () {
             expect(await call(token, "balanceOf", CUSTOMER)).eq(10)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
 
-            await send(gate, OPERATOR, "freezeAddress", CUSTOMER)
+            await send(addressControlStatus, OPERATOR, "freezeAddress", CUSTOMER)
 
             // await expectThrow(async () => {
             //     await send(token, CUSTOMER, "transfer", CUSTOMER1, 1)
@@ -124,7 +126,7 @@ describe("Control", function () {
             //     await send(token, CUSTOMER, "approve", address(gate), 10)
             // })
 
-            await send(gate, OPERATOR, "unfreezeAddress", CUSTOMER)
+            await send(addressControlStatus, OPERATOR, "unfreezeAddress", CUSTOMER)
 
             await expectNoAsyncThrow(async () => {
                 await send(token, CUSTOMER, "transfer", CUSTOMER1, 1)

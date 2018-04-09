@@ -11,6 +11,7 @@ const {
 let gateRoles
 let fiatTokenGuard
 let kycAmlStatus
+let addressControlStatus
 let noKycAmlRule
 let boundaryKycAmlRule
 let fullKycAmlRule
@@ -32,17 +33,19 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         GateRoles,
         DSGuard,
         FiatToken,
-        TransferFeeController
+        TransferFeeController,
+        AddressControlStatus
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
     fiatTokenGuard = await deploy(DSGuard)
     kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
+    addressControlStatus = await deploy(AddressControlStatus, address(gateRoles))
 
 
-    noKycAmlRule = await deploy(NoKycAmlRule)
-    boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(kycAmlStatus))
-    fullKycAmlRule = await deploy(FullKycAmlRule, address(kycAmlStatus))
+    noKycAmlRule = await deploy(NoKycAmlRule, address(addressControlStatus))
+    boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
+    fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
 
     transferFeeController = await deploy(TransferFeeController, address(fiatTokenGuard), wad(0), wad(0))
 
@@ -53,9 +56,13 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
 
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
+
     const roleContractRules = [
-        [DEPLOYER, OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)']
+        [DEPLOYER, OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
+        [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
+        [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)']
     ]
+
     await Promise.all([
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
@@ -63,13 +70,14 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
 
     return {
         kycAmlStatus,
+        addressControlStatus,
         noKycAmlRule,
         boundaryKycAmlRule,
         fullKycAmlRule,
         fiatTokenGuard,
         gateRoles,
         token,
-        transferFeeController
+        transferFeeController,
     }
 }
 
@@ -85,8 +93,6 @@ const defaultGateOperatorMethods = [
     ['stopToken()'],
     ['setERC20Authority(address)'],
     ['setTokenAuthority(address)'],
-    ['freezeAddress(address)'],
-    ['unfreezeAddress(address)'],
 ]
 
 
@@ -152,6 +158,7 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
 
     return {
         kycAmlStatus,
+        addressControlStatus,
         noKycAmlRule,
         boundaryKycAmlRule,
         fullKycAmlRule,
