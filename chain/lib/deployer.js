@@ -73,6 +73,22 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
     }
 }
 
+
+const defaultGateOperatorMethods = [
+    ['mint(uint256)'],
+    ['mint(address,uint256)'],
+    ['burn(uint256)'],
+    ['burn(address,uint256)'],
+    ['start()'],
+    ['stop()'],
+    ['startToken()'],
+    ['stopToken()'],
+    ['setERC20Authority(address)'],
+    ['setTokenAuthority(address)'],
+    ['freezeAddress(address)'],
+    ['unfreezeAddress(address)'],
+]
+
 const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = null, LIMIT = wad(10000)) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
@@ -94,18 +110,11 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
 
-    const roleContractRules = [
-        [DEPLOYER, OPERATOR_ROLE, gate, 'mint(uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'mint(address,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'burn(uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'burn(address,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'start()'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'stop()'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'startToken()'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'stopToken()'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'setERC20Authority(address)'],
-        [DEPLOYER, OPERATOR_ROLE, gate, 'setTokenAuthority(address)'],
-    ]
+    const mapGateOperatorRules = ([methodSig]) => {
+        return [DEPLOYER, OPERATOR_ROLE, gate, methodSig]
+    }
+
+    const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules)
 
     const permitFiatTokenGuard = ([src, dst, method]) =>
         send(fiatTokenGuard, DEPLOYER, 'permit',
@@ -158,24 +167,21 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
 
-    const gateRoleRules = [
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mint(uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mint(address,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'mintWithFee(address,uint256,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burn(address,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'burnWithFee(address,uint256,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'startToken()'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stopToken()'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'start()'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'stop()'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setERC20Authority(address)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTokenAuthority(address)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setFeeCollector(address)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTransferFeeCollector(address)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setTransferFeeController(address)'],
-        [DEPLOYER, OPERATOR_ROLE, gateWithFee, 'setDefaultTransferFee(uint256,uint256)'],
+    const mapGateOperatorRules = ([methodSig]) => {
+        return [DEPLOYER, OPERATOR_ROLE, gateWithFee, methodSig]
+    }
+
+    const gateWithFeeOperatorMethodsRoleRules = [
+        ['mintWithFee(address,uint256,uint256)'],
+        ['burnWithFee(address,uint256,uint256)'],
+        ['setFeeCollector(address)'],
+        ['setTransferFeeCollector(address)'],
+        ['setTransferFeeController(address)'],
+        ['setDefaultTransferFee(uint256,uint256)'],
     ]
+
+    const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules).concat(gateWithFeeOperatorMethodsRoleRules.map(mapGateOperatorRules))
+
 
     const permitFiatTokenGuard = ([src, dst, method]) =>
         send(fiatTokenGuard, DEPLOYER, 'permit',
@@ -198,7 +204,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
 
     await Promise.all([
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-        ...gateRoleRules.map(allowRoleForContract),
+        ...roleContractRules.map(allowRoleForContract),
         ...fiatTokenGuardRules.map(permitFiatTokenGuard),
     ])
 
