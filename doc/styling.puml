@@ -1,0 +1,41 @@
+@startuml
+
+skinparam ActorBorderColor #576bb5
+skinparam ActorBackgroundColor #161c32
+
+skinparam EntityBorderColor #576bb5
+skinparam EntityBackgroundColor #161c32
+
+skinparam DatabaseBorderColor #576bb5
+skinparam DatabaseBackgroundColor #161c32
+
+skinparam ControlBorderColor #576bb5
+skinparam ControlBackgroundColor #161c32
+
+skinparam ParticipantBorderColor #576bb5
+skinparam ParticipantBackgroundColor #161c32
+skinparam ParticipantFontColor #FFFFFF
+
+skinparam PackageBorderColor #161c32
+skinparam PackageBackgroundColor #576bb5
+
+skinparam ObjectBorderColor #161c32
+skinparam ObjectBackgroundColor #576bb5
+
+skinparam InterfaceBorderColor #161c32
+skinparam InterfaceBackgroundColor #576bb5
+
+skinparam ClassBorderColor #161c32
+skinparam ClassBackgroundColor #576bb5
+
+skinparam NoteBorderColor #576bb5
+skinparam NoteBackgroundColor #161c32
+skinparam NoteFontColor #FFFFFF
+
+skinparam SequenceBoxBorderColor #576bb5
+skinparam SequenceLifelineBorderColor #576bb5
+skinparam SequenceLifelineBackgroundColor #576bb5
+
+skinparam ArrowColor #576bb5
+
+@enduml

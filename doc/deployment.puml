@@ -1,5 +1,7 @@
 @startuml
 
+!include styling.puml
+
 object gate
 object gateRoles
 
@@ -28,6 +30,8 @@ token *-- "1" fiatTokenGuard
 'fullKycAmlRules *-- "1" kycAmlStatus
 
 newpage
+
+!include styling.puml
 
 object gate
 object gateRoles

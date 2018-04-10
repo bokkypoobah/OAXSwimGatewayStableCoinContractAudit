@@ -61,6 +61,8 @@ Welcome to OAX Backend Web Server
 
 ## Test
 
+*NOTE THAT* `yarn install --force` is necessary, especially when smart contracts are changed.
+
 ```bash
 yarn install --force && yarn test --watch
 ```

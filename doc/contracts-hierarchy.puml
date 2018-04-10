@@ -1,7 +1,8 @@
 @startuml
 
 '!define SHOW_PACKAGES
-!include ../doc/dappsys.puml
+!include dappsys.puml
+!include styling.puml
 
 
 !ifdef SHOW_PACKAGES

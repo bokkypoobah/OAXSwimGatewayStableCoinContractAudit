@@ -1,4 +1,7 @@
 @startuml
+
+!include styling.puml
+
 title Asset Gateway Demo
 
 ' We ignore KYC
