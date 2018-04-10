@@ -4,6 +4,7 @@
 !include dappsys.puml
 !include styling.puml
 
+title Contracts Hierarchy (TODO modify according to changes)
 
 !ifdef SHOW_PACKAGES
     package TokenAuth.sol {

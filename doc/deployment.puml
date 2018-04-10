@@ -2,6 +2,8 @@
 
 !include styling.puml
 
+title Contracts Hierarchy (TODO modify according to changes)
+
 object gate
 object gateRoles
 

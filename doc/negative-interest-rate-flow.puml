@@ -1,0 +1,53 @@
+@startuml
+
+title Negative Interest Flow
+
+!include styling.puml
+
+actor customer #white
+actor "SWIM \n cash management \n accountant" as sca
+actor "SWIM \n cash management \n operator" as sco
+participant "<$gears>\nSWIM gateway \n smart contract" as sgc
+participant "<$gears>\nSWIM \n ERC20 token \n smart contract" as stc
+participant "<$wallet>\nSWIM \n cash management \n wallet" as scw
+
+sca->sca: Calculate interest payments due \n\
+to be paid by customer, e.g. //10 SWIM Token//
+
+sca->sco: Inform interest payments
+
+sco->sgc: Request this customer's interest payment
+activate sgc
+sgc-->customer:
+note left of sgc
+event
+//InterestPaymentRequest//
+//(customer, amt)//
+end note
+deactivate sgc
+
+customer->stc: Approve this interest payment \n\
+//approve(gateway_smart_contract_address, interest_payment_amount)//
+
+sco->sgc: Trigger interest payment
+
+note right of sgc #purple
+If this process fails,
+operator could choose to
+freeze this customer's account.
+
+//(Maybe after a certain grace period//
+//e.g. 1 month since it's requested.)//
+end note
+activate sgc
+sgc-->stc:
+stc-->stc:
+stc-->customer:
+customer-->scw: //10 SWIM Token// interest payment
+note left of sgc
+event
+//InterestPaymentSuccessful//
+//(customer, amt)//
+end note
+deactivate sgc
+@enduml
