@@ -67,4 +67,17 @@ contract GateWithFee is Gate {
     {
         transferFeeController.setDefaultTransferFee(transferFeeAbs_, transferFeeBps_);
     }
+
+    event InterestPaymentRequest(address by, uint amount);
+
+    event InterestPaymentSuccess(address by, uint amount);
+
+    function requestInterestPayment(address by, uint amount) public auth {
+        InterestPaymentRequest(by, amount);
+    }
+
+    function processInterestPayment(address by, uint amount) public auth {
+        (FiatToken(token)).transferFrom(by, feeCollector, amount);
+        InterestPaymentSuccess(by, amount);
+    }
 }

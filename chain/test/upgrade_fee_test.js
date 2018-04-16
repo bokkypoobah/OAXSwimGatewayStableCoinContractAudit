@@ -21,7 +21,7 @@ const deployer = require('../lib/deployer')
 const mint = 'mint(address,uint256)'
 
 describe("Upgrade Gate Regarding Fee", function () {
-    this.timeout(5000)
+    this.timeout(7000)
 
     let web3, snaps, accounts,
         gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, token,

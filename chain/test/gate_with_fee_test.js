@@ -18,7 +18,7 @@ const {
 
 const deployer = require('../lib/deployer')
 
-describe("Gate with Mint, Burn and Transfer Fee", function () {
+describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", function () {
     this.timeout(8000)
 
     let web3, snaps, accounts,
@@ -231,4 +231,47 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
 
     })
 
+    context("Negative Interest Rate", async () => {
+        before(async () => {
+            await send(gateWithFee, OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
+        })
+
+        it("Gate will emit two relevant events if interest payment is successful.", async () => {
+            let startBalance = await call(token, "balanceOf", CUSTOMER1)
+            let AMT1 = wad(1000)
+
+            let events = await txEvents(await send(gateWithFee, OPERATOR, "requestInterestPayment", CUSTOMER1, AMT1))
+            events = events.concat(await txEvents(await send(token, CUSTOMER1, "approve", address(gateWithFee), AMT1)))
+            events = events.concat(await txEvents(await send(gateWithFee, OPERATOR, "processInterestPayment", CUSTOMER1, AMT1)))
+
+            expect(events).containSubset([
+                {NAME: 'InterestPaymentRequest', by: CUSTOMER1, amount: AMT1.toString(10)},
+                {NAME: 'InterestPaymentSuccess', by: CUSTOMER1, amount: AMT1.toString(10)}
+            ])
+
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(startBalance - AMT1)
+        })
+
+        it("Customer cannot pay more interest than its balance.", async () => {
+
+            let startBalance = await call(token, "balanceOf", CUSTOMER1)
+            let AMT1 = startBalance + 5
+
+            let events = await txEvents(await send(gateWithFee, OPERATOR, "requestInterestPayment", CUSTOMER1, AMT1))
+            events = events.concat(await txEvents(await send(token, CUSTOMER1, "approve", address(gateWithFee), AMT1)))
+
+            await expectThrow(async () => {
+                events = events.concat(await txEvents(await send(gateWithFee, OPERATOR, "processInterestPayment", CUSTOMER1, AMT1)))
+            })
+
+            expect(events).containSubset([
+                {NAME: 'InterestPaymentRequest', by: CUSTOMER1, amount: AMT1.toString(10)},
+            ])
+            expect(events).not.containSubset([
+                {NAME: 'InterestPaymentSuccess', by: CUSTOMER1, amount: AMT1.toString(10)},
+            ])
+
+            expect(await call(token, "balanceOf", CUSTOMER1)).eq(startBalance)
+        })
+    })
 })

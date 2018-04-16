@@ -194,6 +194,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         ['setTransferFeeCollector(address)'],
         ['setTransferFeeController(address)'],
         ['setDefaultTransferFee(uint256,uint256)'],
+        ['requestInterestPayment(address,uint256)'],
+        ['processInterestPayment(address,uint256)'],
     ]
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules).concat(gateWithFeeOperatorMethodsRoleRules.map(mapGateOperatorRules))

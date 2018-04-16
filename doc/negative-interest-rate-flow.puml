@@ -46,7 +46,7 @@ stc-->customer:
 customer-->scw: //10 SWIM Token// interest payment
 note left of sgc
 event
-//InterestPaymentSuccessful//
+//InterestPaymentSuccess//
 //(customer, amt)//
 end note
 deactivate sgc
