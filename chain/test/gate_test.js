@@ -97,7 +97,7 @@ describe('Gate', () => {
                 send(token, CUSTOMER, burn, CUSTOMER, 123))
         })
 
-        it("can request a deposit", async () => {
+        it("can request a deposit on chain i.e. indicate intention of minting on chain", async () => {
             const AMT = toBN(10)
 
             const events = await txEvents(send(gate, CUSTOMER, deposit, AMT))

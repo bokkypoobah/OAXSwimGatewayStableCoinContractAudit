@@ -82,7 +82,7 @@ describe("Limits:", function () {
         expect(limitCounter).to.eq(0)
     })
 
-    it('Resets on 00:00 UTC', async () => {
+    it('Resets on 00:00 UTC (TODO timezone pending to be changed according to business decision)', async () => {
         const time = await call(gate, lastLimitResetTime)
         expect(time | 0).to.be.above(0)
         expect(time % (24 * 60 * 60)).to.equal(0)
