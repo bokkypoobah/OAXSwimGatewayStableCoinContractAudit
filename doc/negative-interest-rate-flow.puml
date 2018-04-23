@@ -1,5 +1,8 @@
 @startuml
 
+left header
+ version 1.0
+ end header
 title Negative Interest Flow
 
 !include styling.puml
