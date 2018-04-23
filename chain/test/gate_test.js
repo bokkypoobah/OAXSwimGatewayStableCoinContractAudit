@@ -207,7 +207,7 @@ describe('Gate', () => {
             ])
         })
 
-        it("can mint tokens when received fiat", async () => {
+        it("can mint tokens when received fiat (Note that this process is controlled off chain because receival of fiat is checked off chain.)", async () => {
             const AMT = toBN(10)
             await send(gate, CUSTOMER1, deposit, AMT)
 
