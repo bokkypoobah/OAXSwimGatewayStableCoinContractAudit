@@ -5,6 +5,7 @@ const {
     toBN,
     solc,
     ganacheWeb3,
+    ZERO_ADDR
 } = require('chain-dsl/test/helpers')
 
 const {
@@ -24,6 +25,7 @@ describe("Control", function () {
         token,
         kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule,
         addressControlStatus,
+        gateRoles,
         DEPLOYER,
         OPERATOR,
         CUSTOMER,
@@ -50,7 +52,8 @@ describe("Control", function () {
             boundaryKycAmlRule,
             fullKycAmlRule,
             kycAmlStatus,
-            addressControlStatus
+            addressControlStatus,
+            gateRoles
         } =
             await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
     })
@@ -142,6 +145,34 @@ describe("Control", function () {
 
             expect(await call(token, "balanceOf", CUSTOMER)).eq(10)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(1)
+        })
+    })
+
+    context("Operation authority control.", function () {
+        it("Initial deployer can add operator addresses even after the gate contract is established.", async () => {
+            const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
+            console.log(typeof OPERATOR_ROLE)
+            expect(await call(gateRoles, "hasUserRole", CUSTOMER2, OPERATOR_ROLE)).to.be.false;
+            await send(gateRoles, DEPLOYER, 'setUserRole', CUSTOMER2, OPERATOR_ROLE, true)
+            expect(await call(gateRoles, "hasUserRole", CUSTOMER2, OPERATOR_ROLE)).to.be.true;
+        })
+
+        it("Initial deployer can remove current operator addresses even after the gate contract is established.", async () => {
+            const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
+            console.log(typeof OPERATOR_ROLE)
+            expect(await call(gateRoles, "hasUserRole", OPERATOR, OPERATOR_ROLE)).to.be.true;
+            await send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, false)
+            expect(await call(gateRoles, "hasUserRole", OPERATOR, OPERATOR_ROLE)).to.be.false;
+        })
+
+        it("Current operator can NOT add any address as operator.", async () => {
+            const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
+            console.log(typeof OPERATOR_ROLE)
+            expect(await call(gateRoles, "hasUserRole", CUSTOMER2, OPERATOR_ROLE)).to.be.false;
+            await expectThrow(async () => {
+                await send(gateRoles, OPERATOR, 'setUserRole', CUSTOMER2, OPERATOR_ROLE, true)
+            })
+            expect(await call(gateRoles, "hasUserRole", CUSTOMER2, OPERATOR_ROLE)).to.be.false;
         })
     })
 })
