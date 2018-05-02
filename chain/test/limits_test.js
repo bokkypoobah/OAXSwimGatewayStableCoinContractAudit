@@ -62,58 +62,92 @@ describe("Limits:", function () {
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
     afterEach(async () => web3.evm.revert(snaps.pop()))
 
-    it('Can never mint more than the daily mint limit at once', async () => {
-        web3.evm.increaseTime(hours(2 * 24))
-        await expectThrow(async () =>
-            send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT + 1))
+    context("Limits Enforcement -", async () => {
+
+        it('Can never mint more than the daily mint limit at once', async () => {
+            web3.evm.increaseTime(hours(2 * 24))
+            await expectThrow(async () =>
+                send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT + 1))
+        })
+
+        it('Can not mint more than daily limit in same day', async () => {
+            const moreThanADay = hours((1 + 2) * 24)
+            web3.evm.increaseTime(moreThanADay)
+            await expectNoAsyncThrow(async () =>
+                send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT))
+            await expectThrow(async () =>
+                send(gate, OPERATOR, mint, CUSTOMER, MIN_AMT))
+        })
+
+        it('Mint/burn counter is 0 after deployments', async () => {
+            const limitCounter = await call(gate, 'limitCounter')
+            expect(limitCounter).to.eq(0)
+        })
+
+        it('Resets on 00:00 UTC (TODO timezone pending to be changed according to business decision)', async () => {
+            const time = await call(gate, lastLimitResetTime)
+            expect(time | 0).to.be.above(0)
+            expect(time % (24 * 60 * 60)).to.equal(0)
+        })
+
+        it('Limits are guaranteed to reset after 24h', async function () {
+            const moreThanADay = hours((1 + 2) * 24)
+            web3.evm.increaseTime(moreThanADay)
+            await expectNoAsyncThrow(async () =>
+                send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT))
+            web3.evm.increaseTime(hours(24))
+            await expectNoAsyncThrow(async () =>
+                send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT))
+        })
+
+        it('Apply to burning at once', async function () {
+            await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT)
+            web3.evm.increaseTime(hours(24))
+            await send(gate, OPERATOR, mint, CUSTOMER, MIN_AMT)
+            await send(token, CUSTOMER, transfer, OPERATOR, DEFAULT_DAILY_LIMIT + MIN_AMT)
+            web3.evm.increaseTime(hours(24))
+            await expectThrow(async () =>
+                send(gate, OPERATOR, burn, CUSTOMER, DEFAULT_DAILY_LIMIT + MIN_AMT))
+        })
+
+        it('Apply to burning and minting within a day', async function () {
+            await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT)
+            web3.evm.increaseTime(hours(24))
+            await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT)
+            await send(token, CUSTOMER, transfer, OPERATOR, MIN_AMT)
+            await expectThrow(async () =>
+                send(gate, OPERATOR, burn, CUSTOMER, MIN_AMT))
+        })
     })
 
-    it('Can not mint more than daily limit in same day', async () => {
-        const moreThanADay = hours((1 + 2) * 24)
-        web3.evm.increaseTime(moreThanADay)
-        await expectNoAsyncThrow(async () =>
-            send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT))
-        await expectThrow(async () =>
-            send(gate, OPERATOR, mint, CUSTOMER, MIN_AMT))
-    })
+    context.only("Limits Configuration - ", async () => {
+        it('For each ethereum address\'s point of view, there is one minting limit and another burning limit.', async () => {
 
-    it('Mint/burn counter is 0 after deployments', async () => {
-        const limitCounter = await call(gate, 'limitCounter')
-        expect(limitCounter).to.eq(0)
-    })
+        })
 
-    it('Resets on 00:00 UTC (TODO timezone pending to be changed according to business decision)', async () => {
-        const time = await call(gate, lastLimitResetTime)
-        expect(time | 0).to.be.above(0)
-        expect(time % (24 * 60 * 60)).to.equal(0)
-    })
 
-    it('Limits are guaranteed to reset after 24h', async function () {
-        const moreThanADay = hours((1 + 2) * 24)
-        web3.evm.increaseTime(moreThanADay)
-        await expectNoAsyncThrow(async () =>
-            send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT))
-        web3.evm.increaseTime(hours(24))
-        await expectNoAsyncThrow(async () =>
-            send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT))
-    })
+        it('Only authorised ethereum addresses can change limits configuration.', async () => {
 
-    it('Apply to burning at once', async function () {
-        await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT)
-        web3.evm.increaseTime(hours(24))
-        await send(gate, OPERATOR, mint, CUSTOMER, MIN_AMT)
-        await send(token, CUSTOMER, transfer, OPERATOR, DEFAULT_DAILY_LIMIT + MIN_AMT)
-        web3.evm.increaseTime(hours(24))
-        await expectThrow(async () =>
-            send(gate, OPERATOR, burn, CUSTOMER, DEFAULT_DAILY_LIMIT + MIN_AMT))
-    })
+        })
+        it('Unauthorised ethereum addresses can NEVER change limits configuration.', async () => {
 
-    it('Apply to burning and minting within a day', async function () {
-        await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT)
-        web3.evm.increaseTime(hours(24))
-        await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_LIMIT)
-        await send(token, CUSTOMER, transfer, OPERATOR, MIN_AMT)
-        await expectThrow(async () =>
-            send(gate, OPERATOR, burn, CUSTOMER, MIN_AMT))
+        })
+
+        it('Limits configuration change takes effect after 24 hours.', async () => {
+
+        })
+        it('Limits configuration change does NOT work within 24 hours of change.', async () => {
+
+        })
+
+        it('Only authorised ethereum addresses can configure customised limits for each ethereum address. Rest of the ethereum wallets would use default limits.', async () => {
+
+        })
+        it('Unauthorised ethereum addresses can NEVER configure customised limits for any ethereum address.', async () => {
+
+        })
+        it('Ethereum wallets without customised limits shall respect default limits.', async () => {
+
+        })
     })
 })
