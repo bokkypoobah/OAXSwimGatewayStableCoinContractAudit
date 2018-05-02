@@ -9,6 +9,7 @@ import "solovault.sol";
 import "GateRoles.sol";
 import "FiatToken.sol";
 import "Gate.sol";
+import "TransferFeeController.sol";
 
 
 contract GateWithFee is Gate {

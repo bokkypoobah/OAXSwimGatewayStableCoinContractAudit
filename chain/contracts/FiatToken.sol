@@ -7,6 +7,7 @@ import "dappsys.sol";
 
 // ERC20Authority, ERC20Auth, TokenAuthority, TokenAuth
 import "TokenAuth.sol";
+import "TransferFeeControllerInterface.sol";
 
 
 contract FiatToken is DSToken, ERC20Auth, TokenAuth {
@@ -71,40 +72,5 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
     auth
     {
         transferFeeController = transferFeeController_;
-    }
-}
-
-
-contract TransferFeeControllerInterface {
-    function calculateTransferFee(address from, address to, uint wad) public view returns (uint);
-}
-
-
-contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth {
-    //transfer fee is calculated by transferFeeAbs+amt*transferFeeBps
-    uint public defaultTransferFeeAbs;
-
-    uint public defaultTransferFeeBps;
-
-    function TransferFeeController(DSAuthority _authority, uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_) public {
-        setAuthority(_authority);
-        setOwner(0x0);
-        defaultTransferFeeAbs = defaultTransferFeeAbs_;
-        defaultTransferFeeBps = defaultTransferFeeBps_;
-    }
-
-    function calculateTransferFee(address /*from*/, address /*to*/, uint wad)
-    public
-    view
-    returns (uint){
-        return defaultTransferFeeAbs + div(mul(wad, defaultTransferFeeBps), 10000);
-    }
-
-    function setDefaultTransferFee(uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_)
-    public
-    auth
-    {
-        defaultTransferFeeAbs = defaultTransferFeeAbs_;
-        defaultTransferFeeBps = defaultTransferFeeBps_;
     }
 }

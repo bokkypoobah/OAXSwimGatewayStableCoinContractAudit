@@ -77,6 +77,22 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
+      },
+      "TransferFeeController.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "TransferFeeControllerInterface.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
       }
     }
   },
@@ -124,6 +140,16 @@
     "MockTransferFeeController.sol": {
       "urls": [
         "contracts/test/MockTransferFeeController.sol"
+      ]
+    },
+    "TransferFeeController.sol": {
+      "urls": [
+        "contracts/TransferFeeController.sol"
+      ]
+    },
+    "TransferFeeControllerInterface.sol": {
+      "urls": [
+        "contracts/TransferFeeControllerInterface.sol"
       ]
     }
   }
