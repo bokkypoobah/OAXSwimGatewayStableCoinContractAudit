@@ -2,7 +2,7 @@
 
 '!define SHOW_PACKAGES
 !include dappsys.puml
-!include styling.puml
+!include ../styling.puml
 
 title Contracts Hierarchy (TODO modify according to changes)
 

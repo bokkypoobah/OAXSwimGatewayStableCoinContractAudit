@@ -1,6 +1,6 @@
 @startuml
 
-!include styling.puml
+!include ../styling.puml
 !define DAPPSYS
 '!define SHOW_PACKAGES
 

@@ -1,6 +1,6 @@
 @startuml
 
-!include styling.puml
+!include ../styling.puml
 
 title Contracts Hierarchy (TODO modify according to changes)
 

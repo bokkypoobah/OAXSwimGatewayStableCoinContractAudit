@@ -5,7 +5,7 @@ left header
  end header
 title Negative Interest Flow
 
-!include styling.puml
+!include ../styling.puml
 
 actor customer #white
 actor "SWIM \n cash management \n accountant" as sca
