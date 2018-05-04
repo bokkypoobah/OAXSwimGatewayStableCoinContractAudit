@@ -47,18 +47,12 @@ contract GateWithFee is Gate {
         (FiatToken(token)).setTransferFeeController(transferFeeController_);
     }
 
-    function mintWithFee(address guy, uint wad, uint fee)
-    public
-    limited(wad)
-    {
+    function mintWithFee(address guy, uint wad, uint fee) public {
         super.mint(guy, wad);
         super.mint(feeCollector, fee);
     }
 
-    function burnWithFee(address guy, uint wad, uint fee)
-    public
-    limited(wad)
-    {
+    function burnWithFee(address guy, uint wad, uint fee) public {
         super.burn(guy, sub(wad, fee));
         token.transferFrom(guy, feeCollector, fee);
     }

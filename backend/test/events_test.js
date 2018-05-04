@@ -54,7 +54,8 @@ describe('Events', function () {
             await deployer.init(web3, solc(__dirname, '../../chain/solc-input.json'), DEPLOYER, OPERATOR, null, wad(100000)))
 
         ;({gateWithFee: gate} =
-            await deployer.deployGateWithFee(web3, solc(__dirname, '../../chain/solc-input.json'), DEPLOYER, OPERATOR, DEPLOYER))
+            await deployer.deployGateWithFee(web3,
+                solc(__dirname, '../../chain/solc-input.json'), DEPLOYER, OPERATOR, DEPLOYER))
         ;({makeState, processState, allEvents} = createEventHandler(web3, gate, token))
 
         ASSET_GATEWAY = gate.options.address

@@ -23,7 +23,11 @@ const allowRoleForContract = ([sender, role, contract, method]) =>
     send(gateRoles, sender, 'setRoleCapability',
         role, address(contract), sig(method), true)
 
-const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = null, LIMIT = wad(10000)) => {
+const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
+                    FEE_COLLECTOR = null,
+                    MINT_LIMIT = wad(10000),
+                    BURN_LIMIT = wad(10000),
+) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
     const {
@@ -50,7 +54,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
 
     transferFeeController = await deploy(TransferFeeController, address(fiatTokenGuard), wad(0), wad(0))
-    limitController = await deploy(LimitController, address(fiatTokenGuard), LIMIT)
+    limitController = await deploy(LimitController, address(fiatTokenGuard), MINT_LIMIT, BURN_LIMIT)
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR
@@ -114,14 +118,21 @@ const defaultTokenGuardRules = [
     ['setTransferFeeController(address)'],
 ]
 
-const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = null, LIMIT = wad(10000)) => {
+const base = async (web3,
+                    contractRegistry,
+                    DEPLOYER,
+                    OPERATOR,
+                    FEE_COLLECTOR = null,
+                    MINT_LIMIT = wad(10000),
+                    BURN_LIMIT = wad(10000),
+) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR
     }
 
-    await init(web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR, LIMIT)
+    await init(web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT)
 
     const {
         Gate
@@ -150,7 +161,8 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
     }
 
     const gateGuardRules = [
-        [gate, limitController, 'bumpLimit(uint256)'],
+        [gate, limitController, 'bumpMintLimit(uint256)'],
+        [gate, limitController, 'bumpBurnLimit(uint256)'],
     ]
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
 
@@ -219,7 +231,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
 
     const gateWithFeeGuardRules = [
         [gateWithFee, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
-        [gateWithFee, limitController, 'bumpLimit(uint256)'],
+        [gateWithFee, limitController, 'bumpMintLimit(uint256)'],
+        [gateWithFee, limitController, 'bumpBurnLimit(uint256)'],
     ]
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)

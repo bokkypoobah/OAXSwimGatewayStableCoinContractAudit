@@ -60,7 +60,8 @@ describe("Upgrade Gate Regarding Fee", function () {
 
             //switch to has-fee gate
             //switch step 1, deploy gate with fee
-            let {gateWithFee} = await deployer.deployGateWithFee(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR, DEPLOYER)
+            let {gateWithFee} = await deployer.deployGateWithFee(web3,
+                solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR, DEPLOYER)
             //switch step 2, pause old gate
             await send(gate, OPERATOR, "stop")
 
