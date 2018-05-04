@@ -30,7 +30,7 @@ function hours(hrs) {
     return hrs * 1000 * 60 * 60
 }
 
-describe.only("Limits:", function () {
+describe("Limits:", function () {
     this.timeout(8000)
 
     let web3, snaps, accounts, gate, token, limitController,
@@ -70,7 +70,7 @@ describe.only("Limits:", function () {
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
     afterEach(async () => web3.evm.revert(snaps.pop()))
 
-    context.only("Limits Enforcement -", async () => {
+    context("Limits Enforcement -", async () => {
 
         it('Can never mint more than the daily mint limit at once', async () => {
             web3.evm.increaseTime(hours(2 * 24))

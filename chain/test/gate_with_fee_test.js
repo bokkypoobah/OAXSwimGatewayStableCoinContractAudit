@@ -19,7 +19,7 @@ const {
 const deployer = require('../lib/deployer')
 
 describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", function () {
-    this.timeout(8000)
+    this.timeout(10000)
 
     let web3, snaps, accounts,
         gateWithFee,

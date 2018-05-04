@@ -21,6 +21,8 @@ const {
 const deploy = require('../lib/deployer')
 
 describe('Deployment', function () {
+    this.timeout(10000)
+
     let web3, snaps, accounts, DEPLOYER, OPERATOR, CUSTOMER, token, fiatTokenGuard
 
     before('deployment', async () => {

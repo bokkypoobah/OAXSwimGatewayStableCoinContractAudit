@@ -29,7 +29,9 @@ const transferFrom = 'transferFrom'
 const push = 'push(address,uint256)'
 const pull = 'pull(address,uint256)'
 
-describe('Gate', () => {
+describe('Gate', function () {
+    this.timeout(10000)
+
     let web3, snaps, accounts, gate, token,
         DEPLOYER,
         OPERATOR,
