@@ -46,10 +46,10 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             AMT = 100
 
             ;({token, transferFeeController} =
-                await deployer.init(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
+            await deployer.init(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR, null, wad(100000)))
 
             ;({gateWithFee} =
-                await deployer.deployGateWithFee(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR, FEE_COLLECTOR, wad(100000)))
+            await deployer.deployGateWithFee(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR, FEE_COLLECTOR))
         }
     )
 

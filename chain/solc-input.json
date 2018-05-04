@@ -93,6 +93,14 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
+      },
+      "LimitController.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
       }
     }
   },
@@ -150,6 +158,11 @@
     "TransferFeeControllerInterface.sol": {
       "urls": [
         "contracts/TransferFeeControllerInterface.sol"
+      ]
+    },
+    "LimitController.sol": {
+      "urls": [
+        "contracts/LimitController.sol"
       ]
     }
   }

@@ -10,6 +10,7 @@ import "GateRoles.sol";
 import "FiatToken.sol";
 import "Gate.sol";
 import "TransferFeeController.sol";
+import "LimitController.sol";
 
 
 contract GateWithFee is Gate {
@@ -17,9 +18,9 @@ contract GateWithFee is Gate {
 
     TransferFeeController transferFeeController;
 
-    function GateWithFee(DSAuthority _authority, DSToken fiatToken, uint256 _dailyLimit, address feeCollector_, TransferFeeController transferFeeController_)
+    function GateWithFee(DSAuthority _authority, DSToken fiatToken, LimitController _limitController, address feeCollector_, TransferFeeController transferFeeController_)
     public
-    Gate(_authority, fiatToken, _dailyLimit)
+    Gate(_authority, fiatToken, _limitController)
     {
         feeCollector = feeCollector_;
         transferFeeController = transferFeeController_;

@@ -43,10 +43,10 @@ describe('Deployment', function () {
         expect(symbol).equal('TOKUSD')
     })
 
-    const MAX_COST = 300 /* USD */;
+    const MAX_COST = 500 /* USD */;
     it(`does NOT cost more than ${MAX_COST} USD for the deployer`, async () => {
         // Source: https://coinmarketcap.com/currencies/ethereum/
-        const USD_PER_ETH = toBN(1068)
+        const USD_PER_ETH = toBN(1378) //use All Time High price to gauge
         const initial = toWei(toBN(100 /* ether */))
         const current = await balance(web3, DEPLOYER)
         const spent = initial.sub(toBN(current))

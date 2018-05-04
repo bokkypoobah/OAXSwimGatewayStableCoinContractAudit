@@ -8,14 +8,12 @@ import "dappsys.sol";
 import "solovault.sol";
 import "GateRoles.sol";
 import "FiatToken.sol";
+import "LimitController.sol";
 
 
 contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
-    uint256 public dailyLimit;
 
-    uint256 public limitCounter;
-
-    uint256 public lastLimitResetTime;
+    LimitController public limitController;
 
     event DepositRequested(address indexed by, uint256 amount);
 
@@ -23,24 +21,27 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     event Withdrawn(address indexed from, uint256 amount);
 
-    function Gate(DSAuthority _authority, DSToken fiatToken, uint256 _dailyLimit)
+    function Gate(DSAuthority _authority, DSToken fiatToken, LimitController _limitController)
     public
     {
-        require(_dailyLimit > 0);
-        dailyLimit = _dailyLimit;
-        resetLimit();
         swap(fiatToken);
         setAuthority(_authority);
+        setLimitController(_limitController);
         setOwner(0x0);
     }
 
-    modifier limited(uint wad) {
-        if (now - lastLimitResetTime >= 1 days) {
-            resetLimit();
-        }
+    event LogSetLimitController(LimitController _limitController);
 
-        limitCounter = add(limitCounter, wad);
-        require(limitCounter <= dailyLimit);
+    function setLimitController(LimitController _limitController)
+    public
+    auth
+    {
+        limitController = _limitController;
+        LogSetLimitController(_limitController);
+    }
+
+    modifier limited(uint wad) {
+        require(limitController.isWithinLimit(wad));
         _;
     }
 
@@ -50,6 +51,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     function mint(address guy, uint wad) public limited(wad) stoppable {
         super.mint(guy, wad);
+        limitController.bumpLimit(wad);
         /* Because the EIP20 standard says so, we emit a Transfer event:
            A token contract which creates new tokens SHOULD trigger a
            Transfer event with the _from address set to 0x0 when tokens are created.
@@ -64,6 +66,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     function burn(address guy, uint wad) public limited(wad) stoppable {
         super.burn(guy, wad);
+        limitController.bumpLimit(wad);
         Withdrawn(guy, wad);
     }
 
@@ -81,12 +84,5 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     function startToken() public auth note {
         FiatToken(token).start();
-    }
-
-    function resetLimit() internal stoppable {
-        assert(now - lastLimitResetTime >= 1 days);
-        uint256 today = now - (now % 1 days);
-        lastLimitResetTime = today;
-        limitCounter = 0;
     }
 }

@@ -17,6 +17,7 @@ let boundaryKycAmlRule
 let fullKycAmlRule
 let token
 let transferFeeController
+let limitController
 
 const allowRoleForContract = ([sender, role, contract, method]) =>
     send(gateRoles, sender, 'setRoleCapability',
@@ -34,7 +35,8 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         DSGuard,
         FiatToken,
         TransferFeeController,
-        AddressControlStatus
+        AddressControlStatus,
+        LimitController
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
@@ -48,6 +50,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
 
     transferFeeController = await deploy(TransferFeeController, address(fiatTokenGuard), wad(0), wad(0))
+    limitController = await deploy(LimitController, address(fiatTokenGuard), LIMIT)
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR
@@ -78,6 +81,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         gateRoles,
         token,
         transferFeeController,
+        limitController
     }
 }
 
@@ -93,8 +97,8 @@ const defaultGateOperatorMethods = [
     ['stopToken()'],
     ['setERC20Authority(address)'],
     ['setTokenAuthority(address)'],
+    ['setLimitController(address)'],
 ]
-
 
 const defaultTokenGuardRules = [
     ['setName(bytes32)'],
@@ -123,7 +127,7 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         Gate
     } = contractRegistry
 
-    const gate = await deploy(Gate, address(gateRoles), address(token), LIMIT)
+    const gate = await deploy(Gate, address(gateRoles), address(token), address(limitController))
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
@@ -145,7 +149,10 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         return [gate, token, methodSig]
     }
 
-    const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules)
+    const gateGuardRules = [
+        [gate, limitController, 'bumpLimit(uint256)'],
+    ]
+    const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
 
     await Promise.all([
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
@@ -165,17 +172,18 @@ const base = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR = 
         fiatTokenGuard,
         gateRoles,
         token,
-        gate
+        gate,
+        limitController
     }
 }
 
-const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR, LIMIT = wad(10000)) => {
+const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const {
         GateWithFee
     } = contractRegistry
 
-    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), LIMIT, FEE_COLLECTOR, address(transferFeeController))
+    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), FEE_COLLECTOR, address(transferFeeController))
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
@@ -211,6 +219,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
 
     const gateWithFeeGuardRules = [
         [gateWithFee, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
+        [gateWithFee, limitController, 'bumpLimit(uint256)'],
     ]
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)

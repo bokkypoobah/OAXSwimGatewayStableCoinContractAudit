@@ -31,7 +31,7 @@ function hours(hrs) {
 }
 
 describe("Limits:", function () {
-    let web3, snaps, accounts, gate, token,
+    let web3, snaps, accounts, gate, token, limitController,
         DEPLOYER,
         OPERATOR,
         CUSTOMER,
@@ -52,7 +52,7 @@ describe("Limits:", function () {
         AMT = wad(100)
         DEFAULT_DAILY_LIMIT = wad(10000)
 
-        ;({gate, token} = await deployer.base(web3, solc(__dirname, '../solc-input.json'),
+        ;({gate, token, limitController} = await deployer.base(web3, solc(__dirname, '../solc-input.json'),
             DEPLOYER,
             OPERATOR,
             OPERATOR,
@@ -80,12 +80,12 @@ describe("Limits:", function () {
         })
 
         it('Mint/burn counter is 0 after deployments', async () => {
-            const limitCounter = await call(gate, 'limitCounter')
+            const limitCounter = await call(limitController, 'limitCounter')
             expect(limitCounter).to.eq(0)
         })
 
         it('Resets on 00:00 UTC (TODO timezone pending to be changed according to business decision)', async () => {
-            const time = await call(gate, lastLimitResetTime)
+            const time = await call(limitController, lastLimitResetTime)
             expect(time | 0).to.be.above(0)
             expect(time % (24 * 60 * 60)).to.equal(0)
         })
@@ -120,9 +120,15 @@ describe("Limits:", function () {
         })
     })
 
-    context.only("Limits Configuration - ", async () => {
-        it('For each ethereum address\'s point of view, there is one minting limit and another burning limit.', async () => {
+    context("Limits Configuration - ", async () => {
+        it('Limits logic is upgrade-able.', async () => {
 
+        })
+
+        it('For each ethereum address\'s point of view, there is one minting limit and another burning limit.', async () => {
+            //expect getMintLimit(address)>=0
+            //expect getBurnLimit(address)>=0
+            //expect getMintLimit(address)!=getBurnLimit(address)
         })
 
 
