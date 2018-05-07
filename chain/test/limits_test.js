@@ -33,10 +33,11 @@ function hours(hrs) {
 describe("Limits:", function () {
     this.timeout(8000)
 
-    let web3, snaps, accounts, gate, token, limitController,
+    let web3, snaps, accounts, gate, token, limitController, limitSetting,
         DEPLOYER,
         OPERATOR,
         CUSTOMER,
+        CUSTOMER_TWO,
         MIN_AMT,
         AMT,
         DEFAULT_DAILY_MINT_LIMIT,
@@ -49,6 +50,7 @@ describe("Limits:", function () {
             DEPLOYER,
             OPERATOR,
             CUSTOMER,
+            CUSTOMER_TWO
         ] = accounts = await web3.eth.getAccounts()
 
         MIN_AMT = wad(1)
@@ -56,7 +58,11 @@ describe("Limits:", function () {
         DEFAULT_DAILY_MINT_LIMIT = wad(10000)
         DEFAULT_DAILY_BURN_LIMIT = wad(20000)
 
-        ;({gate, token, limitController} = await deployer.base(
+        ;({
+            gate, token,
+            limitController,
+            limitSetting
+        } = await deployer.base(
             web3,
             solc(__dirname, '../solc-input.json'),
             DEPLOYER,
@@ -163,16 +169,29 @@ describe("Limits:", function () {
     })
 
     context("Limits Configuration - ", async () => {
-        it('Limits logic is upgrade-able.', async () => {
-
-        })
 
         it('For each ethereum address\'s point of view, there is one minting limit and another burning limit.', async () => {
-            //expect getMintLimit(address)>=0
-            //expect getBurnLimit(address)>=0
-            //expect getMintLimit(address)!=getBurnLimit(address)
+            let mintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER)
+            let burnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER)
+            //This is only because the default mint/burn limit is different
+            expect(mintLimit).to.not.equal(burnLimit)
         })
+        it('Ethereum wallets could have customised limits different from default.', async () => {
+            //set wallet two's customised limits 2x default
+            let mintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER)
+            let burnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER)
+            //This is only because the default mint/burn limit is different
+            expect(mintLimit).to.not.equal(burnLimit)
 
+            //DO limit change
+            await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER_TWO, DEFAULT_DAILY_MINT_LIMIT * 3)
+            await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER_TWO, DEFAULT_DAILY_BURN_LIMIT * 3)
+
+            let vipMintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER_TWO)
+            let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER_TWO)
+            expect(mintLimit).to.not.equal(vipMintLimit)
+            expect(burnLimit).to.not.equal(vipBurnLimit)
+        })
 
         it('Only authorised ethereum addresses can change limits configuration.', async () => {
 
@@ -194,7 +213,12 @@ describe("Limits:", function () {
         it('Unauthorised ethereum addresses can NEVER configure customised limits for any ethereum address.', async () => {
 
         })
+
         it('Ethereum wallets without customised limits shall respect default limits.', async () => {
+
+        })
+
+        it('Limits logic is upgrade-able.', async () => {
 
         })
     })

@@ -40,12 +40,12 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         LogSetLimitController(_limitController);
     }
 
-    modifier mintLimited(uint wad) {
-        require(limitController.isWithinMintLimit(wad));
+    modifier mintLimited(address guy, uint wad) {
+        require(limitController.isWithinMintLimit(guy, wad));
         _;
     }
-    modifier burnLimited(uint wad) {
-        require(limitController.isWithinBurnLimit(wad));
+    modifier burnLimited(address guy, uint wad) {
+        require(limitController.isWithinBurnLimit(guy, wad));
         _;
     }
 
@@ -53,9 +53,9 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         DepositRequested(msg.sender, wad);
     }
 
-    function mint(address guy, uint wad) public mintLimited(wad) stoppable {
+    function mint(address guy, uint wad) public mintLimited(guy, wad) stoppable {
         super.mint(guy, wad);
-        limitController.bumpMintLimit(wad);
+        limitController.bumpMintLimitCounter(wad);
         /* Because the EIP20 standard says so, we emit a Transfer event:
            A token contract which creates new tokens SHOULD trigger a
            Transfer event with the _from address set to 0x0 when tokens are created.
@@ -68,9 +68,9 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         WithdrawalRequested(msg.sender, wad);
     }
 
-    function burn(address guy, uint wad) public burnLimited(wad) stoppable {
+    function burn(address guy, uint wad) public burnLimited(guy, wad) stoppable {
         super.burn(guy, wad);
-        limitController.bumpBurnLimit(wad);
+        limitController.bumpBurnLimitCounter(wad);
         Withdrawn(guy, wad);
     }
 

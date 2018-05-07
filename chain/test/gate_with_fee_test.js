@@ -117,26 +117,26 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
     context("Transfer with dynamic fee", async () => {
         it("When absolute_fee=0, basis_point_fee=25, fee for amount ( = 10000) is 25", async () => {
             expectThrow(async () => {
-                await send(gateWithFee, DEPLOYER, "setDefaultTransferFee", 0, 25);
+                await send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25);
             })
             expectThrow(async () => {
                 await send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25);
             })
-            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, OPERATOR, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
             expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(25 * (1));
         })
 
         it("When absolute_fee=1, basis_point_fee=25, fee for amount ( = 10000) is 26", async () => {
-            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 1, 25);
+            await send(transferFeeController, OPERATOR, "setDefaultTransferFee", 1, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(1)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
             expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(26 * (1));
         })
 
         it("When absolute_fee=1, basis_point_fee=25, fee for amount ( = 9116) is 24", async () => {
-            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 1, 25);
+            await send(transferFeeController, OPERATOR, "setDefaultTransferFee", 1, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(1)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
             expect(await call(transferFeeController, "calculateTransferFee", null, null, 9999)).eq(26 * (1));
@@ -150,7 +150,7 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             "10000 tokens come off from the customer's wallet, \n" +
             "9975 tokens goes to customer_two, \n" +
             "and 25 tokens goes to the fee collector's wallet.", async () => {
-            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, OPERATOR, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
 
@@ -188,7 +188,7 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             expect(await call(token, "transferFeeController")).eq(address(mockTransferFeeController))
             expect(await call(mockTransferFeeController, "calculateTransferFee", null, null, 9116)).eq(10);
 
-            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, OPERATOR, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
 
@@ -207,12 +207,12 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
     context("Mint, Burn and Transfer all have fees.", async () => {
         it("Normal customer can not set transfer fees.", async () => {
             expectThrow(async () => {
-                await send(gateWithFee, CUSTOMER1, "setDefaultTransferFee", 0, 25);
+                await send(transferFeeController, CUSTOMER1, "setDefaultTransferFee", 0, 25);
             })
         })
 
         it("Mint, Burn and Transfer fees don't duplicate.", async () => {
-            await send(gateWithFee, OPERATOR, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, OPERATOR, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
 

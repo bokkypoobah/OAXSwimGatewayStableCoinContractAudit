@@ -15,6 +15,8 @@ contract AddressControlStatus is DSAuth {
     mapping (address => bool) public frozenAddress;
 
     function AddressControlStatus(DSAuthority _authority) public {
+        require(address(_authority) != address(0));
+
         setAuthority(_authority);
         setOwner(0x0);
     }
@@ -34,6 +36,8 @@ contract KycAmlStatus is DSAuth {
     mapping (address => bool) public kycVerified;
 
     function KycAmlStatus(DSAuthority _authority) public {
+        require(address(_authority) != address(0));
+
         setAuthority(_authority);
         setOwner(0x0);
     }
@@ -57,6 +61,8 @@ contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
     AddressControlStatus addressControlStatus;
 
     function ControllableKycAmlRule(AddressControlStatus addressControlStatus_) public {
+        require(address(addressControlStatus_) != address(0));
+
         addressControlStatus = addressControlStatus_;
     }
 
@@ -84,7 +90,6 @@ contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
 
 contract NoKycAmlRule is ControllableKycAmlRule {
     function NoKycAmlRule(AddressControlStatus addressControlStatus_) ControllableKycAmlRule(addressControlStatus_) public {
-        addressControlStatus = addressControlStatus_;
     }
 
     function canApprove(address src, address dst, address guy, uint wad) public returns (bool) {
@@ -113,6 +118,8 @@ contract BoundaryKycAmlRule is NoKycAmlRule {
     KycAmlStatus kycAmlStatus;
 
     function BoundaryKycAmlRule(AddressControlStatus addressControlStatus_, KycAmlStatus kycAmlStatus_) NoKycAmlRule(addressControlStatus_) public {
+        require(address(kycAmlStatus_) != address(0));
+
         kycAmlStatus = kycAmlStatus_;
     }
 

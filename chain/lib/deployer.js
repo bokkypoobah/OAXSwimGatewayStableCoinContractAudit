@@ -18,6 +18,7 @@ let fullKycAmlRule
 let token
 let transferFeeController
 let limitController
+let limitSetting
 
 const allowRoleForContract = ([sender, role, contract, method]) =>
     send(gateRoles, sender, 'setRoleCapability',
@@ -40,21 +41,23 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         FiatToken,
         TransferFeeController,
         AddressControlStatus,
-        LimitController
+        LimitController,
+        LimitSetting
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
     fiatTokenGuard = await deploy(DSGuard)
+
     kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
     addressControlStatus = await deploy(AddressControlStatus, address(gateRoles))
-
+    transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
+    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT)
 
     noKycAmlRule = await deploy(NoKycAmlRule, address(addressControlStatus))
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
 
-    transferFeeController = await deploy(TransferFeeController, address(fiatTokenGuard), wad(0), wad(0))
-    limitController = await deploy(LimitController, address(fiatTokenGuard), MINT_LIMIT, BURN_LIMIT)
+    limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR
@@ -67,7 +70,10 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
     const roleContractRules = [
         [DEPLOYER, OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
         [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
-        [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)']
+        [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)'],
+        [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
     ]
 
     await Promise.all([
@@ -85,7 +91,8 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         gateRoles,
         token,
         transferFeeController,
-        limitController
+        limitController,
+        limitSetting
     }
 }
 
@@ -160,9 +167,10 @@ const base = async (web3,
         return [gate, token, methodSig]
     }
 
+    //todo factor me out as default
     const gateGuardRules = [
-        [gate, limitController, 'bumpMintLimit(uint256)'],
-        [gate, limitController, 'bumpBurnLimit(uint256)'],
+        [gate, limitController, 'bumpMintLimitCounter(uint256)'],
+        [gate, limitController, 'bumpBurnLimitCounter(uint256)'],
     ]
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
 
@@ -185,7 +193,8 @@ const base = async (web3,
         gateRoles,
         token,
         gate,
-        limitController
+        limitController,
+        limitSetting
     }
 }
 
@@ -213,7 +222,6 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
         ['setFeeCollector(address)'],
         ['setTransferFeeCollector(address)'],
         ['setTransferFeeController(address)'],
-        ['setDefaultTransferFee(uint256,uint256)'],
         ['requestInterestPayment(address,uint256)'],
         ['processInterestPayment(address,uint256)'],
     ]
@@ -230,9 +238,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, FEE
     }
 
     const gateWithFeeGuardRules = [
-        [gateWithFee, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
-        [gateWithFee, limitController, 'bumpMintLimit(uint256)'],
-        [gateWithFee, limitController, 'bumpBurnLimit(uint256)'],
+        [gateWithFee, limitController, 'bumpMintLimitCounter(uint256)'],
+        [gateWithFee, limitController, 'bumpBurnLimitCounter(uint256)'],
     ]
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)

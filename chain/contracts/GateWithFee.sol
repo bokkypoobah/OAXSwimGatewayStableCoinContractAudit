@@ -57,13 +57,6 @@ contract GateWithFee is Gate {
         token.transferFrom(guy, feeCollector, fee);
     }
 
-    function setDefaultTransferFee(uint transferFeeAbs_, uint transferFeeBps_)
-    public
-    auth
-    {
-        transferFeeController.setDefaultTransferFee(transferFeeAbs_, transferFeeBps_);
-    }
-
     event InterestPaymentRequest(address by, uint amount);
 
     event InterestPaymentSuccess(address by, uint amount);

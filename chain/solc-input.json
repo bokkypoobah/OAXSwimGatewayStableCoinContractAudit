@@ -101,6 +101,14 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
+      },
+      "LimitSetting.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
       }
     }
   },
@@ -163,6 +171,11 @@
     "LimitController.sol": {
       "urls": [
         "contracts/LimitController.sol"
+      ]
+    },
+    "LimitSetting.sol": {
+      "urls": [
+        "contracts/LimitSetting.sol"
       ]
     }
   }
