@@ -6,23 +6,34 @@ import "dappsys.sol";
 
 contract LimitSetting is DSAuth {
 
-    uint256 public mintDefaultDailyLimit;
+    uint256 public defaultMintDailyLimit;
 
-    uint256 public burnDefaultDailyLimit;
+    uint256 public defaultBurnDailyLimit;
 
     mapping (address => uint256) public mintCustomDailyLimit;
 
     mapping (address => uint256) public burnCustomDailyLimit;
 
-    function LimitSetting(DSAuthority _authority, uint256 _mintDefaultDailyLimit, uint256 _burnDefaultDailyLimit) public {
-        require(_mintDefaultDailyLimit > 0);
-        require(_burnDefaultDailyLimit > 0);
+    function LimitSetting(DSAuthority _authority, uint256 _defaultMintDailyLimit, uint256 _defaultBurnDailyLimit) public {
+        require(address(_authority) != address(0));
+        require(_defaultMintDailyLimit > 0);
+        require(_defaultBurnDailyLimit > 0);
 
-        mintDefaultDailyLimit = _mintDefaultDailyLimit;
-        burnDefaultDailyLimit = _burnDefaultDailyLimit;
+        setDefaultMintDailyLimit(_defaultMintDailyLimit);
+        setDefaultBurnDailyLimit(_defaultBurnDailyLimit);
 
         setAuthority(_authority);
         setOwner(0x0);
+    }
+
+    function setDefaultMintDailyLimit(uint256 limit) public auth {
+        require(limit > 0);
+        defaultMintDailyLimit = limit;
+    }
+
+    function setDefaultBurnDailyLimit(uint256 limit) public auth {
+        require(limit > 0);
+        defaultBurnDailyLimit = limit;
     }
 
     function setCustomMintDailyLimit(address guy, uint256 limit) public auth {
@@ -40,7 +51,7 @@ contract LimitSetting is DSAuth {
         if (mintCustomDailyLimit[guy] > 0) {
             return mintCustomDailyLimit[guy];
         }
-        return mintDefaultDailyLimit;
+        return defaultMintDailyLimit;
     }
 
 
@@ -48,6 +59,6 @@ contract LimitSetting is DSAuth {
         if (burnCustomDailyLimit[guy] > 0) {
             return burnCustomDailyLimit[guy];
         }
-        return burnDefaultDailyLimit;
+        return defaultBurnDailyLimit;
     }
 }

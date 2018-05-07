@@ -130,7 +130,7 @@ describe("Limits:", function () {
         it('Resets on 00:00 UTC (TODO timezone pending to be changed according to business decision)', async () => {
             const time = await call(limitController, lastLimitResetTime)
             expect(time | 0).to.be.above(0)
-            expect(time % (24 * 60 * 60)).to.equal(0)
+            expect(time % (24 * 60 * 60)).to.eq(0)
         })
 
         it('Limits are guaranteed to reset after 24h', async function () {
@@ -174,14 +174,14 @@ describe("Limits:", function () {
             let mintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER)
             let burnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER)
             //This is only because the default mint/burn limit is different
-            expect(mintLimit).to.not.equal(burnLimit)
+            expect(mintLimit).to.not.eq(burnLimit)
         })
-        it('Ethereum wallets could have customised limits different from default.', async () => {
+        it('Ethereum wallets could have customised limits different from default. Ethereum wallets without customised limits shall respect default limits.', async () => {
             //set wallet two's customised limits 2x default
             let mintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER)
             let burnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER)
             //This is only because the default mint/burn limit is different
-            expect(mintLimit).to.not.equal(burnLimit)
+            expect(mintLimit).to.not.eq(burnLimit)
 
             //DO limit change
             await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER_TWO, DEFAULT_DAILY_MINT_LIMIT * 3)
@@ -189,15 +189,58 @@ describe("Limits:", function () {
 
             let vipMintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER_TWO)
             let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER_TWO)
-            expect(mintLimit).to.not.equal(vipMintLimit)
-            expect(burnLimit).to.not.equal(vipBurnLimit)
+            expect(mintLimit).to.not.eq(vipMintLimit)
+            expect(burnLimit).to.not.eq(vipBurnLimit)
+
+            expect(mintLimit).to.eq(DEFAULT_DAILY_MINT_LIMIT)
+            expect(burnLimit).to.eq(DEFAULT_DAILY_BURN_LIMIT)
         })
 
         it('Only authorised ethereum addresses can change limits configuration.', async () => {
+            let randomLimit = wad(1000)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", randomLimit)
+            })
+            expect(await call(limitSetting, "defaultMintDailyLimit")).to.eq(randomLimit)
 
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", randomLimit * 3)
+            })
+            expect(await call(limitSetting, "defaultBurnDailyLimit")).to.eq(randomLimit * 3)
         })
         it('Unauthorised ethereum addresses can NEVER change limits configuration.', async () => {
+            let randomLimit = wad(1000)
+            await expectThrow(async () => {
+                await send(limitSetting, DEPLOYER, "setCustomMintDailyLimit", CUSTOMER_TWO, randomLimit)
+            })
+            await expectThrow(async () => {
+                await send(limitSetting, DEPLOYER, "setCustomBurnDailyLimit", CUSTOMER_TWO, randomLimit)
+            })
+        })
 
+        it('Only authorised ethereum addresses can configure customised limits for each ethereum address.', async () => {
+            let randomLimit = wad(1000)
+
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER_TWO, randomLimit)
+            })
+            let vipMintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER_TWO)
+            expect(vipMintLimit).to.eq(randomLimit)
+
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER_TWO, randomLimit * 2)
+            })
+            let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER_TWO)
+            expect(vipBurnLimit).to.eq(randomLimit * 2)
+        })
+        it('Unauthorised ethereum addresses can NEVER configure customised limits for any ethereum address.', async () => {
+            let randomLimit = wad(1000)
+            await expectThrow(async () => {
+                await send(limitSetting, DEPLOYER, "setCustomMintDailyLimit", CUSTOMER_TWO, randomLimit)
+            })
+            await expectThrow(async () => {
+                await send(limitSetting, DEPLOYER, "setCustomBurnDailyLimit", CUSTOMER_TWO, randomLimit)
+            })
         })
 
         it('Limits configuration change takes effect after 24 hours.', async () => {
@@ -207,16 +250,6 @@ describe("Limits:", function () {
 
         })
 
-        it('Only authorised ethereum addresses can configure customised limits for each ethereum address. Rest of the ethereum wallets would use default limits.', async () => {
-
-        })
-        it('Unauthorised ethereum addresses can NEVER configure customised limits for any ethereum address.', async () => {
-
-        })
-
-        it('Ethereum wallets without customised limits shall respect default limits.', async () => {
-
-        })
 
         it('Limits logic is upgrade-able.', async () => {
 
