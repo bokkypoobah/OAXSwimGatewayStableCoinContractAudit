@@ -243,10 +243,29 @@ describe("Limits:", function () {
             })
         })
 
-        it('Limits configuration change takes effect after 24 hours.', async () => {
+        it('Limits configuration change takes effect after {24} hours.', async () => {
+            //request default limit increase (new_larger_limit)
+            //expect throw if minting beyond existing limit
+            //expect no throw if minting beyond existing limit after {24} hours
+
+
+            //request default limit decrease (new_smaller_limit)
+            //expect no throw if minting beyond new_smaller_limit
+            //expect throw if minting beyond new_smaller_limit after {24} hours
+
+
+            //request one wallet's custom limit increase (new_larger_limit)
+            //expect throw if minting beyond existing limit
+            //expect no throw if minting beyond existing limit after {24} hours
+
+
+            //request one wallet's custom limit decrease (new_smaller_limit)
+            //expect no throw if minting beyond new_smaller_limit
+            //expect throw if minting beyond new_smaller_limit after {24} hours
+
 
         })
-        it('Limits configuration change does NOT work within 24 hours of change.', async () => {
+        it('Limits configuration change delay time (e.g. 24 hours) is configurable in the unit of hours.', async () => {
 
         })
 
