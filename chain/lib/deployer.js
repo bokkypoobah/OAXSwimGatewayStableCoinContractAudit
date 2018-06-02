@@ -75,7 +75,9 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setDefaultBurnDailyLimit(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setDefaultDelayHours(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
+        
     ]
 
     await Promise.all([

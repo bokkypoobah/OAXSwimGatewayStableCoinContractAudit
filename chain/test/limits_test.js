@@ -189,6 +189,7 @@ describe("Limits:", function () {
 
             let vipMintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER_TWO)
             let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER_TWO)
+            
             expect(mintLimit).to.not.eq(vipMintLimit)
             expect(burnLimit).to.not.eq(vipBurnLimit)
 
@@ -201,12 +202,12 @@ describe("Limits:", function () {
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", randomLimit)
             })
-            expect(await call(limitSetting, "defaultMintDailyLimit")).to.eq(randomLimit)
+            expect(await call(limitSetting, "getMintDailyLimit", "0x0")).to.eq(randomLimit)
 
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", randomLimit * 3)
             })
-            expect(await call(limitSetting, "defaultBurnDailyLimit")).to.eq(randomLimit * 3)
+            expect(await call(limitSetting, "getBurnDailyLimit", "0x0")).to.eq(randomLimit * 3)
         })
         it('Unauthorised ethereum addresses can NEVER change limits configuration.', async () => {
             let randomLimit = wad(1000)
@@ -243,16 +244,57 @@ describe("Limits:", function () {
             })
         })
 
-        it('Limits configuration change takes effect after {24} hours.', async () => {
+        it('Default Mint Limits increase takes effect after {0} hours.', async () => {
+
             //request default limit increase (new_larger_limit)
+            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 0)
+            await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
+            
             //expect throw if minting beyond existing limit
+            await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2) 
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, 1) 
+            })
+            
             //expect no throw if minting beyond existing limit after {24} hours
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+            await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2) 
+        })
 
+        it('Default Mint Limits decrease takes effect after {0} hours.', async () => {
 
-            //request default limit decrease (new_smaller_limit)
-            //expect no throw if minting beyond new_smaller_limit
-            //expect throw if minting beyond new_smaller_limit after {24} hours
+            //request default limit increase (new_larger_limit)
+            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 0)
+            await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
+            
+            //expect throw if minting beyond existing limit
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT/3+1) 
+            })
+            
+        })
+        
+        it('Default Mint Limits increase takes effect after {24} hours.', async () => {
 
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
+            })
+
+            //expect throw if minting beyond existing limit
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2) 
+            })
+
+            //expect no throw if minting beyond existing limit after {24} hours
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2) 
+            })
 
             //request one wallet's custom limit increase (new_larger_limit)
             //expect throw if minting beyond existing limit
@@ -263,14 +305,199 @@ describe("Limits:", function () {
             //expect no throw if minting beyond new_smaller_limit
             //expect throw if minting beyond new_smaller_limit after {24} hours
 
+        })
+
+        it('Default Mint Limits decrease takes effect after {24} hours.', async () => {
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
+            })
+
+            //expect no throw if minting beyond new_smaller_limit
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT) 
+            })
+
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            //expect throw if minting beyond new_smaller_limit after {24} hours
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT) 
+            })
+        })
+
+        it('Custom Mint Limits increase takes effect after {24} hours.', async () => {
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456)
+            })
+
+            //expect throw if minting beyond existing limit
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456) 
+            })
+
+            //expect no throw if minting beyond existing limit after {24} hours
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456) 
+            })
 
         })
+
+        it('Custom Mint Limits decrease takes effect after {24} hours.', async () => {
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT/3)
+            })
+
+            //expect no throw if minting beyond new_smaller_limit
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT) 
+            })
+
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            //expect throw if minting beyond new_smaller_limit after {24} hours
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT) 
+            })
+
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT/3) 
+            })
+        })
+
+        it('Default Burn Limits increase takes effect after {24} hours.', async () => {
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
+                await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2) 
+            })
+
+            //expect throw if minting beyond existing limit
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2) 
+                await send(token, CUSTOMER, approve, address(gate), DEFAULT_DAILY_MINT_LIMIT*2)
+                await send(gate, OPERATOR, burn, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2) 
+            })
+
+            //expect no throw if minting beyond existing limit after {24} hours
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2)
+                await send(token, CUSTOMER, approve, address(gate), DEFAULT_DAILY_MINT_LIMIT*2)
+                await send(gate, OPERATOR, burn, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT*2)
+            })
+
+
+        })
+
+        it('Default Burn Limits decrease takes effect after {24} hours.', async () => {
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3) 
+                await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3) 
+            })
+
+            //expect no throw if minting beyond new_smaller_limit
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT)
+                await send(token, CUSTOMER, approve, address(gate), DEFAULT_DAILY_MINT_LIMIT)
+                await send(gate, OPERATOR, burn, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT) 
+            })
+
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            //expect throw if minting beyond new_smaller_limit after {24} hours
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT)
+                await send(token, CUSTOMER, approve, address(gate), DEFAULT_DAILY_MINT_LIMIT)
+                await send(gate, OPERATOR, burn, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT)
+            })
+        })
+
+        it('Custom Burn Limits increase takes effect after {24} hours.', async () => {
+
+            let randomLimit = DEFAULT_DAILY_MINT_LIMIT*3
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, randomLimit)
+                await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)
+            })
+
+            //expect throw if minting beyond existing limit
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, randomLimit) 
+                await send(token, CUSTOMER, approve, address(gate), randomLimit)
+                await send(gate, OPERATOR, burn, CUSTOMER, randomLimit) 
+            })
+
+            //expect no throw if minting beyond existing limit after {24} hours
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, randomLimit) 
+                await send(token, CUSTOMER, approve, address(gate), randomLimit)
+                await send(gate, OPERATOR, burn, CUSTOMER, randomLimit) 
+            })
+
+        })
+
+        it('Custom Burn Limits decrease takes effect after {24} hours.', async () => {
+
+            let randomLimit = DEFAULT_DAILY_MINT_LIMIT
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, randomLimit/3)
+                await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit/3)
+            })
+
+            //expect throw if minting beyond existing limit
+            await expectNoAsyncThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, randomLimit) 
+                await send(token, CUSTOMER, approve, address(gate), randomLimit)
+                await send(gate, OPERATOR, burn, CUSTOMER, randomLimit) 
+            })
+
+            //expect no throw if minting beyond existing limit after {24} hours
+            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+
+            await expectThrow(async () => {
+                await send(gate, OPERATOR, mint, CUSTOMER, randomLimit) 
+                await send(token, CUSTOMER, approve, address(gate), randomLimit)
+                await send(gate, OPERATOR, burn, CUSTOMER, randomLimit) 
+            })
+
+        })
+
         it('Limits configuration change delay time (e.g. 24 hours) is configurable in the unit of hours.', async () => {
-
+            await expectNoAsyncThrow(async () => {
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 10)
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 25)
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 0)
+                await send(limitSetting, OPERATOR, "setDefaultDelayHours", -1)
+            })
         })
 
-
-        it('Limits logic is upgrade-able.', async () => {
+        it.skip('Limits logic is upgrade-able.', async () => {
 
         })
     })
