@@ -28,6 +28,8 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
                     FEE_COLLECTOR = null,
                     MINT_LIMIT = wad(10000),
                     BURN_LIMIT = wad(10000),
+                    DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
+                    DEFAULT_SETTING_DELAY_HOURS = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
@@ -51,7 +53,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
     kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
     addressControlStatus = await deploy(AddressControlStatus, address(gateRoles))
     transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
-    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT)
+    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
 
     noKycAmlRule = await deploy(NoKycAmlRule, address(addressControlStatus))
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
@@ -71,11 +73,12 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         [DEPLOYER, OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
         [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
         [DEPLOYER, OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)'],
+        [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setSettingDefaultDelayHours(uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setLimitCounterResetTimeOffset(int256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setDefaultMintDailyLimit(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setDefaultBurnDailyLimit(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
-        [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setDefaultDelayHours(uint256)'],
         [DEPLOYER, OPERATOR_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
         
     ]

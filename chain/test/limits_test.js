@@ -57,6 +57,9 @@ describe("Limits:", function () {
         AMT = wad(100)
         DEFAULT_DAILY_MINT_LIMIT = wad(10000)
         DEFAULT_DAILY_BURN_LIMIT = wad(20000)
+        DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0
+        DEFAULT_SETTING_DELAY_HOURS = 0
+
 
         ;({
             gate, token,
@@ -69,7 +72,9 @@ describe("Limits:", function () {
             OPERATOR,
             OPERATOR,
             DEFAULT_DAILY_MINT_LIMIT,
-            DEFAULT_DAILY_BURN_LIMIT
+            DEFAULT_DAILY_BURN_LIMIT,
+            DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
+            DEFAULT_SETTING_DELAY_HOURS
         ))
     })
 
@@ -133,7 +138,82 @@ describe("Limits:", function () {
             expect(time % (24 * 60 * 60)).to.eq(0)
         })
 
-        it('Limits are guaranteed to reset after 24h', async function () {
+        it('Delay reset to 03:00 UTC', async () => {
+            let randomDelayHours = 3 * 3600;
+            await send(limitSetting, OPERATOR, "setLimitCounterResetTimeOffset", randomDelayHours)
+            const time = await call(limitSetting, "getLimitCounterResetTimeOffset")
+            expect(time | 0).to.be.at.least(3*60*60)
+            expect(time % (24 * 60 * 60)).to.eq(3*60*60)
+        })
+
+        it('Limits have reset for {0} offset', async ()=>{
+            let delayHours = 0 * 3600
+
+            //increase time to the next 00:00 UTC
+            let now = Date.now() /1000 | 0 
+            let today = now - (now % (24*60*60))
+            let nextDay = today + 24*60*60
+
+            web3.evm.increaseTime(nextDay - now)
+            await send(limitSetting, OPERATOR, "setLimitCounterResetTimeOffset", delayHours)
+            await send(gate, OPERATOR, mint, CUSTOMER, 1)  
+            expect(await call(limitController,"mintLimitCounter")).to.eq(1)
+            web3.evm.increaseTime(24*60*60)    
+            await send(gate, OPERATOR, mint, CUSTOMER, 1)        
+            expect(await call(limitController, "mintLimitCounter")).to.eq(1)
+        })
+
+        it('Limits have reset for {-11} hours offset', async ()=>{
+            let delayHours = -11 * 3600
+
+            //increase time to the next 00:00 UTC
+            let now = Date.now() /1000 | 0 
+            let today = now - (now % (24*60*60))
+            let nextDay = today + 24*60*60
+
+            web3.evm.increaseTime(nextDay - now)
+            await send(limitSetting, OPERATOR, "setLimitCounterResetTimeOffset", delayHours)
+            await send(gate, OPERATOR, mint, CUSTOMER, 1)  
+            expect(await call(limitController,"mintLimitCounter")).to.eq(1)
+            web3.evm.increaseTime((24-11)*60*60)    
+            await send(gate, OPERATOR, mint, CUSTOMER, 1)        
+            expect(await call(limitController, "mintLimitCounter")).to.eq(1)
+        })
+
+        it('Limits have reset for {+14} hours offset', async ()=>{
+            let delayHours = 14 * 3600
+
+            //increase time to the next 00:00 UTC
+            let now = Date.now() /1000 | 0 
+            let today = now - (now % (24*60*60))
+            let nextDay = today + 24*60*60
+
+            web3.evm.increaseTime(nextDay - now)
+            await send(limitSetting, OPERATOR, "setLimitCounterResetTimeOffset", delayHours)
+            await send(gate, OPERATOR, mint, CUSTOMER, 1)  
+            expect(await call(limitController,"mintLimitCounter")).to.eq(1)
+            web3.evm.increaseTime(24*60*60)    
+            //should throw error when within the period
+            expect(await call(limitController,"mintLimitCounter")).to.eq(1)
+            //add offset
+            web3.evm.increaseTime(14*60*60)  
+            await send(gate, OPERATOR, mint, CUSTOMER, 1)        
+            expect(await call(limitController, "mintLimitCounter")).to.eq(1)
+        })
+
+        it('Can never set offset time to <-11 hours and >14 hours', async ()=> {
+            let delayHours = -12 * 3600
+            await expectThrow(async ()=>{
+                await send(limitSetting, OPERATOR, "setLimitCounterResetTimeOffset", delayHours)
+            })
+            delayHours = 15 * 3600
+            await expectThrow(async ()=>{
+                await send(limitSetting, OPERATOR, "setLimitCounterResetTimeOffset", delayHours)
+            })
+            
+        })
+
+        it('Limits are guaranteed to reset after 24h', async ()=> {
             const moreThanADay = hours((1 + 2) * 24)
 
             web3.evm.increaseTime(moreThanADay)
@@ -247,8 +327,8 @@ describe("Limits:", function () {
         it('Default Mint Limits increase takes effect after {0} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
-            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
-            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 0)
+            await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+            await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 0)
             await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
             
             //expect throw if minting beyond existing limit
@@ -265,8 +345,8 @@ describe("Limits:", function () {
         it('Default Mint Limits decrease takes effect after {0} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
-            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
-            await send(limitSetting, OPERATOR, "setDefaultDelayHours", 0)
+            await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+            await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 0)
             await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
             
             //expect throw if minting beyond existing limit
@@ -280,7 +360,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
             })
 
@@ -311,7 +391,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
             })
 
@@ -332,7 +412,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456)
             })
 
@@ -354,7 +434,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT/3)
             })
 
@@ -379,7 +459,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
                 await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2) 
             })
@@ -407,7 +487,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3) 
                 await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3) 
             })
@@ -435,7 +515,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, randomLimit)
                 await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)
             })
@@ -464,7 +544,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, randomLimit/3)
                 await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit/3)
             })
@@ -489,11 +569,11 @@ describe("Limits:", function () {
 
         it('Limits configuration change delay time (e.g. 24 hours) is configurable in the unit of hours.', async () => {
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 24)
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 10)
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 25)
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", 0)
-                await send(limitSetting, OPERATOR, "setDefaultDelayHours", -1)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 10)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 25)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 0)
+                await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", -1)
             })
         })
 
