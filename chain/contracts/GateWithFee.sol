@@ -14,47 +14,60 @@ import "LimitController.sol";
 
 
 contract GateWithFee is Gate {
-    address public feeCollector;
+
+    address public mintFeeCollector;
+    address public burnFeeCollector;
+    address public negativeInterestRateFeeCollector;
 
     TransferFeeController transferFeeController;
 
-    function GateWithFee(DSAuthority _authority, DSToken fiatToken, LimitController _limitController, address feeCollector_, TransferFeeController transferFeeController_)
+    function GateWithFee(
+        DSAuthority _authority, 
+        DSToken fiatToken, 
+        LimitController _limitController, 
+        address mintFeeCollector_, 
+        address burnFeeCollector_,
+        address negativeInterestRateFeeCollector_,
+        TransferFeeController transferFeeController_
+        )
     public
     Gate(_authority, fiatToken, _limitController)
     {
-        feeCollector = feeCollector_;
+        mintFeeCollector = mintFeeCollector_;
+        burnFeeCollector = burnFeeCollector_;
+        negativeInterestRateFeeCollector = negativeInterestRateFeeCollector_;
+
         transferFeeController = transferFeeController_;
     }
 
-    function setFeeCollector(address feeCollector_)
-    public
-    auth
-    {
-        feeCollector = feeCollector_;
+    function setMintFeeCollector(address mintFeeCollector_) public auth {
+        mintFeeCollector = mintFeeCollector_;
     }
 
-    function setTransferFeeCollector(address feeCollector_)
-    public
-    auth
-    {
-        (FiatToken(token)).setTransferFeeCollector(feeCollector_);
+    function setBurnFeeCollector(address burnFeeCollector_) public auth {
+        burnFeeCollector = burnFeeCollector_;
     }
 
-    function setTransferFeeController(TransferFeeControllerInterface transferFeeController_)
-    public
-    auth
-    {
+    function setNegativeInterestRateFeeCollector(address negativeInterestRateFeeCollector_) public auth {
+        negativeInterestRateFeeCollector = negativeInterestRateFeeCollector_;
+    }
+
+    function setTransferFeeCollector(address transferFeeCollector_) public auth {
+        (FiatToken(token)).setTransferFeeCollector(transferFeeCollector_);
+    }
+
+    function setTransferFeeController(TransferFeeControllerInterface transferFeeController_) public auth {
         (FiatToken(token)).setTransferFeeController(transferFeeController_);
     }
 
-    function mintWithFee(address guy, uint wad, uint fee) public {
+    function mintWithFee(address guy, uint wad, uint fee) public auth {
         super.mint(guy, wad);
-        super.mint(feeCollector, fee);
+        super.mint(mintFeeCollector, fee);
     }
 
-    function burnWithFee(address guy, uint wad, uint fee) public {
+    function burnWithFee(address guy, uint wad, uint fee) public auth {
         super.burn(guy, sub(wad, fee));
-        token.transferFrom(guy, feeCollector, fee);
+        token.transferFrom(guy, burnFeeCollector, fee);
     }
 
     event InterestPaymentRequest(address by, uint amount);
@@ -66,7 +79,7 @@ contract GateWithFee is Gate {
     }
 
     function processInterestPayment(address by, uint amount) public auth {
-        (FiatToken(token)).transferFrom(by, feeCollector, amount);
+        (FiatToken(token)).transferFrom(by, negativeInterestRateFeeCollector, amount);
         InterestPaymentSuccess(by, amount);
     }
 }
