@@ -13,6 +13,7 @@ const {
     wad,
     send,
     call,
+    txEvents
 } = require('chain-dsl')
 
 const deployer = require('../lib/deployer')
@@ -329,6 +330,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
             await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 0)
+            await web3.evm.increaseTime(24*60*60*30) // Increase 30days
             await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
             
             //expect throw if minting beyond existing limit
@@ -347,6 +349,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
             await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 0)
+            await web3.evm.increaseTime(24*60*60*30) // Increase 30days
             await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
             
             //expect throw if minting beyond existing limit
@@ -361,6 +364,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
             })
 
@@ -392,6 +396,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
             })
 
@@ -413,6 +418,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456)
             })
 
@@ -435,6 +441,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT/3)
             })
 
@@ -460,6 +467,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
                 await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2) 
             })
@@ -488,6 +496,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3) 
                 await send(limitSetting, OPERATOR, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3) 
             })
@@ -516,6 +525,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, randomLimit)
                 await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)
             })
@@ -545,6 +555,7 @@ describe("Limits:", function () {
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, OPERATOR, "setSettingDefaultDelayHours", 24)
+                await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER, randomLimit/3)
                 await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit/3)
             })
@@ -579,6 +590,21 @@ describe("Limits:", function () {
 
         it.skip('Limits logic is upgrade-able.', async () => {
 
+        })
+
+        it('Changes to the mint/burn quantity limit generates an event', async ()=>{
+            let randomLimit = 148
+            let events = await txEvents(await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", randomLimit))
+            events = events.concat(await txEvents(await send(limitSetting, OPERATOR, "setDefaultMintDailyLimit", randomLimit)))
+            events = events.concat(await txEvents(await send(limitSetting, OPERATOR, "setCustomMintDailyLimit", CUSTOMER ,randomLimit)))
+            events = events.concat(await txEvents(await send(limitSetting, OPERATOR, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)))
+
+            expect(events).containSubset([
+                {NAME: 'MintLimit', wad: randomLimit.toString()},
+                {NAME: 'MintLimit', guy: CUSTOMER, wad: randomLimit.toString()},
+                {NAME: 'BurnLimit', wad: randomLimit.toString()},
+                {NAME: 'BurnLimit', guy: CUSTOMER, wad: randomLimit.toString()},
+            ])
         })
     })
 })
