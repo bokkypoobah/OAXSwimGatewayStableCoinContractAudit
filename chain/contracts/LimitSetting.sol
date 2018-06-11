@@ -20,10 +20,10 @@ contract LimitSetting is DSAuth, DSStop {
     mapping (address => uint256) private mintCustomDailyLimit;
     mapping (address => uint256) private burnCustomDailyLimit;
     //upcoming limit setting
-    uint256 private defaultMintDailyLimitDelayed;   
-    uint256 private defaultBurnDailyLimitDelayed;
-    mapping (address => uint256) private mintCustomDailyLimitDelayed;
-    mapping (address => uint256) private burnCustomDailyLimitDelayed;
+    uint256 private defaultMintDailyLimitBuffer;   
+    uint256 private defaultBurnDailyLimitBuffer;
+    mapping (address => uint256) private mintCustomDailyLimitBuffer;
+    mapping (address => uint256) private burnCustomDailyLimitBuffer;
 
     function LimitSetting(DSAuthority _authority, 
                         uint256 _defaultMintDailyLimit, 
@@ -40,8 +40,8 @@ contract LimitSetting is DSAuth, DSStop {
         resetSettingDelayBuffer();
         defaultMintDailyLimit = _defaultMintDailyLimit;
         defaultBurnDailyLimit = _defaultBurnDailyLimit;
-        defaultMintDailyLimitDelayed = _defaultMintDailyLimit;
-        defaultBurnDailyLimitDelayed = _defaultBurnDailyLimit;
+        defaultMintDailyLimitBuffer = _defaultMintDailyLimit;
+        defaultBurnDailyLimitBuffer = _defaultBurnDailyLimit;
         
         setAuthority(_authority);
         setOwner(0x0);
@@ -81,41 +81,41 @@ contract LimitSetting is DSAuth, DSStop {
 
     function setDefaultMintDailyLimit(uint256 limit) public auth {
         require(limit > 0);
-        defaultMintDailyLimitDelayed = limit;
-        MintLimit(defaultMintDailyLimitDelayed);
+        defaultMintDailyLimitBuffer = limit;
+        MintLimit(defaultMintDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setDefaultBurnDailyLimit(uint256 limit) public auth {
         require(limit > 0);
-        defaultBurnDailyLimitDelayed = limit;
-        BurnLimit(defaultBurnDailyLimitDelayed);
+        defaultBurnDailyLimitBuffer = limit;
+        BurnLimit(defaultBurnDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setCustomMintDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
-        mintCustomDailyLimitDelayed[guy] = limit;
-        MintLimit(guy, mintCustomDailyLimitDelayed[guy]);
+        mintCustomDailyLimitBuffer[guy] = limit;
+        MintLimit(guy, mintCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function setCustomBurnDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
-        burnCustomDailyLimitDelayed[guy] = limit;
-        BurnLimit(guy, burnCustomDailyLimitDelayed[guy]);
+        burnCustomDailyLimitBuffer[guy] = limit;
+        BurnLimit(guy, burnCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function getMintDailyLimit(address guy) public returns (uint) {
         assert(now >= lastSettingResetTime);
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
-            if (mintCustomDailyLimitDelayed[guy] > 0) {
-                mintCustomDailyLimit[guy] = mintCustomDailyLimitDelayed[guy];
+            if (mintCustomDailyLimitBuffer[guy] > 0) {
+                mintCustomDailyLimit[guy] = mintCustomDailyLimitBuffer[guy];
                 MintLimit(mintCustomDailyLimit[guy]);
                 return mintCustomDailyLimit[guy];
             }
-            defaultMintDailyLimit = defaultMintDailyLimitDelayed;
+            defaultMintDailyLimit = defaultMintDailyLimitBuffer;
             MintLimit(defaultMintDailyLimit);
             return defaultMintDailyLimit;
         } else {
@@ -129,11 +129,11 @@ contract LimitSetting is DSAuth, DSStop {
     function getBurnDailyLimit(address guy) public returns (uint) {
         assert(now >= lastSettingResetTime);
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
-            if (burnCustomDailyLimitDelayed[guy] > 0) {
-                burnCustomDailyLimit[guy] = burnCustomDailyLimitDelayed[guy];
+            if (burnCustomDailyLimitBuffer[guy] > 0) {
+                burnCustomDailyLimit[guy] = burnCustomDailyLimitBuffer[guy];
                 return burnCustomDailyLimit[guy];
             }
-            defaultBurnDailyLimit = defaultBurnDailyLimitDelayed;
+            defaultBurnDailyLimit = defaultBurnDailyLimitBuffer;
             return defaultBurnDailyLimit;
         } else {
             if (burnCustomDailyLimit[guy] > 0) {
