@@ -73,22 +73,30 @@ server.listen(port, hostname, async (err, result) => {
     } else {
         log('\nCompiling and deploying contracts...')
 
-        const web3 = new Web3(server.provider)
-
+        // const web3 = new Web3(server.provider)
+        var HDWalletProvider = require("truffle-hdwallet-provider")
+        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://api.myetherapi.com/rop"))
+        
         const [
             DEPLOYER,
             OPERATOR
         ] = await web3.eth.getAccounts()
-
+        const balance = await web3.eth.getBalance(DEPLOYER);
         const {
             gate,
-            token,
-            accessControl
+            token
         } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR)
-
+        // if Error: Transaction was not mined within 50 blocks
+        // update stable-coin/chain-dsl/index.js
+        // const contractDefaultOptions = {
+        //     from: DEPLOYER,
+        //     gas: 8900000,
+        //     gasPrice: 1000000000000,
+        //     name: Contract.NAME
+        // }
         saveContractInterface(gate)
         saveContractInterface(token)
-        saveContractInterface(accessControl)
+        // saveContractInterface(accessControl)
     }
 
     log(`\nListening on http://${hostname}:${port}`)
