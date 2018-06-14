@@ -18,7 +18,11 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
     address public transferFeeCollector;
 
-    function FiatToken(DSAuthority _authority, bytes32 symbol, address transferFeeCollector_, TransferFeeControllerInterface transferFeeController_)
+    function FiatToken(
+        DSAuthority _authority, 
+        bytes32 symbol, 
+        address transferFeeCollector_, 
+        TransferFeeControllerInterface transferFeeController_)
     DSToken(symbol)
     public
     {

@@ -117,7 +117,11 @@ contract NoKycAmlRule is ControllableKycAmlRule {
 contract BoundaryKycAmlRule is NoKycAmlRule {
     KycAmlStatus kycAmlStatus;
 
-    function BoundaryKycAmlRule(AddressControlStatus addressControlStatus_, KycAmlStatus kycAmlStatus_) NoKycAmlRule(addressControlStatus_) public {
+    function BoundaryKycAmlRule(
+        AddressControlStatus addressControlStatus_, 
+        KycAmlStatus kycAmlStatus_) 
+    NoKycAmlRule(addressControlStatus_) 
+    public {
         require(address(kycAmlStatus_) != address(0));
 
         kycAmlStatus = kycAmlStatus_;
@@ -155,7 +159,12 @@ contract MembershipRule is DSAuth, FullKycAmlRule {
 
     MembershipAuthorityInterface membershipAuthority;
 
-    function MembershipRule(DSAuthority _authority, AddressControlStatus addressControlStatus_, KycAmlStatus kycAmlStatus_, address membershipAuthority_) FullKycAmlRule(addressControlStatus_, kycAmlStatus_) public {
+    function MembershipRule(
+        DSAuthority _authority, 
+        AddressControlStatus addressControlStatus_, 
+        KycAmlStatus kycAmlStatus_, address membershipAuthority_) 
+    FullKycAmlRule(addressControlStatus_, kycAmlStatus_) 
+    public {
         require(address(_authority) != address(0));
 
         setMembershipAuthority(membershipAuthority_);
