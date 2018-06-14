@@ -15,6 +15,8 @@ let addressControlStatus
 let noKycAmlRule
 let boundaryKycAmlRule
 let fullKycAmlRule
+let mockMembershipAuthortiy
+let membershipRule
 let token
 let transferFeeController
 let limitController
@@ -38,6 +40,8 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         NoKycAmlRule,
         BoundaryKycAmlRule,
         FullKycAmlRule,
+        MockMembershipAuthority,
+        MembershipRule,
         GateRoles,
         DSGuard,
         FiatToken,
@@ -58,7 +62,9 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
     noKycAmlRule = await deploy(NoKycAmlRule, address(addressControlStatus))
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
-
+    mockMembershipAuthority = await deploy(MockMembershipAuthority)
+    //membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
+    membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
     if (!FEE_COLLECTOR) {
@@ -80,6 +86,7 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
+        [DEPLOYER, OPERATOR_ROLE, membershipRule, 'setMembershipAuthority(address)'],
         
     ]
 
@@ -94,6 +101,8 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         noKycAmlRule,
         boundaryKycAmlRule,
         fullKycAmlRule,
+        mockMembershipAuthority,
+        membershipRule,
         fiatTokenGuard,
         gateRoles,
         token,
@@ -196,6 +205,8 @@ const base = async (web3,
         noKycAmlRule,
         boundaryKycAmlRule,
         fullKycAmlRule,
+        mockMembershipAuthortiy,
+        membershipRule,
         fiatTokenGuard,
         gateRoles,
         token,
