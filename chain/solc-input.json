@@ -70,6 +70,22 @@
           "evm.sourceMap"
         ]
       },
+      "MockMembershipAuthority.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "MockMembershipAuthorityFalse.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
       "MockTransferFeeController.sol": {
         "*": [
           "metadata",
@@ -151,6 +167,16 @@
     "GateWithFee.sol": {
       "urls": [
         "contracts/GateWithFee.sol"
+      ]
+    },
+    "MockMembershipAuthority.sol": {
+      "urls": [
+        "contracts/test/MockMembershipAuthority.sol"
+      ]
+    },
+    "MockMembershipAuthorityFalse.sol": {
+      "urls": [
+        "contracts/test/MockMembershipAuthorityFalse.sol"
       ]
     },
     "MockTransferFeeController.sol": {

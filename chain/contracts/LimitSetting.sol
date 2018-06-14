@@ -6,29 +6,24 @@ import "dappsys.sol";
 
 contract LimitSetting is DSAuth, DSStop {
 
+    //offset timestamp for limit counter reset time point
     int256 public limitCounterResetTimeOffset;
-
-    uint256 private defaultDelayHours;
-
+    //last reset time for apply daily limit
     uint256 public lastSettingResetTime;
-
-    uint256 public lastDailyBurnLimitResetTime;
-
+    //delay hours settings for apply daily limit
+    uint256 private defaultDelayHours;
+    uint256 private defaultDelayHoursBuffer;
+    uint256 private lastDefaultDelayHoursSettingResetTime;
+    //current limit setting
     uint256 private defaultMintDailyLimit;
-
     uint256 private defaultBurnDailyLimit;
-
-    uint256 private defaultMintDailyLimitDelayed;   
-
-    uint256 private defaultBurnDailyLimitDelayed;
-
     mapping (address => uint256) private mintCustomDailyLimit;
-
     mapping (address => uint256) private burnCustomDailyLimit;
-
-    mapping (address => uint256) private mintCustomDailyLimitDelayed;
-
-    mapping (address => uint256) private burnCustomDailyLimitDelayed;
+    //upcoming limit setting
+    uint256 private defaultMintDailyLimitBuffer;   
+    uint256 private defaultBurnDailyLimitBuffer;
+    mapping (address => uint256) private mintCustomDailyLimitBuffer;
+    mapping (address => uint256) private burnCustomDailyLimitBuffer;
 
     function LimitSetting(DSAuthority _authority, 
                         uint256 _defaultMintDailyLimit, 
@@ -45,12 +40,12 @@ contract LimitSetting is DSAuth, DSStop {
         resetSettingDelayBuffer();
         defaultMintDailyLimit = _defaultMintDailyLimit;
         defaultBurnDailyLimit = _defaultBurnDailyLimit;
-        defaultMintDailyLimitDelayed = _defaultMintDailyLimit;
-        defaultBurnDailyLimitDelayed = _defaultBurnDailyLimit;
+        defaultMintDailyLimitBuffer = _defaultMintDailyLimit;
+        defaultBurnDailyLimitBuffer = _defaultBurnDailyLimit;
         
         setAuthority(_authority);
         setOwner(0x0);
-    }
+    } 
 
     // Configurable Minting Quantity Limits reset time point
     function setLimitCounterResetTimeOffset(int256 _timestampOffset) public auth {
@@ -67,42 +62,61 @@ contract LimitSetting is DSAuth, DSStop {
     }
 
     function setSettingDefaultDelayHours(uint256 _hours) public auth {
-        defaultDelayHours = _hours * 1 hours;
+        defaultDelayHoursBuffer = _hours * 1 hours;
+        lastDefaultDelayHoursSettingResetTime = now;
         resetSettingDelayBuffer();
     }
+    
+    function getDefaultDelayHours() internal returns (uint256) {
+        if (now - lastDefaultDelayHoursSettingResetTime >= 2592000) {
+            defaultDelayHours = defaultDelayHoursBuffer;
+        }
+        return defaultDelayHours; 
+    }
+
+    event MintLimit(address guy, uint wad);
+    event BurnLimit(address guy, uint wad);
+    event MintLimit(uint wad);
+    event BurnLimit(uint wad);
 
     function setDefaultMintDailyLimit(uint256 limit) public auth {
         require(limit > 0);
-        defaultMintDailyLimitDelayed = limit;
+        defaultMintDailyLimitBuffer = limit;
+        MintLimit(defaultMintDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setDefaultBurnDailyLimit(uint256 limit) public auth {
         require(limit > 0);
-        defaultBurnDailyLimitDelayed = limit;
+        defaultBurnDailyLimitBuffer = limit;
+        BurnLimit(defaultBurnDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setCustomMintDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
-        mintCustomDailyLimitDelayed[guy] = limit;
+        mintCustomDailyLimitBuffer[guy] = limit;
+        MintLimit(guy, mintCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function setCustomBurnDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
-        burnCustomDailyLimitDelayed[guy] = limit;
+        burnCustomDailyLimitBuffer[guy] = limit;
+        BurnLimit(guy, burnCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function getMintDailyLimit(address guy) public returns (uint) {
         assert(now >= lastSettingResetTime);
-        if (now - lastSettingResetTime >= defaultDelayHours || defaultDelayHours == 0) {
-            if (mintCustomDailyLimitDelayed[guy] > 0) {
-                mintCustomDailyLimit[guy] = mintCustomDailyLimitDelayed[guy];
+        if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
+            if (mintCustomDailyLimitBuffer[guy] > 0) {
+                mintCustomDailyLimit[guy] = mintCustomDailyLimitBuffer[guy];
+                MintLimit(mintCustomDailyLimit[guy]);
                 return mintCustomDailyLimit[guy];
             }
-            defaultMintDailyLimit = defaultMintDailyLimitDelayed;
+            defaultMintDailyLimit = defaultMintDailyLimitBuffer;
+            MintLimit(defaultMintDailyLimit);
             return defaultMintDailyLimit;
         } else {
             if (mintCustomDailyLimit[guy] > 0) {
@@ -114,12 +128,12 @@ contract LimitSetting is DSAuth, DSStop {
 
     function getBurnDailyLimit(address guy) public returns (uint) {
         assert(now >= lastSettingResetTime);
-        if (now - lastSettingResetTime >= defaultDelayHours) {
-            if (burnCustomDailyLimitDelayed[guy] > 0) {
-                burnCustomDailyLimit[guy] = burnCustomDailyLimitDelayed[guy];
+        if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
+            if (burnCustomDailyLimitBuffer[guy] > 0) {
+                burnCustomDailyLimit[guy] = burnCustomDailyLimitBuffer[guy];
                 return burnCustomDailyLimit[guy];
             }
-            defaultBurnDailyLimit = defaultBurnDailyLimitDelayed;
+            defaultBurnDailyLimit = defaultBurnDailyLimitBuffer;
             return defaultBurnDailyLimit;
         } else {
             if (burnCustomDailyLimit[guy] > 0) {
@@ -128,5 +142,6 @@ contract LimitSetting is DSAuth, DSStop {
             return defaultBurnDailyLimit;
         }
     }
+
 
 }

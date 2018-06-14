@@ -11,6 +11,7 @@ const {
     address,
     send,
     call,
+    create,
 } = require('chain-dsl')
 
 const deployer = require('../lib/deployer')
@@ -30,7 +31,7 @@ describe("Asset Gateway", function () {
     this.timeout(10000)
 
     let web3, snaps, accounts,
-        gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, token,
+        gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipRule, token,
         DEPLOYER,
         OPERATOR,
         CUSTOMER,
@@ -51,7 +52,7 @@ describe("Asset Gateway", function () {
 
         AMT = 100
 
-        ;({gate, token, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule} =
+        ;({gate, token, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipRule} =
             await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
     })
 
@@ -270,6 +271,40 @@ describe("Asset Gateway", function () {
                     await send(gate, OPERATOR, burn, CUSTOMER1, AMT)
                 })
             })
+        })
+    })
+
+    describe("with full KYC and Membership Control", async () => {
+        before(async () => {
+            await send(gate, OPERATOR, 'setERC20Authority', address(membershipRule))
+            await send(gate, OPERATOR, 'setTokenAuthority', address(membershipRule))
+        })
+
+        describe("OPERATOR", async () => {
+
+            it("Able to set the address of membership lookup contract \n" + 
+                "and Throw when trying mint and burn if the address is not member", async () => {
+                const deploy = (...args) => create(web3, DEPLOYER, ...args)
+                const {
+                    MockMembershipAuthorityFalse
+                } = solc(__dirname, '../solc-input.json')
+                const mockMembershipAuthorityFalse = await deploy(MockMembershipAuthorityFalse)
+
+                await send(membershipRule, OPERATOR, "setMembershipAuthority", address(mockMembershipAuthorityFalse))
+                await send(kycAmlStatus, OPERATOR, setKycVerified, CUSTOMER1, true)
+                await send(gate, CUSTOMER1, deposit, AMT)
+                await expectThrow(async () => {
+                    await send(gate, OPERATOR, mint, CUSTOMER1, AMT)
+                })
+            })
+
+            it("Able to mint and burn if the address is member", async () => {
+                await send(kycAmlStatus, OPERATOR, setKycVerified, CUSTOMER1, true)
+                await send(gate, CUSTOMER1, deposit, AMT)
+                await send(gate, OPERATOR, mint, CUSTOMER1, AMT)
+            })
+
+
         })
     })
 })
