@@ -1,11 +1,11 @@
 pragma solidity ^0.4.19;
 
 
-import "dappsys.sol";
+import "./dappsys.sol";
 
 
 // DSAuth
-import "TokenAuth.sol";
+import "./TokenAuth.sol";
 
 
 // ERC20Authority, TokenAuthority
