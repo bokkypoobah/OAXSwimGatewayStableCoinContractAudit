@@ -2,12 +2,12 @@ pragma solidity ^0.4.19;
 
 
 // auth, token, guard
-import "./dappsys.sol";
+import "dappsys.sol";
 
 
 // ERC20Authority, ERC20Auth, TokenAuthority, TokenAuth
-import "./TokenAuth.sol";
-import "./TransferFeeControllerInterface.sol";
+import "TokenAuth.sol";
+import "TransferFeeControllerInterface.sol";
 
 
 contract FiatToken is DSToken, ERC20Auth, TokenAuth {

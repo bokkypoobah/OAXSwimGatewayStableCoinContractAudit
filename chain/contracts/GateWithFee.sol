@@ -1,16 +1,16 @@
 pragma solidity 0.4.19;
 
 
-import "./dappsys.sol";
+import "dappsys.sol";
 
 
 // auth, token, math
-import "./solovault.sol";
-import "./GateRoles.sol";
-import "./FiatToken.sol";
-import "./Gate.sol";
-import "./TransferFeeController.sol";
-import "./LimitController.sol";
+import "solovault.sol";
+import "GateRoles.sol";
+import "FiatToken.sol";
+import "Gate.sol";
+import "TransferFeeController.sol";
+import "LimitController.sol";
 
 
 contract GateWithFee is Gate {

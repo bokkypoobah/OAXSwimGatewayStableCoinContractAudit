@@ -1,7 +1,7 @@
 pragma solidity 0.4.19;
 
 
-import "./dappsys.sol";
+import "dappsys.sol";
 
 
 contract LimitSetting is DSAuth, DSStop {

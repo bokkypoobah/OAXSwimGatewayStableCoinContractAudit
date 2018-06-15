@@ -1,8 +1,8 @@
 pragma solidity 0.4.19;
 
 
-import "./dappsys.sol";
-import "./LimitSetting.sol";
+import "dappsys.sol";
+import "LimitSetting.sol";
 
 
 contract LimitController is DSMath, DSStop {
