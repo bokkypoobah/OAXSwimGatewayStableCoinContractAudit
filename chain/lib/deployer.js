@@ -195,8 +195,8 @@ const base = async (web3,
         ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
     ])
 
-    // await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
-    // await send(gate, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
+    await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
+    await send(gate, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
 
     return {
         kycAmlStatus,

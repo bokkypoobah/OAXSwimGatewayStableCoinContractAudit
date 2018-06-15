@@ -1,14 +1,14 @@
 pragma solidity 0.4.19;
 
 
-import "./dappsys.sol";
+import "dappsys.sol";
 
 
 // auth, token, math
-import "./solovault.sol";
-import "./GateRoles.sol";
-import "./FiatToken.sol";
-import "./LimitController.sol";
+import "solovault.sol";
+import "GateRoles.sol";
+import "FiatToken.sol";
+import "LimitController.sol";
 
 
 contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {

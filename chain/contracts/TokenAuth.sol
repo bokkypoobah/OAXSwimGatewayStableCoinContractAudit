@@ -1,7 +1,7 @@
-pragma solidity ^0.4.19;
+pragma solidity 0.4.19;
 
 
-import "./dappsys.sol";
+import "dappsys.sol";
 
 
 // auth, token, guard

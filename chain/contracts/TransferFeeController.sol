@@ -1,8 +1,8 @@
-pragma solidity ^0.4.19;
+pragma solidity 0.4.19;
 
 
-import "./TransferFeeControllerInterface.sol";
-import "./dappsys.sol";
+import "TransferFeeControllerInterface.sol";
+import "dappsys.sol";
 
 
 contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth {
