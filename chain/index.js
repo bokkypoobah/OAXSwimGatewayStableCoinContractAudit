@@ -8,7 +8,7 @@ const port = 8545
 const hostname = 'localhost'
 const chainDataDir = './data'
 const outDir = './out'
-const truffleMnemonic = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat'
+const truffleMnemonic = 'castle float example cancel hurt victory intact illegal matter asthma assist undo only lock high'
 
 const log = console.log
 const mkdir = (dir) => fs.existsSync(dir) || fs.mkdirSync(dir)
@@ -73,22 +73,45 @@ server.listen(port, hostname, async (err, result) => {
     } else {
         log('\nCompiling and deploying contracts...')
 
-        const web3 = new Web3(server.provider)
-
+        // const web3 = new Web3(server.provider)
+        var HDWalletProvider = require("truffle-hdwallet-provider")
+        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://api.myetherapi.com/rop"))
+        
         const [
             DEPLOYER,
-            OPERATOR
+            OPERATOR,
+            MINT_FEE_COLLECTOR, 
+            BURN_FEE_COLLECTOR, 
+            TRANSFER_FEE_COLLECTOR, 
+            NEGATIVE_INTEREST_RATE_COLLECTOR
         ] = await web3.eth.getAccounts()
+        const balance = await web3.eth.getBalance(DEPLOYER);
 
-        const {
-            gate,
-            token,
-            accessControl
-        } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR)
+        try {
+            const {
+                token
+            } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR)
+            const {
+                gateWithFee
+            } = await deployer.deployGateWithFee(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
+                
+        } catch(e){
+            log(e);
+        }
 
-        saveContractInterface(gate)
+        // if Error: Transaction was not mined within 50 blocks
+        // update stable-coin/chain-dsl/index.js
+        // const contractDefaultOptions = {
+        //     from: DEPLOYER,
+        //     gas: 8900000,
+        //     gasPrice: 1000000000000,
+        //     name: Contract.NAME
+        // }
+        
         saveContractInterface(token)
-        saveContractInterface(accessControl)
+
+        saveContractInterface(gateWithFee)
+        // saveContractInterface(accessControl)
     }
 
     log(`\nListening on http://${hostname}:${port}`)
