@@ -63,7 +63,6 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     mockMembershipAuthority = await deploy(MockMembershipAuthority)
-    //membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
@@ -196,8 +195,8 @@ const base = async (web3,
         ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
     ])
 
-    await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
-    await send(gate, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
+    // await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
+    // await send(gate, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
 
     return {
         kycAmlStatus,

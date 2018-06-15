@@ -1,7 +1,7 @@
 pragma solidity ^0.4.4;
 
 
-import "dappsys.sol";
+import "./dappsys.sol";
 
 
 // auth, guard, roles
