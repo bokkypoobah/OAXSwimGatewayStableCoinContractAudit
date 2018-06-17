@@ -69,8 +69,17 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR
     }
-    token = await deploy(FiatToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), FEE_COLLECTOR, address(transferFeeController))
 
+    token = await deploy(
+        FiatToken,
+        address(fiatTokenGuard),
+        web3.utils.utf8ToHex('TOKUSD'),
+        FEE_COLLECTOR,
+        address(transferFeeController),
+        address(addressControlStatus),
+        FEE_COLLECTOR
+    )
+    //confiscateToken = await deploy(ConfiscateToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), address(addressControlStatus), address(token), FEE_COLLECTOR)
 
     const OPERATOR_ROLE = await call(gateRoles, 'OPERATOR')
 
@@ -124,6 +133,11 @@ const defaultGateOperatorMethods = [
     ['setERC20Authority(address)'],
     ['setTokenAuthority(address)'],
     ['setLimitController(address)'],
+    ['confiscate(address,uint256)'],
+    ['unConfiscate(address,uint256)'],
+    ['setConfiscateCollector(address)'],
+    ['enableConfiscate()'],
+    ['disableConfiscate()']
 ]
 
 const defaultTokenGuardRules = [
@@ -138,6 +152,11 @@ const defaultTokenGuardRules = [
     ['stop()'],
     ['setTransferFeeCollector(address)'],
     ['setTransferFeeController(address)'],
+    ['confiscate(address,uint256)'],
+    ['unConfiscate(address,uint256)'],
+    ['setConfiscateCollector(address)'],
+    ['enableConfiscate()'],
+    ['disableConfiscate()']
 ]
 
 const base = async (web3,
