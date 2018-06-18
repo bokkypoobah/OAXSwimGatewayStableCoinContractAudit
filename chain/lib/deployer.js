@@ -22,9 +22,10 @@ let transferFeeController
 let limitController
 let limitSetting
 
-const allowRoleForContract = ([sender, role, contract, method]) =>
-    send(gateRoles, sender, 'setRoleCapability',
-        role, address(contract), sig(method), true)
+const allowRoleForContract = ([sender, role, contract, method]) => {
+    send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+}
+    
 
 const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
                     FEE_COLLECTOR = null,
@@ -102,16 +103,20 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipRule, 'setMembershipAuthority(address)'],
-        
     ]
 
-    await Promise.all([
-        send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true),
-        send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true),
-        send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true),
+    await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)
 
-        ...roleContractRules.map(allowRoleForContract),
-    ])
+    for (let [sender, role, contract, method] of roleContractRules) {
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+    }
+    // Development
+    // await Promise.all([
+    //     send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
+    //     ...roleContractRules.map(allowRoleForContract),
+    // ])
 
     return {
         kycAmlStatus,
@@ -129,7 +134,6 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         limitSetting
     }
 }
-
 
 const defaultTokenGuardRules = [
     ['setName(bytes32)'],
@@ -210,9 +214,10 @@ const base = async (web3,
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules)
 
-    const permitFiatTokenGuard = ([src, dst, method]) =>
-        send(fiatTokenGuard, DEPLOYER, 'permit',
-            bytes32(address(src)), bytes32(address(dst)), sig(method))
+    const permitFiatTokenGuard = ([src, dst, method]) =>{
+        send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
+    }
+        
 
     const mapTokenGuardRules = ([methodSig]) => {
         return [gate, token, methodSig]
@@ -225,13 +230,15 @@ const base = async (web3,
     ]
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
 
-    await Promise.all([
-        send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true),
-        send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true),
-        send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true),
-        ...roleContractRules.map(allowRoleForContract),
-        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
-    ])
+    await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)    
+    for(let [sender, role, contract, method] of roleContractRules){
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+    }
+    for(let [src, dst, method] of gateAsGuardToOtherContractRules){
+        await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
+    }
 
     await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
     await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
@@ -324,13 +331,15 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)
 
-    await Promise.all([
-        send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true),
-        send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true),
-        send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true),
-        ...roleContractRules.map(allowRoleForContract),
-        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
-    ])
+    await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)
+    for(let [sender, role, contract, method] of roleContractRules){
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+    }
+    for(let [src, dst, method] of gateAsGuardToOtherContractRules){
+        await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
+    }
 
     await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
     await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))

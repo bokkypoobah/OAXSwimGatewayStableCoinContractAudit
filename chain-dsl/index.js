@@ -76,7 +76,7 @@ const create = async (web3, DEPLOYER, Contract, ...arguments) => {
         // FIXME https://github.com/ethereum/web3.js/issues/1253 workaround
         .then(contract => {
             if(process.env.NODE_ENV='production'){
-                //console.log(`Deployed ${Contract.NAME} - ${contract._address}`)
+                //console.log(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
             }
             contract.setProvider(web3.currentProvider)
             return contract
