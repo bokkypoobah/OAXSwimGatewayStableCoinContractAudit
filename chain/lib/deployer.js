@@ -22,9 +22,10 @@ let transferFeeController
 let limitController
 let limitSetting
 
-const allowRoleForContract = ([sender, role, contract, method]) =>
-    send(gateRoles, sender, 'setRoleCapability',
-        role, address(contract), sig(method), true)
+const allowRoleForContract = ([sender, role, contract, method]) => {
+    send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+}
+    
 
 const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
                     FEE_COLLECTOR = null,
@@ -86,13 +87,21 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         [DEPLOYER, OPERATOR_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
         [DEPLOYER, OPERATOR_ROLE, membershipRule, 'setMembershipAuthority(address)'],
-        
     ]
 
-    await Promise.all([
+    // await Promise.all([
+    //     send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
+    //     ...roleContractRules.map(allowRoleForContract),
+    // ])
+
+    const initCallMethods = [
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
-    ])
+    ]
+
+    for(let method of initCallMethods){
+        await method
+    }
 
     return {
         kycAmlStatus,
@@ -126,6 +135,8 @@ const defaultGateOperatorMethods = [
     ['setLimitController(address)'],
 ]
 
+
+
 const defaultTokenGuardRules = [
     ['setName(bytes32)'],
     ['mint(uint256)'], //need this because it calls mint(address,uint256)
@@ -153,7 +164,6 @@ const base = async (web3,
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = OPERATOR
     }
-
     await init(web3, contractRegistry, DEPLOYER, OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT)
 
     const {
@@ -174,9 +184,10 @@ const base = async (web3,
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules)
 
-    const permitFiatTokenGuard = ([src, dst, method]) =>
-        send(fiatTokenGuard, DEPLOYER, 'permit',
-            bytes32(address(src)), bytes32(address(dst)), sig(method))
+    const permitFiatTokenGuard = ([src, dst, method]) =>{
+        send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
+    }
+        
 
     const mapTokenGuardRules = ([methodSig]) => {
         return [gate, token, methodSig]
@@ -189,11 +200,15 @@ const base = async (web3,
     ]
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
 
-    await Promise.all([
+    const baseCallMethods = [
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
-        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
-    ])
+        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard)
+    ]
+
+    for(let method of baseCallMethods){
+        await method
+    }
 
     await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
     await send(gate, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
@@ -265,16 +280,24 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, MIN
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)
 
-    await Promise.all([
+    const gateWithFeeMethods = [
         send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
         ...roleContractRules.map(allowRoleForContract),
         ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
-    ])
+    ]
+
+    for(let method of gateWithFeeMethods){
+        await method
+    }
 
     await send(gateWithFee, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
     await send(gateWithFee, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
 
     return {gateWithFee}
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = {
