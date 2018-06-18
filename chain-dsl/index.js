@@ -23,7 +23,6 @@ const arrayWrap = x => Array.isArray(x) ? x : [x]
 
 // Extract event essences from method transaction logs
 const txEvents = async (tx) => {
-    console.log(await tx)
     const eventArrayList = Object.values((await tx).events).map(arrayWrap)
     return [].concat(...eventArrayList).map(distillEvent)
 }
