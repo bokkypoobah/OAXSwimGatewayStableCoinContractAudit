@@ -125,14 +125,6 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
-      },
-      "ConfiscateToken.sol": {
-        "*": [
-          "metadata",
-          "abi",
-          "evm.bytecode",
-          "evm.sourceMap"
-        ]
       }
     }
   },
@@ -210,11 +202,6 @@
     "LimitSetting.sol": {
       "urls": [
         "contracts/LimitSetting.sol"
-      ]
-    },
-    "ConfiscateToken.sol": {
-      "urls": [
-        "contracts/ConfiscateToken.sol"
       ]
     }
   }
