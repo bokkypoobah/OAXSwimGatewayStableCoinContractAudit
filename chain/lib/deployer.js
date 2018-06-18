@@ -89,19 +89,21 @@ const init = async (web3, contractRegistry, DEPLOYER, OPERATOR,
         [DEPLOYER, OPERATOR_ROLE, membershipRule, 'setMembershipAuthority(address)'],
     ]
 
+    await send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true)
+
+    for(let [sender, role, contract, method] of roleContractRules){
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+    }
     // await Promise.all([
     //     send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
     //     ...roleContractRules.map(allowRoleForContract),
     // ])
 
-    const initCallMethods = [
-        send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-        ...roleContractRules.map(allowRoleForContract),
-    ]
-
-    for(let method of initCallMethods){
-        await method
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
+    
+    
 
     return {
         kycAmlStatus,
@@ -200,14 +202,12 @@ const base = async (web3,
     ]
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
 
-    const baseCallMethods = [
-        send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-        ...roleContractRules.map(allowRoleForContract),
-        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard)
-    ]
-
-    for(let method of baseCallMethods){
-        await method
+    await send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true)
+    for(let [sender, role, contract, method] of roleContractRules){
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+    }
+    for(let [src, dst, method] of gateAsGuardToOtherContractRules){
+        await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
     await send(gate, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
@@ -280,24 +280,18 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, OPERATOR, MIN
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)
 
-    const gateWithFeeMethods = [
-        send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-        ...roleContractRules.map(allowRoleForContract),
-        ...gateAsGuardToOtherContractRules.map(permitFiatTokenGuard),
-    ]
-
-    for(let method of gateWithFeeMethods){
-        await method
+    await send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true)
+    for(let [sender, role, contract, method] of roleContractRules){
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
+    }
+    for(let [src, dst, method] of gateAsGuardToOtherContractRules){
+        await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
     await send(gateWithFee, OPERATOR, 'setERC20Authority', address(noKycAmlRule))
     await send(gateWithFee, OPERATOR, 'setTokenAuthority', address(noKycAmlRule))
 
     return {gateWithFee}
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = {
