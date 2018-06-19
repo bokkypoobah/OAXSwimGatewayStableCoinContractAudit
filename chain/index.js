@@ -73,10 +73,10 @@ server.listen(port, hostname, async (err, result) => {
     } else {
         log('\nCompiling and deploying contracts...')
 
-        // const web3 = new Web3(server.provider)
-        var HDWalletProvider = require("truffle-hdwallet-provider")
-        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://api.myetherapi.com/rop"))
-        
+        const HDWalletProvider = require("truffle-hdwallet-provider")
+        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://ropsten.infura.io/kRMWBPwUBGx6rArjwUa1")) //options: https://api.myetherapi.com/rop
+        const accounts = state.accounts
+        const addresses = Object.keys(accounts)
         const [
             DEPLOYER,
             OPERATOR,
@@ -84,10 +84,12 @@ server.listen(port, hostname, async (err, result) => {
             BURN_FEE_COLLECTOR, 
             TRANSFER_FEE_COLLECTOR, 
             NEGATIVE_INTEREST_RATE_COLLECTOR
-        ] = await web3.eth.getAccounts()
+        ] = addresses
+
         const balance = await web3.eth.getBalance(DEPLOYER);
 
         try {
+
             const {
                 token
             } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR)
