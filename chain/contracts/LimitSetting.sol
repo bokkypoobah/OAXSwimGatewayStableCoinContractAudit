@@ -36,8 +36,8 @@ contract LimitSetting is DSAuth, DSStop {
         require(_defaultBurnDailyLimit > 0);
 
         setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeffset);
-        setSettingDefaultDelayHours(_defaultSettingDelayHours);
         resetSettingDelayBuffer();
+        defaultDelayHours = _defaultSettingDelayHours;
         defaultMintDailyLimit = _defaultMintDailyLimit;
         defaultBurnDailyLimit = _defaultBurnDailyLimit;
         defaultMintDailyLimitBuffer = _defaultMintDailyLimit;
