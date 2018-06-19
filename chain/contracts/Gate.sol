@@ -44,6 +44,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         require(limitController.isWithinMintLimit(guy, wad));
         _;
     }
+    
     modifier burnLimited(address guy, uint wad) {
         require(limitController.isWithinBurnLimit(guy, wad));
         _;
@@ -102,11 +103,11 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         FiatToken(token).setConfiscateCollector(guy);
     }
 
-    function enableConfiscate() public auth{
+    function enableConfiscate() public auth {
         FiatToken(token).enableConfiscate();
     }
 
-    function disableConfiscate() public auth{
+    function disableConfiscate() public auth {
         FiatToken(token).disableConfiscate();
     }
 }

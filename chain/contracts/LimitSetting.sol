@@ -57,21 +57,10 @@ contract LimitSetting is DSAuth, DSStop {
         return limitCounterResetTimeOffset;
     }
 
-    function resetSettingDelayBuffer() internal stoppable {
-        lastSettingResetTime = now;
-    }
-
     function setSettingDefaultDelayHours(uint256 _hours) public auth {
         defaultDelayHoursBuffer = _hours * 1 hours;
         lastDefaultDelayHoursSettingResetTime = now;
         resetSettingDelayBuffer();
-    }
-    
-    function getDefaultDelayHours() internal returns (uint256) {
-        if (now - lastDefaultDelayHoursSettingResetTime >= 2592000) {
-            defaultDelayHours = defaultDelayHoursBuffer;
-        }
-        return defaultDelayHours; 
     }
 
     event MintLimit(address guy, uint wad);
@@ -143,5 +132,15 @@ contract LimitSetting is DSAuth, DSStop {
         }
     }
 
+    function resetSettingDelayBuffer() internal stoppable {
+        lastSettingResetTime = now;
+    }
+
+    function getDefaultDelayHours() internal returns (uint256) {
+        if (now - lastDefaultDelayHoursSettingResetTime >= 2592000) {
+            defaultDelayHours = defaultDelayHoursBuffer;
+        }
+        return defaultDelayHours; 
+    }
 
 }

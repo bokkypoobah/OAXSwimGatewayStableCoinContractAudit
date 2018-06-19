@@ -1,11 +1,8 @@
 pragma solidity 0.4.19;
 
-
 import "dappsys.sol";
 
-
 // auth, erc20, token
-
 
 contract DSSoloVault is DSAuth {
     ERC20 public token;

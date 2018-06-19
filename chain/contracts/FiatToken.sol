@@ -91,7 +91,7 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         transferFeeController = transferFeeController_;
     }
 
-    modifier canConfiscate(address guy, bool isConfiscate){
+    modifier canConfiscate(address guy, bool isConfiscate) {
         require(addressControlStatus.frozenAddress(guy) == isConfiscate); // && confiscateEnabled
         require(confiscateEnabled);
         _;
