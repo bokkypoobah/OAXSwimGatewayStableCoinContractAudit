@@ -2,9 +2,10 @@ const fs = require('fs')
 const {Ganache, solc} = require('chain-dsl/test/helpers')
 const {Web3} = require('chain-dsl')
 const deployer = require('./lib/deployer')
+const deployerGateWithFee = require('./lib/deployer.gateWithFee')
 
 const args = process.argv.slice(2)
-const port = 8545
+const port = 3000
 const hostname = 'localhost'
 const chainDataDir = './data'
 const outDir = './out'
@@ -74,29 +75,33 @@ server.listen(port, hostname, async (err, result) => {
         log('\nCompiling and deploying contracts...')
 
         const HDWalletProvider = require("truffle-hdwallet-provider")
-        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://ropsten.infura.io/kRMWBPwUBGx6rArjwUa1")) //options: https://api.myetherapi.com/rop
+        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://api.myetherapi.com/rop", 0)) //options: https://api.myetherapi.com/rop
+
         const accounts = state.accounts
         const addresses = Object.keys(accounts)
         const [
             DEPLOYER,
-            OPERATOR,
+            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             MINT_FEE_COLLECTOR, 
             BURN_FEE_COLLECTOR, 
             TRANSFER_FEE_COLLECTOR, 
             NEGATIVE_INTEREST_RATE_COLLECTOR
         ] = addresses
-
-        const balance = await web3.eth.getBalance(DEPLOYER);
-
+ 
+        const block = await web3.eth.getBlockNumber()
+        log(`Block Number: ${block}`)
+        const balance = await web3.eth.getBalance(DEPLOYER)
+        log(`Balance: ${balance}`)
+        
         try {
 
             const {
                 token
-            } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR)
-            const {
-                gateWithFee
-            } = await deployer.deployGateWithFee(web3, solc(__dirname, './solc-input.json'), DEPLOYER, OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
-                
+            } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
+            // // const {
+            //     gateWithFee
+            // } = await deployerGateWithFee.deployGateWithFee(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
+            //await deployer.deployInitSettings(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
         } catch(e){
             log(e);
         }
@@ -110,9 +115,8 @@ server.listen(port, hostname, async (err, result) => {
         //     name: Contract.NAME
         // }
         
-        saveContractInterface(token)
-
-        saveContractInterface(gateWithFee)
+        // saveContractInterface(token)
+        // saveContractInterface(gateWithFee)
         // saveContractInterface(accessControl)
     }
 

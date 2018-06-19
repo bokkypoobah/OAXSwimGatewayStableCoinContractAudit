@@ -85,8 +85,8 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         address(addressControlStatus),
         CONFISCATE_COLLECTOR
     )
-    //confiscateToken = await deploy(ConfiscateToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), address(addressControlStatus), address(token), FEE_COLLECTOR)
 
+    
     const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
     const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
     const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
@@ -112,11 +112,6 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     for (let [sender, role, contract, method] of roleContractRules) {
         await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
     }
-    // Development
-    // await Promise.all([
-    //     send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-    //     ...roleContractRules.map(allowRoleForContract),
-    // ])
 
     return {
         kycAmlStatus,
@@ -132,6 +127,57 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         transferFeeController,
         limitController,
         limitSetting
+    }
+}
+
+const deployInitSettings = async(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)=>{
+    const {
+        KycAmlStatus,
+        NoKycAmlRule,
+        BoundaryKycAmlRule,
+        FullKycAmlRule,
+        MockMembershipAuthority,
+        MembershipRule,
+        GateRoles,
+        DSGuard,
+        FiatToken,
+        TransferFeeController,
+        AddressControlStatus,
+        LimitController,
+        LimitSetting
+    } = contractRegistry
+
+    gateRoles = new web3.eth.Contract(GateRoles.abi, "");
+    kycAmlStatus = new web3.eth.Contract(KycAmlStatus.abi, "");
+    addressControlStatus = new web3.eth.Contract(AddressControlStatus.abi, "");
+    limitSetting = new web3.eth.Contract(LimitSetting.abi, "");
+    transferFeeController = new web3.eth.Contract(TransferFeeController.abi, "");
+    membershipRule = new web3.eth.Contract(MembershipRule.abi, "");
+
+    const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
+    const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
+    const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
+
+    const roleContractRules = [
+        [DEPLOYER, KYC_OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
+        [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
+        [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setSettingDefaultDelayHours(uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setLimitCounterResetTimeOffset(int256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultMintDailyLimit(uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultBurnDailyLimit(uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipRule, 'setMembershipAuthority(address)'],
+    ]
+
+    await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
+    await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)
+
+    for (let [sender, role, contract, method] of roleContractRules) {
+        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
     }
 }
 
@@ -349,6 +395,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
 
 module.exports = {
     init,
+    deployInitSettings,
     base,
     deployGateWithFee
 }
