@@ -42,4 +42,6 @@ rm dappsys.sol ; \
  cat math.sol erc20.sol auth.sol note.sol stop.sol guard.sol roles.sol base.sol token.sol multivault.sol vault.sol exec.sol thing.sol | \
  gawk '/import/ {next} /\/\/.*\.sol/ {print; next} /\/\// {next} 1' > ../dappsys.sol 
 ```
+<br />
 
+Enjoy. (c) OpenANX and Blockchain Factory Ltd 2017. The GNU General Public License Version 3.
