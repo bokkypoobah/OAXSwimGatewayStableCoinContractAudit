@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity 0.4.19;
 
 
 import "TransferFeeControllerInterface.sol";
@@ -11,7 +11,8 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 
     uint public defaultTransferFeeBps;
 
-    function TransferFeeController(DSAuthority _authority, uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_) public {
+    function TransferFeeController(DSAuthority _authority, uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_) 
+    public {
         setAuthority(_authority);
         setOwner(0x0);
         defaultTransferFeeAbs = defaultTransferFeeAbs_;
@@ -21,7 +22,7 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
     function calculateTransferFee(address /*from*/, address /*to*/, uint wad)
     public
     view
-    returns (uint){
+    returns (uint) {
         return defaultTransferFeeAbs + div(mul(wad, defaultTransferFeeBps), 10000);
     }
 

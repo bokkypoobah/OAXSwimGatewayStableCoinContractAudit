@@ -16,7 +16,7 @@ const deployer = require('../lib/deployer')
 describe.skip('Explorations', () => {
     let web3, accounts, snaps, gate, token,
         DEPLOYER,
-        OPERATOR,
+        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
         CUSTOMER
 
     before('deployment', async () => {
@@ -24,11 +24,11 @@ describe.skip('Explorations', () => {
         web3 = ganacheWeb3()
         ;[
             DEPLOYER,
-            OPERATOR,
+            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             CUSTOMER
         ] = accounts = await web3.eth.getAccounts()
 
-        ;({gate, token} = await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
+        ;({gate, token} = await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
 
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))

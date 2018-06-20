@@ -30,11 +30,11 @@ const push = 'push(address,uint256)'
 const pull = 'pull(address,uint256)'
 
 describe('Gate', function () {
-    this.timeout(10000)
+    this.timeout(100000)
 
     let web3, snaps, accounts, gate, token,
         DEPLOYER,
-        OPERATOR,
+        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
         CUSTOMER,
         CUSTOMER1,
         CUSTOMER2
@@ -44,13 +44,13 @@ describe('Gate', function () {
         web3 = ganacheWeb3()
         ;[
             DEPLOYER,
-            OPERATOR,
+            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             CUSTOMER,
             CUSTOMER1,
             CUSTOMER2
         ] = accounts = await web3.eth.getAccounts()
 
-        ;({gate, token} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
+        ;({gate, token} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
 
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
@@ -85,11 +85,11 @@ describe('Gate', function () {
                 send(token, CUSTOMER1, mint, CUSTOMER2, 123))
         })
 
-        it('cannot mint for an operator', async () => {
+        it('cannot mint for an MoneyOperator', async () => {
             await expectThrow(async () =>
-                send(gate, CUSTOMER, mint, OPERATOR, 123))
+                send(gate, CUSTOMER, mint, MONEY_OPERATOR, 123))
             await expectThrow(async () =>
-                send(token, CUSTOMER, mint, OPERATOR, 123))
+                send(token, CUSTOMER, mint, MONEY_OPERATOR, 123))
         })
 
         it('cannot burn for themselves', async () => {
@@ -140,8 +140,8 @@ describe('Gate', function () {
         })
 
         it("can claim control of deposit if approved", async () => {
-            await send(gate, OPERATOR, mintForSelf, 10)
-            await send(gate, OPERATOR, approve, CUSTOMER, 3)
+            await send(gate, MONEY_OPERATOR, mintForSelf, 10)
+            await send(gate, MONEY_OPERATOR, approve, CUSTOMER, 3)
             await send(token, CUSTOMER, pull, address(gate), 1)
             await send(token, CUSTOMER, pull, address(gate), 2)
 
@@ -150,14 +150,14 @@ describe('Gate', function () {
         })
 
         it("can not claim control of deposit without approval", async () => {
-            await send(gate, OPERATOR, mintForSelf, 10)
+            await send(gate, MONEY_OPERATOR, mintForSelf, 10)
 
             await expectThrow(async () =>
                 await send(gate, CUSTOMER, pull, address(gate), 1))
         })
     })
 
-    context('OPERATOR', () => {
+    context('MONEY_OPERATOR', () => {
         const pendingDeposits = async (customer) =>
             gate.getPastEvents('DepositRequested', {fromBlock: 0})
                 .map(distillEvent)
@@ -185,7 +185,7 @@ describe('Gate', function () {
         }
 
         it('can mint', async () => {
-            await send(gate, OPERATOR, mint, CUSTOMER, 123)
+            await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 123)
             expect(await call(token, "balanceOf", CUSTOMER)).eq(123)
         })
 
@@ -213,7 +213,7 @@ describe('Gate', function () {
             const AMT = toBN(10)
             await send(gate, CUSTOMER1, deposit, AMT)
 
-            const events = await txEvents(send(gate, OPERATOR, mint, CUSTOMER, AMT))
+            const events = await txEvents(send(gate, MONEY_OPERATOR, mint, CUSTOMER, AMT))
 
             expect(events).containSubset([
                 {NAME: 'Mint', guy: CUSTOMER, wad: AMT.toString(10)},
@@ -228,8 +228,8 @@ describe('Gate', function () {
             await send(gate, CUSTOMER1, deposit, AMT1)
             await send(gate, CUSTOMER2, deposit, AMT2)
 
-            await send(gate, OPERATOR, mint, CUSTOMER1, AMT1)
-            await send(gate, OPERATOR, mint, CUSTOMER2, AMT2)
+            await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT1)
+            await send(gate, MONEY_OPERATOR, mint, CUSTOMER2, AMT2)
 
             await send(token, CUSTOMER1, push, address(gate), AMT1)
             await send(token, CUSTOMER2, push, address(gate), AMT2)
@@ -245,9 +245,9 @@ describe('Gate', function () {
         it("can burn tokens", async () => {
             const AMT = toBN(10)
             await send(gate, CUSTOMER, deposit, AMT)
-            await send(gate, OPERATOR, mint, CUSTOMER, AMT)
+            await send(gate, MONEY_OPERATOR, mint, CUSTOMER, AMT)
             await send(token, CUSTOMER, approve, address(gate), AMT)
-            await send(gate, OPERATOR, burn, CUSTOMER, AMT)
+            await send(gate, MONEY_OPERATOR, burn, CUSTOMER, AMT)
 
             const withdrawals = await pendingWithdrawals()
 
@@ -268,23 +268,23 @@ describe('Gate', function () {
             })
         })
 
-        it("Operator can stop and start token via gate.", async () => {
+        it("SystemAdmin can stop and start token via gate.", async () => {
 
-            await send(gate, OPERATOR, mintForSelf, 10)
-            await send(gate, OPERATOR, approve, CUSTOMER, 3)
+            await send(gate, MONEY_OPERATOR, mintForSelf, 10)
+            await send(gate, MONEY_OPERATOR, approve, CUSTOMER, 3)
 
-            await send(gate, OPERATOR, "stopToken")
+            await send(gate, SYSTEM_ADMIN, "stopToken")
             await expectThrow(async () => {
                 await send(token, CUSTOMER, pull, address(gate), 2)
             })
             await expectThrow(async () => {
-                await send(gate, OPERATOR, mintForSelf, 10)
+                await send(gate, MONEY_OPERATOR, mintForSelf, 10)
             })
             await expectThrow(async () => {
-                await send(gate, OPERATOR, approve, CUSTOMER, 3)
+                await send(gate, MONEY_OPERATOR, approve, CUSTOMER, 3)
             })
 
-            await send(gate, OPERATOR, "startToken")
+            await send(gate, SYSTEM_ADMIN, "startToken")
             await expectNoAsyncThrow(async () => {
                 await send(token, CUSTOMER, pull, address(gate), 2)
             })

@@ -23,18 +23,18 @@ const deploy = require('../lib/deployer')
 describe('Deployment', function () {
     this.timeout(10000)
 
-    let web3, snaps, accounts, DEPLOYER, OPERATOR, CUSTOMER, token, fiatTokenGuard
+    let web3, snaps, accounts, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, CUSTOMER, token, fiatTokenGuard
 
     before('deployment', async () => {
         snaps = []
         web3 = ganacheWeb3()
         ;[
             DEPLOYER,
-            OPERATOR,
+            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             CUSTOMER
         ] = accounts = await web3.eth.getAccounts()
 
-        ;({token, fiatTokenGuard} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, OPERATOR))
+        ;({token, fiatTokenGuard} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
 
     beforeEach(async () => snaps.push(await web3.evm.snapshot()))
@@ -45,7 +45,7 @@ describe('Deployment', function () {
         expect(symbol).equal('TOKUSD')
     })
 
-    const MAX_COST = 500 /* USD */;
+    const MAX_COST = 600 /* USD */;
     it(`does NOT cost more than ${MAX_COST} USD for the deployer`, async () => {
         // Source: https://coinmarketcap.com/currencies/ethereum/
         const USD_PER_ETH = toBN(1378) //use All Time High price to gauge

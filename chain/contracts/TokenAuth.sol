@@ -1,18 +1,18 @@
-pragma solidity ^0.4.19;
+pragma solidity 0.4.19;
 
 
 import "dappsys.sol";
 
-
 // auth, token, guard
 
-
 contract ERC20Authority {
+
     function canApprove(address src, address dst, address guy, uint wad) public returns (bool);
 
     function canTransfer(address src, address dst, address to, uint wad) public returns (bool);
 
     function canTransferFrom(address src, address dst, address from, address to, uint wad) public returns (bool);
+    
 }
 
 

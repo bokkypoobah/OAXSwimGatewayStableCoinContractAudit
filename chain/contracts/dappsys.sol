@@ -1,6 +1,5 @@
 pragma solidity 0.4.19;
 
-
 /// math.sol -- mixin for inline numerical wizardry
 
 contract DSMath {
@@ -69,7 +68,6 @@ contract DSMath {
     }
 }
 
-
 /// erc20.sol -- API for the ERC20 token standard
 
 contract ERC20Events {
@@ -95,7 +93,6 @@ contract ERC20 is ERC20Events {
     )
     public returns (bool);
 }
-
 
 /// auth.sol -- Authoriaation framework
 
@@ -161,7 +158,6 @@ contract DSAuth is DSAuthEvents {
     }
 }
 
-
 /// note.sol -- the `note' modifier, for logging calls as events
 
 contract DSNote {
@@ -189,7 +185,6 @@ contract DSNote {
     }
 }
 
-
 /// stop.sol -- mixin for enable/disable functionality
 
 contract DSStop is DSNote, DSAuth {
@@ -209,7 +204,6 @@ contract DSStop is DSNote, DSAuth {
     }
 
 }
-
 
 /// guard.sol -- simple whitelist implementation of DSAuthority
 
@@ -281,7 +275,6 @@ contract DSGuardFactory {
         isGuard[guard] = true;
     }
 }
-
 
 /// roles.sol - roled based authentication
 
@@ -401,7 +394,6 @@ contract DSRoles is DSAuth, DSAuthority
 
 }
 
-
 /// base.sol -- basic ERC20 implementation
 
 contract DSTokenBase is ERC20, DSMath {
@@ -456,7 +448,6 @@ contract DSTokenBase is ERC20, DSMath {
         return true;
     }
 }
-
 
 /// token.sol -- ERC20 implementation with minting and burning
 
@@ -541,7 +532,6 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 }
 
-
 /// multivault.sol -- vault for holding different kinds of ERC20 tokens
 
 contract DSMultiVault is DSAuth {
@@ -582,7 +572,6 @@ contract DSMultiVault is DSAuth {
     }
 }
 
-
 /// vault.sol -- vault for holding a single kind of ERC20 tokens
 
 contract DSVault is DSMultiVault {
@@ -620,7 +609,6 @@ contract DSVault is DSMultiVault {
         burn(DSToken(token));
     }
 }
-
 
 /// exec.sol - base contract used by anything that wants to do "untyped" calls
 
@@ -668,7 +656,6 @@ contract DSExec {
         return tryExec(t, c, v);
     }
 }
-
 
 /// thing.sol - `auth` with handy mixins. your things should be DSThings
 
