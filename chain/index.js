@@ -2,8 +2,6 @@ const fs = require('fs')
 const {Ganache, solc} = require('chain-dsl/test/helpers')
 const {Web3} = require('chain-dsl')
 const deployer = require('./lib/deployer')
-const deployerGateWithFee = require('./lib/deployer.gateWithFee')
-
 const args = process.argv.slice(2)
 const port = 3000
 const hostname = 'localhost'
@@ -87,38 +85,58 @@ server.listen(port, hostname, async (err, result) => {
             TRANSFER_FEE_COLLECTOR, 
             NEGATIVE_INTEREST_RATE_COLLECTOR
         ] = addresses
- 
+
         const block = await web3.eth.getBlockNumber()
         log(`Block Number: ${block}`)
         const balance = await web3.eth.getBalance(DEPLOYER)
         log(`Balance: ${balance}`)
-        
+
         try {
 
             const {
                 token
             } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
-            // // const {
-            //     gateWithFee
-            // } = await deployerGateWithFee.deployGateWithFee(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
-            //await deployer.deployInitSettings(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
+             const {
+                gateWithFee
+            } = await deployer.deployGateWithFee(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
+
         } catch(e){
             log(e);
         }
 
-        // if Error: Transaction was not mined within 50 blocks
-        // update stable-coin/chain-dsl/index.js
-        // const contractDefaultOptions = {
-        //     from: DEPLOYER,
-        //     gas: 8900000,
-        //     gasPrice: 1000000000000,
-        //     name: Contract.NAME
-        // }
-        
-        // saveContractInterface(token)
-        // saveContractInterface(gateWithFee)
-        // saveContractInterface(accessControl)
+        saveContractInterface(token)
+        saveContractInterface(gateWithFee)
     }
 
     log(`\nListening on http://${hostname}:${port}`)
 })
+
+const getContractInstances = async () => {
+
+    const {
+        KycAmlStatus, NoKycAmlRule, BoundaryKycAmlRule, FullKycAmlRule, MockMembershipAuthority, 
+        MembershipRule, GateRoles, DSGuard, FiatToken, TransferFeeController, AddressControlStatus, 
+        LimitController, LimitSetting
+    } = solc(__dirname, './solc-input.json')
+
+    const kycAmlStatus = new web3.eth.Contract(KycAmlStatus.abi, "")
+    const addressControlStatus = new web3.eth.Contract(AddressControlStatus.abi, "")
+    const noKycAmlRule = new web3.eth.Contract(NoKycAmlRule.abi, "")
+    const boundaryKycAmlRule = new web3.eth.Contract(BoundaryKycAmlRule.abi, "")
+    const fullKycAmlRule = new web3.eth.Contract(FullKycAmlRule.abi, "")
+    const mockMembershipAuthority = new web3.eth.Contract(MockMembershipAuthority.abi, "")
+    const membershipRule = new web3.eth.Contract(MembershipRule.abi, "")
+    const fiatTokenGuard = new web3.eth.Contract(DSGuard.abi, "")
+    const gateRoles = new web3.eth.Contract(GateRoles.abi, "")
+    const token = new web3.eth.Contract(FiatToken.abi, "")
+    const transferFeeController = new web3.eth.Contract(TransferFeeController.abi, "")
+    const limitController = new web3.eth.Contract(LimitController.abi, "")
+    const limitSetting = new web3.eth.Contract(LimitSetting.abi, "")
+
+    return {
+        KycAmlStatus, NoKycAmlRule, BoundaryKycAmlRule, FullKycAmlRule, MockMembershipAuthority, 
+        MembershipRule, GateRoles, DSGuard, FiatToken, TransferFeeController, AddressControlStatus, 
+        LimitController, LimitSetting
+    }
+}
+
