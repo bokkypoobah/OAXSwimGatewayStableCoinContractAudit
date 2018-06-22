@@ -1,13 +1,16 @@
 const fs = require('fs')
+const HDWalletProvider = require("truffle-hdwallet-provider")
+const config = require('config')
 const {Ganache, solc} = require('chain-dsl/test/helpers')
 const {Web3} = require('chain-dsl')
-const deployer = require('./lib/deployer')
+const deployer = require('./lib/deployerProd')
 const args = process.argv.slice(2)
 const port = 3000
 const hostname = 'localhost'
 const chainDataDir = './data'
 const outDir = './out'
-const truffleMnemonic = 'castle float example cancel hurt victory intact illegal matter asthma assist undo only lock high'
+
+const truffleMnemonic = config.get('mnemonic')
 
 const log = console.log
 const mkdir = (dir) => fs.existsSync(dir) || fs.mkdirSync(dir)
@@ -72,8 +75,7 @@ server.listen(port, hostname, async (err, result) => {
     } else {
         log('\nCompiling and deploying contracts...')
 
-        const HDWalletProvider = require("truffle-hdwallet-provider")
-        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, "https://api.myetherapi.com/rop", 0)) //options: https://api.myetherapi.com/rop
+        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, config.get('remoteNode'), 5)) //options: https://api.myetherapi.com/rop
 
         const accounts = state.accounts
         const addresses = Object.keys(accounts)
@@ -92,51 +94,37 @@ server.listen(port, hostname, async (err, result) => {
         log(`Balance: ${balance}`)
 
         try {
-
+            /**
+             * 1) Deploy Initial Contract
+             */
             const {
                 token
-            } = await deployer.base(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
-             const {
-                gateWithFee
-            } = await deployer.deployGateWithFee(web3, solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
+            } = await deployer.initContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
 
+            /**
+             * 2) Deploy Settings for Initial Contract
+             */
+            await deployer.initSettings(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
+            
+            /**
+             * 3) Deploy GateWithFee Contract
+             */
+            const {
+                gateWithFee
+            } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
+            
+            /**
+             * 4)  Deploy Settings for GateWithFee Contract
+             */
+            await deployer.gateWithFeeSetting(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
+            
         } catch(e){
             log(e);
         }
 
-        saveContractInterface(token)
-        saveContractInterface(gateWithFee)
     }
 
     log(`\nListening on http://${hostname}:${port}`)
 })
 
-const getContractInstances = async () => {
-
-    const {
-        KycAmlStatus, NoKycAmlRule, BoundaryKycAmlRule, FullKycAmlRule, MockMembershipAuthority, 
-        MembershipRule, GateRoles, DSGuard, FiatToken, TransferFeeController, AddressControlStatus, 
-        LimitController, LimitSetting
-    } = solc(__dirname, './solc-input.json')
-
-    const kycAmlStatus = new web3.eth.Contract(KycAmlStatus.abi, "")
-    const addressControlStatus = new web3.eth.Contract(AddressControlStatus.abi, "")
-    const noKycAmlRule = new web3.eth.Contract(NoKycAmlRule.abi, "")
-    const boundaryKycAmlRule = new web3.eth.Contract(BoundaryKycAmlRule.abi, "")
-    const fullKycAmlRule = new web3.eth.Contract(FullKycAmlRule.abi, "")
-    const mockMembershipAuthority = new web3.eth.Contract(MockMembershipAuthority.abi, "")
-    const membershipRule = new web3.eth.Contract(MembershipRule.abi, "")
-    const fiatTokenGuard = new web3.eth.Contract(DSGuard.abi, "")
-    const gateRoles = new web3.eth.Contract(GateRoles.abi, "")
-    const token = new web3.eth.Contract(FiatToken.abi, "")
-    const transferFeeController = new web3.eth.Contract(TransferFeeController.abi, "")
-    const limitController = new web3.eth.Contract(LimitController.abi, "")
-    const limitSetting = new web3.eth.Contract(LimitSetting.abi, "")
-
-    return {
-        KycAmlStatus, NoKycAmlRule, BoundaryKycAmlRule, FullKycAmlRule, MockMembershipAuthority, 
-        MembershipRule, GateRoles, DSGuard, FiatToken, TransferFeeController, AddressControlStatus, 
-        LimitController, LimitSetting
-    }
-}
 
