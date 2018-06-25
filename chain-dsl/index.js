@@ -1,12 +1,27 @@
 const Web3 = require('web3')
 const abi = require('web3-eth-abi')
 const {toTwosComplement, padLeft} = require('web3-utils')
+const retry = require('async-retry')
+
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+const adapter = new FileSync('swimdb.json')
+const db = low(adapter)
+// init
+db.defaults({ deployedContract: {} }).write()
 
 const ANY = toTwosComplement(-1) // for ds-guard
 const bytes32 = (address) => padLeft(address, 64) // for ds-guard
 const address = (contract) => contract.options.address
 const wad = amount => amount
 const sig = (methodSig) => abi.encodeFunctionSignature(methodSig)
+const createInstance = (web3, abi,address) => new web3.eth.Contract(abi, address)
+
+const retryOptions = {retries: 0, minTimeout: 120000, onRetry: (err, i) => {
+    if (err) {
+        console.log(`Retry error #${i}: ${err}`)
+    }}
+}
 
 const distillEvent = ({event, returnValues}) => {
     const essence = Object.assign({}, returnValues)
@@ -30,13 +45,14 @@ const txEvents = async (tx) => {
 const send = async (contract, sender, methodName, ...params) => {
     const method = contract.methods[methodName]
     if (method instanceof Function) {
-        return method(...params).send({from: sender})
-            .then(function(receipt){
-                if(process.env.NODE_ENV='production'){
-                    //console.log(`Deployed Method [${methodName}] with [${params}] - ${receipt.transactionHash}`)
-                }
-                return receipt
-            })
+        let receipt = await retry(async ()=> {
+            return method(...params).send({from: sender})
+        },retryOptions)
+
+        if(process.env.NODE_ENV='production'){
+            //console.log(`Deployed Method [${methodName}] with [${params}] - ${receipt.transactionHash}`)
+        }
+        return receipt
     } else {
         throw new Error(`${contract.options.name}.${methodName} is undefined`)
     }
@@ -64,23 +80,27 @@ const create = async (web3, DEPLOYER, Contract, ...arguments) => {
         name: Contract.NAME
     }
 
-        if (Contract.evm.bytecode.object === '') {
+    if (Contract.evm.bytecode.object === '') {
         throw new Error(`Constructor missing from ${Contract.NAME}; can't deploy.`)
     }
 
-
-
-    return new web3.eth.Contract(Contract.abi, contractDefaultOptions)
+    let contract = await retry(async()=>{
+        return new web3.eth.Contract(Contract.abi, contractDefaultOptions)
         .deploy({data: '0x' + Contract.evm.bytecode.object, arguments})
         .send()
         // FIXME https://github.com/ethereum/web3.js/issues/1253 workaround
-        .then(contract => {
-            if(process.env.NODE_ENV='production'){
-                //console.log(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
-            }
-            contract.setProvider(web3.currentProvider)
-            return contract
-        })
+    }, retryOptions)
+     
+    if(process.env.NODE_ENV='production'){
+        //console.log(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
+    }
+    contract.setProvider(web3.currentProvider)
+
+    db.set('deployedContract.'+Contract.NAME.toLowerCase(), {
+        'address': contract._address
+    }).write()
+
+    return contract
 }
 
 const balance = async (web3_or_eip20, account) => {
@@ -108,7 +128,9 @@ module.exports = {
     callAs,
     call,
     create,
-    balance
+    balance,
+    createInstance,
+    db
 }
 
 // Suppress this warning:
