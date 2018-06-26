@@ -45,7 +45,7 @@ describe('Deployment', function () {
         expect(symbol).equal('TOKUSD')
     })
 
-    const MAX_COST = 600 /* USD */;
+    const MAX_COST = 700 /* USD */;
     it(`does NOT cost more than ${MAX_COST} USD for the deployer`, async () => {
         // Source: https://coinmarketcap.com/currencies/ethereum/
         const USD_PER_ETH = toBN(1378) //use All Time High price to gauge

@@ -203,7 +203,7 @@ describe("Limits:", function () {
             expect(await call(limitController, "mintLimitCounter")).to.eq(1)
         })
 
-        it('Can never set offset time to <-11 hours and >14 hours', async ()=> {
+        it('Can never set offset time to <11 hours and >14 hours', async ()=> {
             let delayHours = -12 * 3600
             await expectThrow(async ()=>{
                 await send(limitSetting, SYSTEM_ADMIN, "setLimitCounterResetTimeOffset", delayHours)
