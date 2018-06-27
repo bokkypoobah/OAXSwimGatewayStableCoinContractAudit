@@ -70,30 +70,35 @@ server.listen(port, hostname, async (err, result) => {
     logAccounts(state)
     logMnemonic(state)
 
-    if (args[0] === '--no-deploy') {
-        log('\nContracts are not deployed again...')
-    } else {
-        log('\nCompiling and deploying contracts...')
+    const web3 = new Web3(new HDWalletProvider(truffleMnemonic, config.get('remoteNode'), 5)) //options: https://api.myetherapi.com/rop
 
-        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, config.get('remoteNode'), 5)) //options: https://api.myetherapi.com/rop
+    const accounts = state.accounts
+    const addresses = Object.keys(accounts)
+    const [
+        DEPLOYER,
+        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+        SYSTEM_ADMIN_1, MONEY_OPERATOR_1,
+        SYSTEM_ADMIN_2, MONEY_OPERATOR_2,
+        MINT_FEE_COLLECTOR, 
+        BURN_FEE_COLLECTOR, 
+        TRANSFER_FEE_COLLECTOR, 
+        NEGATIVE_INTEREST_RATE_COLLECTOR,
+        
+    ] = addresses
+    const SYSTEM_ADMIN_GROUP = [SYSTEM_ADMIN_1, SYSTEM_ADMIN_2]
+    const MONEY_OPERATOR_GROUP = [MONEY_OPERATOR_1, MONEY_OPERATOR_2]
 
-        const accounts = state.accounts
-        const addresses = Object.keys(accounts)
-        const [
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            MINT_FEE_COLLECTOR, 
-            BURN_FEE_COLLECTOR, 
-            TRANSFER_FEE_COLLECTOR, 
-            NEGATIVE_INTEREST_RATE_COLLECTOR
-        ] = addresses
+    const block = await web3.eth.getBlockNumber()
+    log(`Block Number:  ${block}`)
+    const balance = await web3.eth.getBalance(DEPLOYER)
+    log(`Balance:       ${web3.utils.fromWei(balance,'ether')}`)
+    log()
 
-        const block = await web3.eth.getBlockNumber()
-        log(`Block Number: ${block}`)
-        const balance = await web3.eth.getBalance(DEPLOYER)
-        log(`Balance: ${balance}`)
-
-        try {
+    switch(args[0]) {
+        case '--no-deploy':
+            log('\nContracts are not deployed again...')
+            break;
+        case '--init-contract':
             /**
              * 1) Deploy Initial Contract
              */
@@ -101,30 +106,51 @@ server.listen(port, hostname, async (err, result) => {
                 token
             } = await deployer.initContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
 
+            break;
+        case '--init-setting':
             /**
              * 2) Deploy Settings for Initial Contract
              */
             await deployer.initSettings(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
-            
+            break;
+        case '--gatewithfee-contract':
             /**
              * 3) Deploy GateWithFee Contract
              */
             const {
                 gateWithFee
             } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
-            
+            break;
+        case '--gatewithfee-setting':
             /**
-             * 4)  Deploy Settings for GateWithFee Contract
+             * 4) Deploy Settings for GateWithFee Contract
              */
             await deployer.gateWithFeeSetting(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
+            break;
+        case '--multisig-contract':
+            /**
+             * 5) Deploy Contract for SYS_ADMIN_GROUP AND MONEY_OPERATOR_GROUP
+             */
+            let { SYSTEM_ADMIN_GROUP_CONTRACT } = await deployer.multisigContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN_GROUP, config.get('multisig.quorum'), config.get('multisig.window'))
+            let { MONEY_OPERATOR_GROUP_CONTRACT } = await deployer.multisigContract(solc(__dirname, './solc-input.json'), DEPLOYER, MONEY_OPERATOR_GROUP, config.get('multisig.quorum'), config.get('multisig.window'))
+            break;
+        case '--calldata':
+            const contractName = args[1]
+            const methodName = args[2]
+            log('Call Data')
+            log('==================')
+            log(await deployer.toCallData(contractName, methodName, ...process.argv.slice(5)))
             
-        } catch(e){
-            log(e);
-        }
-
+        //     /**
+        //      * 6) Deploy Settings for Multisig Contract
+        //      */
+        //     await deployer.multisigSetting(DEPLOYER,SYSTEM_ADMIN,MONEY_OPERATOR,SYSTEM_ADMIN_GROUP,MONEY_OPERATOR_GROUP,config.get("multisig.SYSTEM_ADMIN_GROUP_CONTRACT"),config.get("multisig.MONEY_OPERATOR_GROUP_CONTRACT"))
+            break;
+        default:
+            log('\nContracts are not deployed again...')
     }
 
-    log(`\nListening on http://${hostname}:${port}`)
+    process.exit(0)
 })
 
 
