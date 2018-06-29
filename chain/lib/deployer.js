@@ -21,6 +21,7 @@ let token
 let transferFeeController
 let limitController
 let limitSetting
+let dsGroupFactory
 
 const allowRoleForContract = ([sender, role, contract, method]) => {
     send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
@@ -49,7 +50,8 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         TransferFeeController,
         AddressControlStatus,
         LimitController,
-        LimitSetting
+        LimitSetting,
+        DSGroupFactory
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
@@ -66,6 +68,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     mockMembershipAuthority = await deploy(MockMembershipAuthority)
     membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
+    dsGroupFactory = await deploy(DSGroupFactory)
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = SYSTEM_ADMIN
@@ -123,7 +126,8 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         token,
         transferFeeController,
         limitController,
-        limitSetting
+        limitSetting,
+        dsGroupFactory
     }
 }
 
@@ -233,7 +237,8 @@ const base = async (web3,
         token,
         gate,
         limitController,
-        limitSetting
+        limitSetting,
+        dsGroupFactory,
     }
 }
 
@@ -319,8 +324,23 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     return {gateWithFee}
 }
 
+const deployMultisig = async (web3, contractRegistry, DEPLOYER, members, quorum, window) => {
+    const deploy = (...args) => create(web3, DEPLOYER, ...args)
+    
+    const {
+        DSGroup
+    } = contractRegistry
+    
+    const dsGroup = await deploy(DSGroup, members, quorum, window)
+    
+    return {
+        dsGroup
+    }
+}
+
 module.exports = {
     init,
     base,
-    deployGateWithFee
+    deployGateWithFee,
+    deployMultisig
 }

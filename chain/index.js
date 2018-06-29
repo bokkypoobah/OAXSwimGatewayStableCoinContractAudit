@@ -2,7 +2,7 @@ const fs = require('fs')
 const HDWalletProvider = require("truffle-hdwallet-provider")
 const config = require('config')
 const {Ganache, solc} = require('chain-dsl/test/helpers')
-const {Web3} = require('chain-dsl')
+const {Web3,wad} = require('chain-dsl')
 const deployer = require('./lib/deployerProd')
 const args = process.argv.slice(2)
 const port = 3000
@@ -70,61 +70,90 @@ server.listen(port, hostname, async (err, result) => {
     logAccounts(state)
     logMnemonic(state)
 
-    if (args[0] === '--no-deploy') {
-        log('\nContracts are not deployed again...')
-    } else {
-        log('\nCompiling and deploying contracts...')
+    const web3 = new Web3(new HDWalletProvider(truffleMnemonic, config.get('remoteNode'), 5)) //options: https://api.myetherapi.com/rop
 
-        const web3 = new Web3(new HDWalletProvider(truffleMnemonic, config.get('remoteNode'), 5)) //options: https://api.myetherapi.com/rop
+    const accounts = state.accounts
+    const addresses = Object.keys(accounts)
+    const [
+        DEPLOYER,
+        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+        SYSTEM_ADMIN_1, MONEY_OPERATOR_1,
+        SYSTEM_ADMIN_2, MONEY_OPERATOR_2,
+        MINT_FEE_COLLECTOR, 
+        BURN_FEE_COLLECTOR, 
+        TRANSFER_FEE_COLLECTOR, 
+        NEGATIVE_INTEREST_RATE_COLLECTOR,
+        
+    ] = addresses
+    const SYSTEM_ADMIN_GROUP = [SYSTEM_ADMIN_1, SYSTEM_ADMIN_2]
+    const MONEY_OPERATOR_GROUP = [MONEY_OPERATOR_1, MONEY_OPERATOR_2]
 
-        const accounts = state.accounts
-        const addresses = Object.keys(accounts)
-        const [
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            MINT_FEE_COLLECTOR, 
-            BURN_FEE_COLLECTOR, 
-            TRANSFER_FEE_COLLECTOR, 
-            NEGATIVE_INTEREST_RATE_COLLECTOR
-        ] = addresses
+    const block = await web3.eth.getBlockNumber()
+    log(`Block Number:  ${block}`)
+    const balance = await web3.eth.getBalance(DEPLOYER)
+    log(`Balance:       ${web3.utils.fromWei(balance,'ether')}`)
+    log()
 
-        const block = await web3.eth.getBlockNumber()
-        log(`Block Number: ${block}`)
-        const balance = await web3.eth.getBalance(DEPLOYER)
-        log(`Balance: ${balance}`)
-
-        try {
+    switch(args[0]) {
+        case '--no-deploy':
+            log('\nContracts are not deployed again...')
+            break;
+        case '--init-contract':
             /**
              * 1) Deploy Initial Contract
              */
             const {
                 token
-            } = await deployer.initContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
+            } = await deployer.initContract(solc(__dirname, './solc-input.json'), 
+                DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+                config.get("general.TRANSFER_FEE_COLLECTOR"),
+                config.get("general.CONFISCATE_COLLECTOR"),
+                wad(config.get("limit.MINT_LIMIT")),
+                wad(config.get("limit.BURN_LIMIT")),
+                config.get("limit.DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET"),
+                config.get("limit.DEFAULT_SETTING_DELAY_HOURS")
+            )
 
+            break;
+        case '--init-setting':
             /**
              * 2) Deploy Settings for Initial Contract
              */
             await deployer.initSettings(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
-            
+            break;
+        case '--gatewithfee-contract':
             /**
              * 3) Deploy GateWithFee Contract
              */
             const {
                 gateWithFee
             } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
-            
+            break;
+        case '--gatewithfee-setting':
             /**
-             * 4)  Deploy Settings for GateWithFee Contract
+             * 4) Deploy Settings for GateWithFee Contract
              */
             await deployer.gateWithFeeSetting(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
-            
-        } catch(e){
-            log(e);
-        }
-
+            break;
+        case '--multisig-contract':
+            /**
+             * 5) Deploy Contract for SYS_ADMIN_GROUP AND MONEY_OPERATOR_GROUP
+             */
+            let { SYSTEM_ADMIN_GROUP_CONTRACT } = await deployer.multisigContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN_GROUP, config.get('multisig.quorum'), config.get('multisig.window'))
+            let { MONEY_OPERATOR_GROUP_CONTRACT } = await deployer.multisigContract(solc(__dirname, './solc-input.json'), DEPLOYER, MONEY_OPERATOR_GROUP, config.get('multisig.quorum'), config.get('multisig.window'))
+            break;
+        case '--calldata':
+            const contractName = args[1]
+            const methodName = args[2]
+            log('Call Data')
+            log('==================')
+            log(await deployer.toCallData(contractName, methodName, ...process.argv.slice(5)))
+            break;
+        default:
+            log('\nContracts are not deployed again...')
     }
 
-    log(`\nListening on http://${hostname}:${port}`)
+    process.exit(0)
 })
 
 

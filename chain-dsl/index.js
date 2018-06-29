@@ -50,7 +50,7 @@ const send = async (contract, sender, methodName, ...params) => {
         },retryOptions)
 
         if(process.env.NODE_ENV='production'){
-            //console.log(`Deployed Method [${methodName}] with [${params}] - ${receipt.transactionHash}`)
+            console.log(`Deployed Method [${methodName}] with [${params}] - ${receipt.transactionHash}`)
         }
         return receipt
     } else {
@@ -92,7 +92,7 @@ const create = async (web3, DEPLOYER, Contract, ...arguments) => {
     }, retryOptions)
      
     if(process.env.NODE_ENV='production'){
-        //console.log(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
+        console.log(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
     }
     contract.setProvider(web3.currentProvider)
 

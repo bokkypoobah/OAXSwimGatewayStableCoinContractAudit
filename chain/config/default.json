@@ -1,4 +1,20 @@
 {
     "mnemonic": "castle float example cancel hurt victory intact illegal matter asthma assist undo only lock high",
-    "remoteNode": " http://58.152.87.19:8545"
+    "remoteNode": "http://58.152.87.19:8545",
+    "multisig": {
+        "quorum": "2",
+        "window": "86400000",
+        "SYSTEM_ADMIN_GROUP_CONTRACT": "0x325f4c45713701Bec92c87Db4B863fE101f5Dd19",
+        "MONEY_OPERATOR_GROUP_CONTRACT": "0xc03570B9e192060C65a0EE50e1223EAFC67179ff"
+    },
+    "limit":{
+        "MINT_LIMIT": 10000,
+        "BURN_LIMIT": 10000,
+        "DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET": 0,
+        "DEFAULT_SETTING_DELAY_HOURS": 0
+    },
+    "general": {
+        "TRANSFER_FEE_COLLECTOR": "0x0",
+        "CONFISCATE_COLLECTOR": "0x0"
+    }
 }

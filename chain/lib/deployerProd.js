@@ -14,6 +14,7 @@ let {
     limitController, limitSetting, gateWithFee, web3
 } = require('./contractInstances')
 
+
 const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
         FEE_COLLECTOR = null,
         CONFISCATE_COLLECTOR = null,
@@ -74,28 +75,17 @@ const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERAT
     )
 
     return {
-        kycAmlStatus,
-        addressControlStatus,
-        noKycAmlRule,
-        boundaryKycAmlRule,
-        fullKycAmlRule,
-        mockMembershipAuthority,
-        membershipRule,
-        fiatTokenGuard,
-        gateRoles,
-        token,
-        transferFeeController,
-        limitController,
-        limitSetting
+
+        
     }
 }
 
 const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)=>{
-
+    
     const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
     const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
     const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
-
+    
     const roleContractRules = [
         [DEPLOYER, KYC_OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
         [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
@@ -229,9 +219,38 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPE
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipRule))
 
+}
+
+const multisigContract = async (contractRegistry, DEPLOYER, members, quorum, window) => {
+    const deploy = (...args) => create(web3, DEPLOYER, ...args)
+    
+    const {
+        DSGroup
+    } = contractRegistry
+ 
+    const dsGroup = await deploy(DSGroup, members, quorum, window)
+    
+    return {
+        dsGroup
+    }
+}
+
+const multisigSetting = async (DEPLOYER, SYSTEM_ADMIN, MONEY_OPERATOR, SYSTEM_ADMIN_GROUP, MONEY_OPERATOR_GROUP, SYSTEM_ADMIN_GROUP_CONTRACT, MONEY_OPERATOR_GROUP_CONTRACT) => {
+
+    const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
+    const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
+    
+    // Assign new permission 
+    await send(gateRoles, SYSTEM_ADMIN, 'setUserRole', SYSTEM_ADMIN_GROUP, SYSTEM_ADMIN_ROLE, true)
+    await send(gateRoles, MONEY_OPERATOR, 'setUserRole', MONEY_OPERATOR_GROUP, MONEY_OPERATOR_ROLE, true)
+
+}
+
+const toCallData = async (contractName, methodName, ...args) => {
+    return eval(contractName).methods[methodName](...args).encodeABI()
 }
 
 module.exports = {
@@ -239,4 +258,7 @@ module.exports = {
     initSettings,
     gateWithFeeContract,
     gateWithFeeSetting,
+    multisigContract,
+    multisigSetting,
+    toCallData
 }
