@@ -219,8 +219,8 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPE
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipRule))
 
 }
 
