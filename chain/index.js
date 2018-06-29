@@ -2,7 +2,7 @@ const fs = require('fs')
 const HDWalletProvider = require("truffle-hdwallet-provider")
 const config = require('config')
 const {Ganache, solc} = require('chain-dsl/test/helpers')
-const {Web3} = require('chain-dsl')
+const {Web3,wad} = require('chain-dsl')
 const deployer = require('./lib/deployerProd')
 const args = process.argv.slice(2)
 const port = 3000
@@ -104,7 +104,15 @@ server.listen(port, hostname, async (err, result) => {
              */
             const {
                 token
-            } = await deployer.initContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,)
+            } = await deployer.initContract(solc(__dirname, './solc-input.json'), 
+                DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+                config.get("general.TRANSFER_FEE_COLLECTOR"),
+                config.get("general.CONFISCATE_COLLECTOR"),
+                wad(config.get("limit.MINT_LIMIT")),
+                wad(config.get("limit.BURN_LIMIT")),
+                config.get("limit.DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET"),
+                config.get("limit.DEFAULT_SETTING_DELAY_HOURS")
+            )
 
             break;
         case '--init-setting':
@@ -140,11 +148,6 @@ server.listen(port, hostname, async (err, result) => {
             log('Call Data')
             log('==================')
             log(await deployer.toCallData(contractName, methodName, ...process.argv.slice(5)))
-            
-        //     /**
-        //      * 6) Deploy Settings for Multisig Contract
-        //      */
-        //     await deployer.multisigSetting(DEPLOYER,SYSTEM_ADMIN,MONEY_OPERATOR,SYSTEM_ADMIN_GROUP,MONEY_OPERATOR_GROUP,config.get("multisig.SYSTEM_ADMIN_GROUP_CONTRACT"),config.get("multisig.MONEY_OPERATOR_GROUP_CONTRACT"))
             break;
         default:
             log('\nContracts are not deployed again...')
