@@ -8,32 +8,20 @@ const {
     create
 } = require('chain-dsl')
 
-let gateRoles
-let fiatTokenGuard
-let kycAmlStatus
-let addressControlStatus
-let noKycAmlRule
-let boundaryKycAmlRule
-let fullKycAmlRule
-let mockMembershipAuthortiy
-let membershipRule
-let token
-let transferFeeController
-let limitController
-let limitSetting
-let dsGroupFactory
+let {
+    kycAmlStatus, addressControlStatus, noKycAmlRule, boundaryKycAmlRule, fullKycAmlRule, 
+    mockMembershipAuthority, membershipRule, fiatTokenGuard, gateRoles, token, transferFeeController, 
+    limitController, limitSetting, gateWithFee, web3
+} = require('./contractInstances')
 
-const allowRoleForContract = ([sender, role, contract, method]) => {
-    send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
-}
-    
 
-const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-                    FEE_COLLECTOR = null,
-                    MINT_LIMIT = wad(10000),
-                    BURN_LIMIT = wad(10000),
-                    DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
-                    DEFAULT_SETTING_DELAY_HOURS = 0
+const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+        FEE_COLLECTOR = null,
+        CONFISCATE_COLLECTOR = null,
+        MINT_LIMIT = wad(10000),
+        BURN_LIMIT = wad(10000),
+        DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
+        DEFAULT_SETTING_DELAY_HOURS = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
@@ -50,8 +38,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         TransferFeeController,
         AddressControlStatus,
         LimitController,
-        LimitSetting,
-        DSGroupFactory
+        LimitSetting
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
@@ -68,10 +55,13 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     mockMembershipAuthority = await deploy(MockMembershipAuthority)
     membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
-    dsGroupFactory = await deploy(DSGroupFactory)
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = SYSTEM_ADMIN
+    }
+
+    if (!CONFISCATE_COLLECTOR) {
+        CONFISCATE_COLLECTOR = SYSTEM_ADMIN
     }
 
     token = await deploy(
@@ -79,13 +69,23 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         address(fiatTokenGuard),
         web3.utils.utf8ToHex('TOKUSD'),
         FEE_COLLECTOR,
-        address(transferFeeController)
+        address(transferFeeController),
+        address(addressControlStatus),
+        CONFISCATE_COLLECTOR
     )
 
+    return {
+
+        
+    }
+}
+
+const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)=>{
+    
     const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
     const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
     const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
-
+    
     const roleContractRules = [
         [DEPLOYER, KYC_OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
         [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
@@ -107,142 +107,9 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     for (let [sender, role, contract, method] of roleContractRules) {
         await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
     }
-    // Development
-    // await Promise.all([
-    //     send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-    //     ...roleContractRules.map(allowRoleForContract),
-    // ])
-
-    return {
-        kycAmlStatus,
-        addressControlStatus,
-        noKycAmlRule,
-        boundaryKycAmlRule,
-        fullKycAmlRule,
-        mockMembershipAuthority,
-        membershipRule,
-        fiatTokenGuard,
-        gateRoles,
-        token,
-        transferFeeController,
-        limitController,
-        limitSetting,
-        dsGroupFactory
-    }
 }
 
-const defaultTokenGuardRules = [
-    ['setName(bytes32)'],
-    ['mint(uint256)'], //need this because it calls mint(address,uint256)
-    ['mint(address,uint256)'],
-    ['burn(uint256)'],//need this because it calls burn(address,uint256)
-    ['burn(address,uint256)'],
-    ['setERC20Authority(address)'],
-    ['setTokenAuthority(address)'],
-    ['start()'],
-    ['stop()'],
-    ['setTransferFeeCollector(address)'],
-    ['setTransferFeeController(address)']
-]
-
-const base = async (web3,
-                    contractRegistry,
-                    DEPLOYER,
-                    SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-                    FEE_COLLECTOR = null,
-                    MINT_LIMIT = wad(10000),
-                    BURN_LIMIT = wad(10000),
-) => {
-    const deploy = (...args) => create(web3, DEPLOYER, ...args)
-
-    if (!FEE_COLLECTOR) {
-        FEE_COLLECTOR = SYSTEM_ADMIN
-    }
-
-    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT)
-
-    const {
-        Gate
-    } = contractRegistry
-
-    const gate = await deploy(Gate, address(gateRoles), address(token), address(limitController))
-
-    // Allow decoding events emitted by token methods when called from within gate methods
-    const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
-    gate.options.jsonInterface = gate.options.jsonInterface.concat(tokenEventABIs)
-
-    const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
-    const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
-    const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
-
-    const defaultGateOperatorMethods = [
-        [MONEY_OPERATOR_ROLE, 'mint(uint256)'],
-        [MONEY_OPERATOR_ROLE, 'mint(address,uint256)'],
-        [MONEY_OPERATOR_ROLE, 'burn(uint256)'],
-        [MONEY_OPERATOR_ROLE, 'burn(address,uint256)'],
-        [SYSTEM_ADMIN_ROLE, 'start()'],
-        [SYSTEM_ADMIN_ROLE, 'stop()'],
-        [SYSTEM_ADMIN_ROLE, 'startToken()'],
-        [SYSTEM_ADMIN_ROLE, 'stopToken()'],
-        [SYSTEM_ADMIN_ROLE, 'setERC20Authority(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setTokenAuthority(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)']
-    ]
-
-    const mapGateOperatorRules = ([role, methodSig]) => {
-        return [DEPLOYER, role, gate, methodSig]
-    }
-
-    const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules)
-
-    const permitFiatTokenGuard = ([src, dst, method]) =>{
-        send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
-    }
-        
-
-    const mapTokenGuardRules = ([methodSig]) => {
-        return [gate, token, methodSig]
-    }
-
-    //todo factor me out as default
-    const gateGuardRules = [
-        [gate, limitController, 'bumpMintLimitCounter(uint256)'],
-        [gate, limitController, 'bumpBurnLimitCounter(uint256)'],
-    ]
-    const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateGuardRules)
-
-    await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
-    await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
-    await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)    
-    for(let [sender, role, contract, method] of roleContractRules){
-        await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
-    }
-    for(let [src, dst, method] of gateAsGuardToOtherContractRules){
-        await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
-    }
-
-    await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
-    await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
-
-    return {
-        kycAmlStatus,
-        addressControlStatus,
-        noKycAmlRule,
-        boundaryKycAmlRule,
-        fullKycAmlRule,
-        mockMembershipAuthortiy,
-        membershipRule,
-        fiatTokenGuard,
-        gateRoles,
-        token,
-        gate,
-        limitController,
-        limitSetting,
-        dsGroupFactory,
-    }
-}
-
-const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR,) => {
+const gateWithFeeContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const {
         GateWithFee
@@ -254,6 +121,15 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
     gateWithFee.options.jsonInterface = gateWithFee.options.jsonInterface.concat(tokenEventABIs)
 
+    return gateWithFee
+}
+
+const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)=>{
+
+    // Allow decoding events emitted by token methods when called from within gate methods
+    const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
+    gateWithFee.options.jsonInterface = gateWithFee.options.jsonInterface.concat(tokenEventABIs)
+    
     const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
     const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
     const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
@@ -261,6 +137,25 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     const mapGateOperatorRules = ([role, methodSig]) => {
         return [DEPLOYER, role, gateWithFee, methodSig]
     }
+
+    const defaultTokenGuardRules = [
+        ['setName(bytes32)'],
+        ['mint(uint256)'], //need this because it calls mint(address,uint256)
+        ['mint(address,uint256)'],
+        ['burn(uint256)'],//need this because it calls burn(address,uint256)
+        ['burn(address,uint256)'],
+        ['setERC20Authority(address)'],
+        ['setTokenAuthority(address)'],
+        ['start()'],
+        ['stop()'],
+        ['setTransferFeeCollector(address)'],
+        ['setTransferFeeController(address)'],
+        ['confiscate(address,uint256)'],
+        ['unConfiscate(address,uint256)'],
+        ['setConfiscateCollector(address)'],
+        ['enableConfiscate()'],
+        ['disableConfiscate()']
+    ]
 
     const defaultGateOperatorMethods = [
         [MONEY_OPERATOR_ROLE, 'mint(uint256)'],
@@ -273,7 +168,12 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         [SYSTEM_ADMIN_ROLE, 'stopToken()'],
         [SYSTEM_ADMIN_ROLE, 'setERC20Authority(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTokenAuthority(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)']
+        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)'],
+        [MONEY_OPERATOR_ROLE, 'confiscate(address,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'unConfiscate(address,uint256)'],
+        [SYSTEM_ADMIN_ROLE, 'setConfiscateCollector(address)'],
+        [SYSTEM_ADMIN_ROLE, 'enableConfiscate()'],
+        [SYSTEM_ADMIN_ROLE, 'disableConfiscate()']
     ]
 
     const gateWithFeeOperatorMethodsRoleRules = [
@@ -311,6 +211,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
     await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
     await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)
+
     for(let [sender, role, contract, method] of roleContractRules){
         await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
     }
@@ -318,19 +219,18 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipRule))
 
-    return {gateWithFee}
 }
 
-const deployMultisig = async (web3, contractRegistry, DEPLOYER, members, quorum, window) => {
+const multisigContract = async (contractRegistry, DEPLOYER, members, quorum, window) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     
     const {
         DSGroup
     } = contractRegistry
-    
+ 
     const dsGroup = await deploy(DSGroup, members, quorum, window)
     
     return {
@@ -338,9 +238,27 @@ const deployMultisig = async (web3, contractRegistry, DEPLOYER, members, quorum,
     }
 }
 
+const multisigSetting = async (DEPLOYER, SYSTEM_ADMIN, MONEY_OPERATOR, SYSTEM_ADMIN_GROUP, MONEY_OPERATOR_GROUP, SYSTEM_ADMIN_GROUP_CONTRACT, MONEY_OPERATOR_GROUP_CONTRACT) => {
+
+    const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
+    const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
+    
+    // Assign new permission 
+    await send(gateRoles, SYSTEM_ADMIN, 'setUserRole', SYSTEM_ADMIN_GROUP, SYSTEM_ADMIN_ROLE, true)
+    await send(gateRoles, MONEY_OPERATOR, 'setUserRole', MONEY_OPERATOR_GROUP, MONEY_OPERATOR_ROLE, true)
+
+}
+
+const toCallData = async (contractName, methodName, ...args) => {
+    return eval(contractName).methods[methodName](...args).encodeABI()
+}
+
 module.exports = {
-    init,
-    base,
-    deployGateWithFee,
-    deployMultisig
+    initContract,
+    initSettings,
+    gateWithFeeContract,
+    gateWithFeeSetting,
+    multisigContract,
+    multisigSetting,
+    toCallData
 }

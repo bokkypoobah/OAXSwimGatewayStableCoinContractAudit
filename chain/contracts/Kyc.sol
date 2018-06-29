@@ -165,7 +165,7 @@ contract MembershipAuthorityInterface {
 }
 
 
-contract MembershipRule is DSAuth, FullKycAmlRule {
+contract MembershipRule is DSAuth, BoundaryKycAmlRule {
 
     MembershipAuthorityInterface membershipAuthority;
 
@@ -173,7 +173,7 @@ contract MembershipRule is DSAuth, FullKycAmlRule {
         DSAuthority _authority, 
         AddressControlStatus addressControlStatus_, 
         KycAmlStatus kycAmlStatus_, address membershipAuthority_) 
-    FullKycAmlRule(addressControlStatus_, kycAmlStatus_) 
+    BoundaryKycAmlRule(addressControlStatus_, kycAmlStatus_) 
     public {
         require(address(_authority) != address(0));
 

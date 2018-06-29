@@ -72,7 +72,6 @@ describe("Limits:", function () {
             DEPLOYER,
             SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             SYSTEM_ADMIN,
-            SYSTEM_ADMIN,
             DEFAULT_DAILY_MINT_LIMIT,
             DEFAULT_DAILY_BURN_LIMIT,
             DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
@@ -203,7 +202,7 @@ describe("Limits:", function () {
             expect(await call(limitController, "mintLimitCounter")).to.eq(1)
         })
 
-        it('Can never set offset time to <-11 hours and >14 hours', async ()=> {
+        it('Can never set offset time to <11 hours and >14 hours', async ()=> {
             let delayHours = -12 * 3600
             await expectThrow(async ()=>{
                 await send(limitSetting, SYSTEM_ADMIN, "setLimitCounterResetTimeOffset", delayHours)

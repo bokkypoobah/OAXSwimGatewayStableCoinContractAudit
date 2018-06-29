@@ -189,6 +189,12 @@ describe('Gate', function () {
             expect(await call(token, "balanceOf", CUSTOMER)).eq(123)
         })
 
+        it('can not mint by using token contract', async () => {
+            await expectThrow(async () =>
+                send(token, MONEY_OPERATOR, mint, CUSTOMER, 123))
+        })
+
+
         it('is the only actor who can mint', async () => {
             await expectThrow(async () =>
                 send(gate, CUSTOMER, mint, CUSTOMER, 123))

@@ -298,10 +298,11 @@ describe("Asset Gateway", function () {
                 })
             })
 
-            it("Able to mint and burn if the address is member", async () => {
+            it("Able to mint and burn and transfer if the address is member", async () => {
                 await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
                 await send(gate, CUSTOMER1, deposit, AMT)
                 await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT)
+                await send(token, CUSTOMER1, transfer, CUSTOMER2, AMT)
             })
 
 

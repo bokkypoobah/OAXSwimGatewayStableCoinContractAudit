@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "chain-dsl": "file:../chain-dsl",
+    "config": "^1.30.0",
     "ethereumjs-tx": "^1.3.4",
     "truffle-hdwallet-provider": "0.0.5"
   },

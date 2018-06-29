@@ -14,6 +14,14 @@
           "evm.sourceMap"
         ]
       },
+      "dsgroup.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
       "solovault.sol": {
         "*": [
           "metadata",
@@ -132,6 +140,11 @@
     "dappsys.sol": {
       "urls": [
         "contracts/dappsys.sol"
+      ]
+    },
+    "dsgroup.sol": {
+      "urls": [
+        "contracts/test/dsgroup.sol"
       ]
     },
     "solovault.sol": {
