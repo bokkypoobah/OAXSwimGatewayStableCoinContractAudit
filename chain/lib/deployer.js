@@ -30,7 +30,6 @@ const allowRoleForContract = ([sender, role, contract, method]) => {
 
 const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
                     FEE_COLLECTOR = null,
-                    CONFISCATE_COLLECTOR = null,
                     MINT_LIMIT = wad(10000),
                     BURN_LIMIT = wad(10000),
                     DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
@@ -75,20 +74,13 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         FEE_COLLECTOR = SYSTEM_ADMIN
     }
 
-    if (!CONFISCATE_COLLECTOR) {
-        CONFISCATE_COLLECTOR = SYSTEM_ADMIN
-    }
-
     token = await deploy(
         FiatToken,
         address(fiatTokenGuard),
         web3.utils.utf8ToHex('TOKUSD'),
         FEE_COLLECTOR,
-        address(transferFeeController),
-        address(addressControlStatus),
-        CONFISCATE_COLLECTOR
+        address(transferFeeController)
     )
-    //confiscateToken = await deploy(ConfiscateToken, address(fiatTokenGuard), web3.utils.utf8ToHex('TOKUSD'), address(addressControlStatus), address(token), FEE_COLLECTOR)
 
     const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
     const KYC_OPERATOR_ROLE = await call(gateRoles, 'KYC_OPERATOR')
@@ -150,12 +142,7 @@ const defaultTokenGuardRules = [
     ['start()'],
     ['stop()'],
     ['setTransferFeeCollector(address)'],
-    ['setTransferFeeController(address)'],
-    ['confiscate(address,uint256)'],
-    ['unConfiscate(address,uint256)'],
-    ['setConfiscateCollector(address)'],
-    ['enableConfiscate()'],
-    ['disableConfiscate()']
+    ['setTransferFeeController(address)']
 ]
 
 const base = async (web3,
@@ -163,7 +150,6 @@ const base = async (web3,
                     DEPLOYER,
                     SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
                     FEE_COLLECTOR = null,
-                    CONFISCATE_COLLECTOR = null,
                     MINT_LIMIT = wad(10000),
                     BURN_LIMIT = wad(10000),
 ) => {
@@ -173,11 +159,7 @@ const base = async (web3,
         FEE_COLLECTOR = SYSTEM_ADMIN
     }
 
-    if (!CONFISCATE_COLLECTOR) {
-        CONFISCATE_COLLECTOR = SYSTEM_ADMIN
-    }
-
-    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, CONFISCATE_COLLECTOR, MINT_LIMIT, BURN_LIMIT)
+    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT)
 
     const {
         Gate
@@ -204,12 +186,7 @@ const base = async (web3,
         [SYSTEM_ADMIN_ROLE, 'stopToken()'],
         [SYSTEM_ADMIN_ROLE, 'setERC20Authority(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTokenAuthority(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)'],
-        [MONEY_OPERATOR_ROLE, 'confiscate(address,uint256)'],
-        [MONEY_OPERATOR_ROLE, 'unConfiscate(address,uint256)'],
-        [SYSTEM_ADMIN_ROLE, 'setConfiscateCollector(address)'],
-        [SYSTEM_ADMIN_ROLE, 'enableConfiscate()'],
-        [SYSTEM_ADMIN_ROLE, 'disableConfiscate()']
+        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)']
     ]
 
     const mapGateOperatorRules = ([role, methodSig]) => {
@@ -296,12 +273,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         [SYSTEM_ADMIN_ROLE, 'stopToken()'],
         [SYSTEM_ADMIN_ROLE, 'setERC20Authority(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTokenAuthority(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)'],
-        [MONEY_OPERATOR_ROLE, 'confiscate(address,uint256)'],
-        [MONEY_OPERATOR_ROLE, 'unConfiscate(address,uint256)'],
-        [SYSTEM_ADMIN_ROLE, 'setConfiscateCollector(address)'],
-        [SYSTEM_ADMIN_ROLE, 'enableConfiscate()'],
-        [SYSTEM_ADMIN_ROLE, 'disableConfiscate()']
+        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)']
     ]
 
     const gateWithFeeOperatorMethodsRoleRules = [

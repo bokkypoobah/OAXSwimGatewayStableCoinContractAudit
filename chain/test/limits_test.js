@@ -72,7 +72,6 @@ describe("Limits:", function () {
             DEPLOYER,
             SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             SYSTEM_ADMIN,
-            SYSTEM_ADMIN,
             DEFAULT_DAILY_MINT_LIMIT,
             DEFAULT_DAILY_BURN_LIMIT,
             DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
