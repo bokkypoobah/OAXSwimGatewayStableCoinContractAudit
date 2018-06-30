@@ -10,6 +10,9 @@ import "TokenAuth.sol";
 contract AddressControlStatus is DSAuth {
     mapping (address => bool) public frozenAddress;
 
+    event FreezeAddress(address indexed guy);
+    event UnfreezeAddress(address indexed guy);
+
     function AddressControlStatus(DSAuthority _authority) public {
         require(address(_authority) != address(0));
 
@@ -19,10 +22,12 @@ contract AddressControlStatus is DSAuth {
 
     function freezeAddress(address address_) public auth {
         frozenAddress[address_] = true;
+        FreezeAddress(address_);
     }
 
     function unfreezeAddress(address address_) public auth {
         frozenAddress[address_] = false;
+        UnfreezeAddress(address_);
     }
 
 }
@@ -30,6 +35,8 @@ contract AddressControlStatus is DSAuth {
 
 contract KycAmlStatus is DSAuth {
     mapping (address => bool) public kycVerified;
+
+    event KYCVerify(address indexed guy, bool isKycVerified);
 
     function KycAmlStatus(DSAuthority _authority) public {
         require(address(_authority) != address(0));
@@ -44,6 +51,7 @@ contract KycAmlStatus is DSAuth {
 
     function setKycVerified(address guy, bool _isKycVerified) public auth {
         kycVerified[guy] = _isKycVerified;
+        KYCVerify(guy, _isKycVerified);
     }
 }
 

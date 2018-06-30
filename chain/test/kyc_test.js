@@ -12,6 +12,7 @@ const {
     send,
     call,
     create,
+    txEvents
 } = require('chain-dsl')
 
 const deployer = require('../lib/deployer')
@@ -60,11 +61,23 @@ describe("Asset Gateway", function () {
     afterEach(async () => web3.evm.revert(snaps.pop()))
 
     it("operators can update others' KYC status", async () => {
-        await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER, true)
+        let events = await txEvents(send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER, true))
         expect(await call(kycAmlStatus, kycVerified, CUSTOMER)).eql(true)
 
-        await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER, false)
+        expect(events).containSubset([{
+            'NAME': 'KYCVerify',
+            'guy': CUSTOMER,
+            'isKycVerified': true
+        }])
+
+        let events2 = await txEvents(send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER, false))
         expect(await call(kycAmlStatus, kycVerified, CUSTOMER)).eql(false)
+
+        expect(events2).containSubset([{
+            'NAME': 'KYCVerify',
+            'guy': CUSTOMER,
+            'isKycVerified': null // To be fixed in https://github.com/ethereum/web3.js/pull/1627
+        }])
     })
 
     it("operators can update their own KYC status", async () => {
