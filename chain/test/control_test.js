@@ -12,6 +12,7 @@ const {
     address,
     send,
     call,
+    txEvents,
 } = require('chain-dsl')
 
 const deployer = require('../lib/deployer')
@@ -115,7 +116,12 @@ describe("Control", function () {
             expect(await call(token, "balanceOf", CUSTOMER)).eq(10)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
 
-            await send(addressControlStatus, MONEY_OPERATOR, "freezeAddress", CUSTOMER)
+            let events = await txEvents(send(addressControlStatus, MONEY_OPERATOR, "freezeAddress", CUSTOMER))
+
+            expect(events).containSubset([{
+                NAME: 'FreezeAddress',
+                guy: CUSTOMER
+            }])
 
             // await expectThrow(async () => {
             //     await send(token, CUSTOMER, "transfer", CUSTOMER1, 1)
@@ -129,7 +135,13 @@ describe("Control", function () {
             //     await send(token, CUSTOMER, "approve", address(gate), 10)
             // })
 
-            await send(addressControlStatus, MONEY_OPERATOR, "unfreezeAddress", CUSTOMER)
+            events = await txEvents(send(addressControlStatus, MONEY_OPERATOR, "unfreezeAddress", CUSTOMER))
+
+
+            expect(events).containSubset([{
+                NAME: 'UnfreezeAddress',
+                guy: CUSTOMER
+            }])
 
             await expectNoAsyncThrow(async () => {
                 await send(token, CUSTOMER, "transfer", CUSTOMER1, 1)
