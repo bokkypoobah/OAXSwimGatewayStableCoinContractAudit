@@ -192,11 +192,6 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPE
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules).concat(gateWithFeeOperatorMethodsRoleRules.map(mapGateOperatorRules))
 
-
-    const permitFiatTokenGuard = ([src, dst, method]) =>
-        send(fiatTokenGuard, DEPLOYER, 'permit',
-            bytes32(address(src)), bytes32(address(dst)), sig(method))
-
     const mapTokenGuardRules = ([methodSig]) => {
         return [gateWithFee, token, methodSig]
     }
@@ -207,10 +202,6 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPE
     ]
 
     const gateAsGuardToOtherContractRules = defaultTokenGuardRules.map(mapTokenGuardRules).concat(gateWithFeeGuardRules)
-
-    await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
-    await send(gateRoles, DEPLOYER, 'setUserRole', KYC_OPERATOR, KYC_OPERATOR_ROLE, true)
-    await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR, MONEY_OPERATOR_ROLE, true)
 
     for(let [sender, role, contract, method] of roleContractRules){
         await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
