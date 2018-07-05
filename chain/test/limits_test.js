@@ -600,10 +600,10 @@ describe("Limits:", function () {
             events = events.concat(await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)))
 
             expect(events).containSubset([
-                {NAME: 'MintLimit', wad: randomLimit.toString()},
-                {NAME: 'MintLimit', guy: CUSTOMER, wad: randomLimit.toString()},
-                {NAME: 'BurnLimit', wad: randomLimit.toString()},
-                {NAME: 'BurnLimit', guy: CUSTOMER, wad: randomLimit.toString()},
+                {NAME: 'AdjustMintLimitRequested', wad: randomLimit.toString()},
+                {NAME: 'AdjustMintLimitRequested', guy: CUSTOMER, wad: randomLimit.toString()},
+                {NAME: 'AdjustBurnLimitRequested', wad: randomLimit.toString()},
+                {NAME: 'AdjustBurnLimitRequested', guy: CUSTOMER, wad: randomLimit.toString()},
             ])
         })
     })
