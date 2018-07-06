@@ -173,11 +173,44 @@ contract MembershipAuthorityInterface {
 }
 
 
-contract MembershipRule is DSAuth, BoundaryKycAmlRule {
+contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
 
     MembershipAuthorityInterface membershipAuthority;
 
-    function MembershipRule(
+    function MembershipWithNoKycAmlRule(
+        DSAuthority _authority, 
+        AddressControlStatus addressControlStatus_, 
+        address membershipAuthority_) 
+    NoKycAmlRule(addressControlStatus_) 
+    public {
+        require(address(_authority) != address(0));
+
+        setMembershipAuthority(membershipAuthority_);
+
+        setAuthority(_authority);
+        setOwner(0x0);        
+    }
+
+    function setMembershipAuthority(address membershipAuthority_) public auth {
+        require(address(membershipAuthority_) != address(0));
+        membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
+    }
+
+    function canMint(address src, address dst, address guy, uint wad) public returns (bool) {
+        return super.canMint(src, dst, guy, wad) && membershipAuthority.isMember(guy);
+    }
+
+    function canBurn(address src, address dst, address guy, uint wad) public returns (bool) {
+        return super.canBurn(src, dst, guy, wad) && membershipAuthority.isMember(guy);
+    }
+}
+
+
+contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
+
+    MembershipAuthorityInterface membershipAuthority;
+
+    function MembershipWithBoundaryKycAmlRule(
         DSAuthority _authority, 
         AddressControlStatus addressControlStatus_, 
         KycAmlStatus kycAmlStatus_, address membershipAuthority_) 
@@ -205,3 +238,34 @@ contract MembershipRule is DSAuth, BoundaryKycAmlRule {
     }
 }
 
+contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule {
+
+    MembershipAuthorityInterface membershipAuthority;
+
+    function MembershipWithFullKycAmlRule(
+        DSAuthority _authority, 
+        AddressControlStatus addressControlStatus_, 
+        KycAmlStatus kycAmlStatus_, address membershipAuthority_) 
+    FullKycAmlRule(addressControlStatus_, kycAmlStatus_) 
+    public {
+        require(address(_authority) != address(0));
+
+        setMembershipAuthority(membershipAuthority_);
+
+        setAuthority(_authority);
+        setOwner(0x0);        
+    }
+
+    function setMembershipAuthority(address membershipAuthority_) public auth {
+        require(address(membershipAuthority_) != address(0));
+        membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
+    }
+
+    function canMint(address src, address dst, address guy, uint wad) public returns (bool) {
+        return super.canMint(src, dst, guy, wad) && membershipAuthority.isMember(guy);
+    }
+
+    function canBurn(address src, address dst, address guy, uint wad) public returns (bool) {
+        return super.canBurn(src, dst, guy, wad) && membershipAuthority.isMember(guy);
+    }
+}

@@ -32,7 +32,7 @@ describe("Asset Gateway", function () {
     this.timeout(10000)
 
     let web3, snaps, accounts,
-        gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipRule, token,
+        gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule, token,
         DEPLOYER,
         SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
         CUSTOMER,
@@ -53,7 +53,7 @@ describe("Asset Gateway", function () {
 
         AMT = 100
 
-        ;({gate, token, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipRule} =
+        ;({gate, token, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule} =
             await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
 
@@ -289,8 +289,8 @@ describe("Asset Gateway", function () {
 
     describe("with full KYC and Membership Control", async () => {
         before(async () => {
-            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(membershipRule))
-            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipRule))
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(membershipWithBoundaryKycAmlRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipWithBoundaryKycAmlRule))
         })
 
         describe("SystemAdmin", async () => {
@@ -303,7 +303,7 @@ describe("Asset Gateway", function () {
                 } = solc(__dirname, '../solc-input.json')
                 const mockMembershipAuthorityFalse = await deploy(MockMembershipAuthorityFalse)
 
-                await send(membershipRule, SYSTEM_ADMIN, "setMembershipAuthority", address(mockMembershipAuthorityFalse))
+                await send(membershipWithBoundaryKycAmlRule, SYSTEM_ADMIN, "setMembershipAuthority", address(mockMembershipAuthorityFalse))
                 await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
                 await send(gate, CUSTOMER1, deposit, AMT)
                 await expectThrow(async () => {

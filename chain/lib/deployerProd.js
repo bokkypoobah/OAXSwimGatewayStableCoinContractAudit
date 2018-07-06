@@ -10,7 +10,7 @@ const {
 
 let {
     kycAmlStatus, addressControlStatus, noKycAmlRule, boundaryKycAmlRule, fullKycAmlRule, 
-    mockMembershipAuthority, membershipRule, fiatTokenGuard, gateRoles, token, transferFeeController, 
+    mockMembershipAuthority, membershipWithBoundaryKycAmlRule, fiatTokenGuard, gateRoles, token, transferFeeController, 
     limitController, limitSetting, gateWithFee, web3
 } = require('./contractInstances')
 
@@ -31,7 +31,7 @@ const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERAT
         BoundaryKycAmlRule,
         FullKycAmlRule,
         MockMembershipAuthority,
-        MembershipRule,
+        MembershipWithBoundaryKycAmlRule,
         GateRoles,
         DSGuard,
         FiatToken,
@@ -53,7 +53,7 @@ const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERAT
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     mockMembershipAuthority = await deploy(MockMembershipAuthority)
-    membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
+    membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
     if (!FEE_COLLECTOR) {
@@ -97,7 +97,7 @@ const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
-        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipRule, 'setMembershipAuthority(address)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRule, 'setMembershipAuthority(address)'],
     ]
 
     await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
@@ -107,6 +107,8 @@ const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
     for (let [sender, role, contract, method] of roleContractRules) {
         await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
     }
+
+    
 }
 
 const gateWithFeeContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR) => {
@@ -210,8 +212,8 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPE
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipWithBoundaryKycAmlRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipWithBoundaryKycAmlRule))
 
 }
 

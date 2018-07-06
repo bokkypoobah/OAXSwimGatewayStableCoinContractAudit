@@ -63,36 +63,36 @@ contract LimitSetting is DSAuth, DSStop {
         resetSettingDelayBuffer();
     }
 
-    event MintLimit(address guy, uint wad);
-    event BurnLimit(address guy, uint wad);
-    event MintLimit(uint wad);
-    event BurnLimit(uint wad);
+    event AdjustMintLimitRequested(address guy, uint wad);
+    event AdjustBurnLimitRequested(address guy, uint wad);
+    event AdjustMintLimitRequested(uint wad);
+    event AdjustBurnLimitRequested(uint wad);
 
     function setDefaultMintDailyLimit(uint256 limit) public auth {
         require(limit > 0);
         defaultMintDailyLimitBuffer = limit;
-        MintLimit(defaultMintDailyLimitBuffer);
+        AdjustMintLimitRequested(defaultMintDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setDefaultBurnDailyLimit(uint256 limit) public auth {
         require(limit > 0);
         defaultBurnDailyLimitBuffer = limit;
-        BurnLimit(defaultBurnDailyLimitBuffer);
+        AdjustBurnLimitRequested(defaultBurnDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setCustomMintDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
         mintCustomDailyLimitBuffer[guy] = limit;
-        MintLimit(guy, mintCustomDailyLimitBuffer[guy]);
+        AdjustMintLimitRequested(guy, mintCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function setCustomBurnDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
         burnCustomDailyLimitBuffer[guy] = limit;
-        BurnLimit(guy, burnCustomDailyLimitBuffer[guy]);
+        AdjustBurnLimitRequested(guy, burnCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
@@ -101,11 +101,9 @@ contract LimitSetting is DSAuth, DSStop {
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
             if (mintCustomDailyLimitBuffer[guy] > 0) {
                 mintCustomDailyLimit[guy] = mintCustomDailyLimitBuffer[guy];
-                MintLimit(mintCustomDailyLimit[guy]);
                 return mintCustomDailyLimit[guy];
             }
             defaultMintDailyLimit = defaultMintDailyLimitBuffer;
-            MintLimit(defaultMintDailyLimit);
             return defaultMintDailyLimit;
         } else {
             if (mintCustomDailyLimit[guy] > 0) {

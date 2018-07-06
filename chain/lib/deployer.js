@@ -16,7 +16,7 @@ let noKycAmlRule
 let boundaryKycAmlRule
 let fullKycAmlRule
 let mockMembershipAuthortiy
-let membershipRule
+let membershipWithBoundaryKycAmlRule
 let token
 let transferFeeController
 let limitController
@@ -43,7 +43,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         BoundaryKycAmlRule,
         FullKycAmlRule,
         MockMembershipAuthority,
-        MembershipRule,
+        MembershipWithBoundaryKycAmlRule,
         GateRoles,
         DSGuard,
         FiatToken,
@@ -66,7 +66,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
     mockMembershipAuthority = await deploy(MockMembershipAuthority)
-    membershipRule = await deploy(MembershipRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
+    membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
     dsGroupFactory = await deploy(DSGroupFactory)
 
@@ -97,7 +97,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
-        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipRule, 'setMembershipAuthority(address)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRule, 'setMembershipAuthority(address)'],
     ]
 
     await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
@@ -120,7 +120,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         boundaryKycAmlRule,
         fullKycAmlRule,
         mockMembershipAuthority,
-        membershipRule,
+        membershipWithBoundaryKycAmlRule,
         fiatTokenGuard,
         gateRoles,
         token,
@@ -231,7 +231,7 @@ const base = async (web3,
         boundaryKycAmlRule,
         fullKycAmlRule,
         mockMembershipAuthortiy,
-        membershipRule,
+        membershipWithBoundaryKycAmlRule,
         fiatTokenGuard,
         gateRoles,
         token,
