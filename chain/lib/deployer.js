@@ -242,13 +242,13 @@ const base = async (web3,
     }
 }
 
-const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR,) => {
+const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR,) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const {
         GateWithFee
     } = contractRegistry
 
-    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR, address(transferFeeController))
+    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, address(transferFeeController))
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')

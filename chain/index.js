@@ -82,7 +82,6 @@ server.listen(port, hostname, async (err, result) => {
         MINT_FEE_COLLECTOR, 
         BURN_FEE_COLLECTOR, 
         TRANSFER_FEE_COLLECTOR, 
-        NEGATIVE_INTEREST_RATE_COLLECTOR,
         
     ] = addresses
     const SYSTEM_ADMIN_GROUP = [SYSTEM_ADMIN_1, SYSTEM_ADMIN_2]
@@ -127,7 +126,7 @@ server.listen(port, hostname, async (err, result) => {
              */
             const {
                 gateWithFee
-            } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR)
+            } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR)
             break;
         case '--gatewithfee-setting':
             /**

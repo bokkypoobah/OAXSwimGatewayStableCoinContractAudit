@@ -71,9 +71,7 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
         //transfer
         await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", SYSTEM_ADMIN);
         expect(await call(token, "transferFeeCollector")).eq(SYSTEM_ADMIN)
-        //negative interest rate
-        await send(gateWithFee, SYSTEM_ADMIN, "setNegativeInterestRateFeeCollector", SYSTEM_ADMIN)
-        expect(await call(gateWithFee, "negativeInterestRateFeeCollector")).eq(SYSTEM_ADMIN)
+
     })
 
     context("Mint with dynamic fee", async () => {
@@ -218,7 +216,7 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
         })
     })
 
-    context("Negative Interest Rate with dynamic fee", async () => {
+    context.skip("Negative Interest Rate with dynamic fee", async () => {
 
         it("Gate will emit two relevant events if interest payment is successful.", async () => {
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)

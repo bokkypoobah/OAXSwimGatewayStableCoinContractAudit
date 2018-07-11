@@ -17,7 +17,6 @@ contract GateWithFee is Gate {
 
     address public mintFeeCollector;
     address public burnFeeCollector;
-    address public negativeInterestRateFeeCollector;
 
     TransferFeeController transferFeeController;
 
@@ -27,7 +26,6 @@ contract GateWithFee is Gate {
         LimitController _limitController, 
         address mintFeeCollector_, 
         address burnFeeCollector_,
-        address negativeInterestRateFeeCollector_,
         TransferFeeController transferFeeController_
         )
     public
@@ -35,7 +33,6 @@ contract GateWithFee is Gate {
     {
         mintFeeCollector = mintFeeCollector_;
         burnFeeCollector = burnFeeCollector_;
-        negativeInterestRateFeeCollector = negativeInterestRateFeeCollector_;
 
         transferFeeController = transferFeeController_;
     }
@@ -46,10 +43,6 @@ contract GateWithFee is Gate {
 
     function setBurnFeeCollector(address burnFeeCollector_) public auth {
         burnFeeCollector = burnFeeCollector_;
-    }
-
-    function setNegativeInterestRateFeeCollector(address negativeInterestRateFeeCollector_) public auth {
-        negativeInterestRateFeeCollector = negativeInterestRateFeeCollector_;
     }
 
     function setTransferFeeCollector(address transferFeeCollector_) public auth {
@@ -70,16 +63,4 @@ contract GateWithFee is Gate {
         token.transferFrom(guy, burnFeeCollector, fee);
     }
 
-    event InterestPaymentRequest(address by, uint amount);
-
-    event InterestPaymentSuccess(address by, uint amount);
-
-    function requestInterestPayment(address by, uint amount) public auth {
-        InterestPaymentRequest(by, amount);
-    }
-
-    function processInterestPayment(address by, uint amount) public auth {
-        (FiatToken(token)).transferFrom(by, negativeInterestRateFeeCollector, amount);
-        InterestPaymentSuccess(by, amount);
-    }
 }
