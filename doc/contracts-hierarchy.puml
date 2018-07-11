@@ -2,7 +2,6 @@
 
 '!define SHOW_PACKAGES
 !include dappsys.puml
-!include ../styling.puml
 
 title Contracts Hierarchy (TODO modify according to changes)
 
@@ -17,6 +16,11 @@ title Contracts Hierarchy (TODO modify according to changes)
     package Kyc.sol {
         interface KycAmlStatus
         interface KycAmlRule
+        interface ControllableKycAmlRule
+        interface MembershipAuthorityInterface
+        class MembershipWithNoKycAmlRule
+        class MembershipWithBoundaryKycAmlRule
+        class MembershipWithFullKycAmlRule
         class NoKycAmlRule
         class BoundaryKycAmlRule
         class FullKycAmlRule
@@ -111,10 +115,24 @@ class KycAmlStatus #wheat {
     + setKycVerified(guy, isKycVerified)
 }
 
-interface KycAmlRule  #white {
+interface KycAmlRule #white {
+}
+
+interface ControllableKycAmlRule #white {
+    + AddressControlStatus addressControlStatus
+    __
+    + **ControllableKycAmlRule(addressControlStatus)**
+    + canApprove(src, dst, guy, wad)
+    + canTransfer(src, dst, to, wad)
+    + canTransferFrom(src, dst, from, to, wad)
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
 }
 
 class NoKycAmlRule #white {
+    .. Inherited properties ..
+    __
+    + **NoKycAmlRule(addressControlStatus)**
     + canApprove(src, dst, guy, wad)
     + canTransfer(src, dst, to, wad)
     + canTransferFrom(src, dst, from, to, wad)
@@ -123,9 +141,10 @@ class NoKycAmlRule #white {
 }
 
 class BoundaryKycAmlRule #white {
+    .. Inherited properties ..
     + KycAmlStatus kycAmlStatus
     __
-    + **BoundaryKycAmlRule(kycAmlStatus)**
+    + **BoundaryKycAmlRule(addressControlStatus, kycAmlStatus)**
     + canMint(src, dst, guy, wad)
     + canBurn(src, dst, guy, wad)
 }
@@ -137,6 +156,49 @@ class FullKycAmlRule #white {
     + **FullKycAmlRule(kycAmlStatus)**
     + canTransfer(src, dst, to, wad)
     + canTransferFrom(src, dst, from, to, wad)
+}
+
+interface MembershipAuthorityInterface #white {
+    + isMember(sender)
+}
+
+class MembershipWithNoKycAmlRule #white {
+    .. Inherited properties ..
+    + MembershipAuthorityInterface membershipAuthority
+    __
+    + **MembershipWithNoKycAmlRule(**
+      **    authority,**
+      **    addressControlStatus,**
+      **    membershipAuthority)**
+    + setMembershipAuthority(membershipAuthority_)
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
+}
+
+class MembershipWithBoundaryKycAmlRule #white {
+    .. Inherited properties ..
+    + MembershipAuthorityInterface membershipAuthority
+    __
+    + **MembershipWithBoundaryKycAmlRule(**
+      **    authority,**
+      **    addressControlStatus,**
+      **    membershipAuthority)**
+    + setMembershipAuthority(membershipAuthority_)
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
+}
+
+class MembershipWithFullKycAmlRule #white {
+    .. Inherited properties ..
+    + MembershipAuthorityInterface membershipAuthority
+    __
+    + **MembershipWithBoundaryKycAmlRule(**
+      **    authority,**
+      **    addressControlStatus,**
+      **    membershipAuthority)**
+    + setMembershipAuthority(membershipAuthority_)
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
 }
 
 class GateRoles #white {
@@ -184,11 +246,25 @@ ERC20Authority -[hidden] TokenAuthority
 DSAuth <|-- ERC20Auth
 DSAuth <|-- TokenAuth
 DSAuth <|-- KycAmlStatus
+
 ERC20Authority <|-- KycAmlRule
 TokenAuthority <|-- KycAmlRule
-KycAmlRule <|-- NoKycAmlRule
+
+ERC20Authority <|-- ControllableKycAmlRule
+TokenAuthority <|-- ControllableKycAmlRule
+
+ControllableKycAmlRule <|-- NoKycAmlRule
 NoKycAmlRule <|-- BoundaryKycAmlRule
 BoundaryKycAmlRule <|-- FullKycAmlRule
+
+DSAuth <|-- MembershipWithNoKycAmlRule
+NoKycAmlRule <|-- MembershipWithNoKycAmlRule
+
+DSAuth <|-- MembershipWithBoundaryKycAmlRule
+BoundaryKycAmlRule <|-- MembershipWithBoundaryKycAmlRule
+
+DSAuth <|-- MembershipWithFullKycAmlRule
+FullKycAmlRule <|-- MembershipWithFullKycAmlRule
 
 DSRoles <|-- GateRoles
 DSToken <|-- FiatToken
@@ -201,7 +277,7 @@ BoundaryKycAmlRule o-up- KycAmlStatus
 FiatToken o-up- DSGuard
 'FiatToken o.up. NoKycAmlRule
 'FiatToken o.up. BoundaryKycAmlRule
-FiatToken o-up- FullKycAmlRule
+FiatToken o-up- MembershipWithFullKycAmlRule
 Gate o-up- GateRoles
 'KycAmlStatus o-up- GateRoles
 Gate o- FiatToken
