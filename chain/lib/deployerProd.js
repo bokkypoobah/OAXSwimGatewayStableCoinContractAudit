@@ -15,9 +15,9 @@ let {
 } = require('./contractInstances')
 
 
-const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        FEE_COLLECTOR = null,
-        CONFISCATE_COLLECTOR = null,
+const initContract = async (contractRegistry, 
+        DEPLOYER, SYSTEM_ADMIN,
+        TRANSFER_FEE_COLLECTOR,
         MINT_LIMIT = wad(10000),
         BURN_LIMIT = wad(10000),
         DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
@@ -56,22 +56,12 @@ const initContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERAT
     membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
-    if (!FEE_COLLECTOR) {
-        FEE_COLLECTOR = SYSTEM_ADMIN
-    }
-
-    if (!CONFISCATE_COLLECTOR) {
-        CONFISCATE_COLLECTOR = SYSTEM_ADMIN
-    }
-
     token = await deploy(
         FiatToken,
         address(fiatTokenGuard),
         web3.utils.utf8ToHex('TOKUSD'),
-        FEE_COLLECTOR,
-        address(transferFeeController),
-        address(addressControlStatus),
-        CONFISCATE_COLLECTOR
+        TRANSFER_FEE_COLLECTOR,
+        address(transferFeeController)
     )
 
     return {
@@ -110,13 +100,18 @@ const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
     
 }
 
-const gateWithFeeContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR) => {
+const gateWithFeeContract = async (
+        contractRegistry, 
+        DEPLOYER, 
+        MINT_FEE_COLLECTOR, 
+        BURN_FEE_COLLECTOR, 
+        ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const {
         GateWithFee
     } = contractRegistry
 
-    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR, address(transferFeeController))
+    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, address(transferFeeController))
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
@@ -125,7 +120,7 @@ const gateWithFeeContract = async (contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC
     return gateWithFee
 }
 
-const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)=>{
+const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
@@ -253,5 +248,7 @@ module.exports = {
     gateWithFeeSetting,
     multisigContract,
     multisigSetting,
-    toCallData
+    transferOwnership,
+    toCallData,
+    
 }

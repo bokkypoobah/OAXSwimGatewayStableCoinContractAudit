@@ -76,16 +76,11 @@ server.listen(port, hostname, async (err, result) => {
     const addresses = Object.keys(accounts)
     const [
         DEPLOYER,
-        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        SYSTEM_ADMIN_1, MONEY_OPERATOR_1,
-        SYSTEM_ADMIN_2, MONEY_OPERATOR_2,
-        MINT_FEE_COLLECTOR, 
-        BURN_FEE_COLLECTOR, 
-        TRANSFER_FEE_COLLECTOR, 
-        
     ] = addresses
-    const SYSTEM_ADMIN_GROUP = [SYSTEM_ADMIN_1, SYSTEM_ADMIN_2]
-    const MONEY_OPERATOR_GROUP = [MONEY_OPERATOR_1, MONEY_OPERATOR_2]
+
+    const role = config.get('role')
+    const collector = config.get('collector')
+    const limit = config.get('limit')
 
     const block = await web3.eth.getBlockNumber()
     log(`Block Number:  ${block}`)
@@ -104,13 +99,12 @@ server.listen(port, hostname, async (err, result) => {
             const {
                 token
             } = await deployer.initContract(solc(__dirname, './solc-input.json'), 
-                DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-                config.get("general.TRANSFER_FEE_COLLECTOR"),
-                config.get("general.CONFISCATE_COLLECTOR"),
-                wad(config.get("limit.MINT_LIMIT")),
-                wad(config.get("limit.BURN_LIMIT")),
-                config.get("limit.DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET"),
-                config.get("limit.DEFAULT_SETTING_DELAY_HOURS")
+                DEPLOYER, role.SYSTEM_ADMIN,
+                collector.TRANSFER_FEE_COLLECTOR,
+                wad(limit.MINT_LIMIT),
+                wad(limit.BURN_LIMIT),
+                limit.DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
+                limit.DEFAULT_SETTING_DELAY_HOURS
             )
 
             break;
@@ -118,7 +112,7 @@ server.listen(port, hostname, async (err, result) => {
             /**
              * 2) Deploy Settings for Initial Contract
              */
-            await deployer.initSettings(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
+            await deployer.initSettings(DEPLOYER, role.SYSTEM_ADMIN, role.KYC_OPERATOR, role.MONEY_OPERATOR)
             break;
         case '--gatewithfee-contract':
             /**
