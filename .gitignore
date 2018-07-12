@@ -9,7 +9,7 @@ chain/swimdb.json
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
-.vscode/
+/.vscode
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/

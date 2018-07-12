@@ -1,5 +1,7 @@
 dependencies:
+  async-retry: 1.2.1
   ganache-core: 2.1.0-beta.0
+  lowdb: 1.0.0
   web3-eth-abi: 1.0.0-beta.29
 devDependencies:
   babel-runtime: 6.26.0
@@ -191,6 +193,12 @@ packages:
   /async-limiter/1.0.0:
     resolution:
       integrity: sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
+  /async-retry/1.2.1:
+    dependencies:
+      retry: 0.10.1
+    dev: false
+    resolution:
+      integrity: sha512-FadV8UDcyZDjzb6eV7MCJj0bfrNjwKw7/X0QHPFCbYP6T20FXgZCYXpJKlQC8RxEQP1E6Xs8pNHdh3bcrZAuAw==
   /async/1.5.2:
     dev: false
     resolution:
@@ -2670,6 +2678,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-IHurkWOEmcB7Kt8kCkGochADRXU=
+  /is-promise/2.1.0:
+    dev: false
+    resolution:
+      integrity: sha1-eaKp7OfwlugPNtKy87wWwf9L8/o=
   /is-regex/1.0.4:
     dependencies:
       has: 1.0.1
@@ -3045,6 +3057,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-TbwEcrFWvlCgsoaFXRvQsMZWCYo=
+  /lodash/4.17.10:
+    dev: false
+    resolution:
+      integrity: sha512-UejweD1pDoXu+AD825lWwp4ZGtSwgnpZxb3JDViD7StjQz+Nb/6l093lx4OQ0foGWNRoc19mWy7BzL+UAK2iVg==
   /lodash/4.17.5:
     dev: false
     resolution:
@@ -3069,6 +3085,18 @@ packages:
     dev: false
     resolution:
       integrity: sha1-0aitM/qc4OcT1l/dCsi3SNR4yEg=
+  /lowdb/1.0.0:
+    dependencies:
+      graceful-fs: 4.1.11
+      is-promise: 2.1.0
+      lodash: 4.17.10
+      pify: 3.0.0
+      steno: 0.4.4
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha512-2+x8esE/Wb9SQ1F9IHaYWfsC9FIecLOPrK4g17FGEayjUWH172H6nwicRovGvSE2CPZouc2MCIqCI7h9d+GftQ==
   /lowercase-keys/1.0.1:
     engines:
       node: '>=0.10.0'
@@ -4092,6 +4120,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-8ej0YeQGS6Oegq883CqMiT0HZ1k=
+  /retry/0.10.1:
+    dev: false
+    resolution:
+      integrity: sha1-52OI0heZLCUnUCQdPTlW/tmNj/Q=
   /right-align/0.1.3:
     dependencies:
       align-text: 0.1.4
@@ -4369,6 +4401,12 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
+  /steno/0.4.4:
+    dependencies:
+      graceful-fs: 4.1.11
+    dev: false
+    resolution:
+      integrity: sha1-BxEFvfwobmYVwEA8J+nXtdy4Vcs=
   /stream-browserify/2.0.1:
     dependencies:
       inherits: 2.0.3
@@ -5643,10 +5681,12 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 7
 shrinkwrapVersion: 3
 specifiers:
+  async-retry: ^1.2.1
   babel-runtime: ^6.26.0
   chai: ^4.1.2
   chai-subset: ^1.6.0
   ganache-core: ^2.1.0-beta.0
+  lowdb: ^1.0.0
   mocha: ^5.0.0
   solc: 0.4.19
   web3: 1.0.0-beta.29
