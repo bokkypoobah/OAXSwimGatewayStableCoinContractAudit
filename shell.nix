@@ -3,11 +3,13 @@ with import (builtins.fetchTarball "https://d3g5gsiof5omrk.cloudfront.net/nixpkg
 
 let
   nodejs = nodejs-8_x;
+  nodepkgs = nodePackages_8_x;
   geth = (lib.getBin go-ethereum);
+  solcBin = (lib.getBin solc);
 
 in mkShell rec {
   buildInputs = [
-    solc geth nodejs nodePackages_8_x.pnpm
+    solcBin geth nodejs nodepkgs.pnpm nodepkgs.mocha
   ];
 
   shellHook = ''

@@ -20,16 +20,15 @@ pnpm test --watch
 
 
 ## Development
+
 To check your contract style:
 ```
-npm install -g solium
-stable-coin/chain$ solium --dir contracts
+stable-coin/chain$ pnpx solium --dir contracts
 ```
 
 Or more strict style check:
 ```
-npm install -g solhint
-stable-coin/chain$ solhint contracts/*.sol
+stable-coin/chain$ pnpx solhint contracts/*.sol
 ```
 
 ## Notes
