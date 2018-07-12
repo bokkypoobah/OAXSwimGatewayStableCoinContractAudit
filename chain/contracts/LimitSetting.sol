@@ -25,11 +25,12 @@ contract LimitSetting is DSAuth, DSStop {
     mapping (address => uint256) private mintCustomDailyLimitBuffer;
     mapping (address => uint256) private burnCustomDailyLimitBuffer;
 
-    function LimitSetting(DSAuthority _authority, 
-                        uint256 _defaultMintDailyLimit, 
-                        uint256 _defaultBurnDailyLimit, 
-                        int256 _defaultLimitCounterResetTimeffset,
-                        uint256 _defaultSettingDelayHours
+    function LimitSetting(
+        DSAuthority _authority,
+        uint256 _defaultMintDailyLimit,
+        uint256 _defaultBurnDailyLimit,
+        int256 _defaultLimitCounterResetTimeffset,
+        uint256 _defaultSettingDelayHours
     ) public {
         require(address(_authority) != address(0));
         require(_defaultMintDailyLimit > 0);
