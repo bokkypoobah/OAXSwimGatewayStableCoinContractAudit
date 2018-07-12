@@ -126,13 +126,29 @@ server.listen(port, hostname, async (err, result) => {
              */
             const {
                 gateWithFee
-            } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR)
+            } = await deployer.gateWithFeeContract(solc(__dirname, './solc-input.json'), 
+                DEPLOYER, 
+                collector.MINT_FEE_COLLECTOR, 
+                collector.BURN_FEE_COLLECTOR, 
+                )
             break;
         case '--gatewithfee-setting':
             /**
              * 4) Deploy Settings for GateWithFee Contract
              */
-            await deployer.gateWithFeeSetting(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
+            await deployer.gateWithFeeSetting(
+                DEPLOYER, 
+                role.SYSTEM_ADMIN
+                )
+            break;
+        case '--transferOwnership':
+            /**
+             * 5) Transfer the ownership from deployer to super admin 
+             */
+            await deployer.transferOwnership(
+                DEPLOYER,
+                role.SYSTEM_ADMIN
+                )
             break;
         case '--calldata':
             const contractName = args[1]

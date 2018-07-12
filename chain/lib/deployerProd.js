@@ -213,6 +213,10 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPE
 
 }
 
+const transferOwnership = async(DEPLOYER, SYSTEM_ADMIN)=>{
+    await send(gateRoles, DEPLOYER, 'setOwner', SYSTEM_ADMIN)
+}
+
 const multisigContract = async (contractRegistry, DEPLOYER, members, quorum, window) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     
