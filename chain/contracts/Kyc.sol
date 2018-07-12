@@ -8,6 +8,8 @@ import "TokenAuth.sol";
 // ERC20Authority, TokenAuthority
 
 contract AddressControlStatus is DSAuth {
+    // frozen - customer violated terms of use
+
     mapping (address => bool) public frozenAddress;
 
     event FreezeAddress(address indexed guy);
