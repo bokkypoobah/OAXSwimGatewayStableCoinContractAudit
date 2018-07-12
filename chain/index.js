@@ -134,13 +134,6 @@ server.listen(port, hostname, async (err, result) => {
              */
             await deployer.gateWithFeeSetting(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
             break;
-        case '--multisig-contract':
-            /**
-             * 5) Deploy Contract for SYS_ADMIN_GROUP AND MONEY_OPERATOR_GROUP
-             */
-            let { SYSTEM_ADMIN_GROUP_CONTRACT } = await deployer.multisigContract(solc(__dirname, './solc-input.json'), DEPLOYER, SYSTEM_ADMIN_GROUP, config.get('multisig.quorum'), config.get('multisig.window'))
-            let { MONEY_OPERATOR_GROUP_CONTRACT } = await deployer.multisigContract(solc(__dirname, './solc-input.json'), DEPLOYER, MONEY_OPERATOR_GROUP, config.get('multisig.quorum'), config.get('multisig.window'))
-            break;
         case '--calldata':
             const contractName = args[1]
             const methodName = args[2]
