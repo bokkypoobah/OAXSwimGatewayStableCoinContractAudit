@@ -160,10 +160,9 @@ describe("Control", function () {
         })
     })
 
-    context("Operation authority control.", function () {
+    context("Operation authority control", function () {
         it("Initial deployer can add SystemAdmin addresses even after the gate contract is established.", async () => {
             const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
-            console.log(typeof SYSTEM_ADMIN_ROLE)
             expect(await call(gateRoles, "hasUserRole", CUSTOMER2, SYSTEM_ADMIN_ROLE)).to.be.false;
             await send(gateRoles, DEPLOYER, 'setUserRole', CUSTOMER2, SYSTEM_ADMIN_ROLE, true)
             expect(await call(gateRoles, "hasUserRole", CUSTOMER2, SYSTEM_ADMIN_ROLE)).to.be.true;
@@ -171,7 +170,6 @@ describe("Control", function () {
 
         it("Initial deployer can remove current SystemAdmin addresses even after the gate contract is established.", async () => {
             const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
-            console.log(typeof SYSTEM_ADMIN_ROLE)
             expect(await call(gateRoles, "hasUserRole", SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE)).to.be.true;
             await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, false)
             expect(await call(gateRoles, "hasUserRole", SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE)).to.be.false;
@@ -179,7 +177,6 @@ describe("Control", function () {
 
         it("Current SystemAdmin can NOT add any address as SystemAdmin.", async () => {
             const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
-            console.log(typeof SYSTEM_ADMIN_ROLE)
             expect(await call(gateRoles, "hasUserRole", CUSTOMER2, SYSTEM_ADMIN_ROLE)).to.be.false;
             await expectThrow(async () => {
                 await send(gateRoles, SYSTEM_ADMIN, 'setUserRole', CUSTOMER2, SYSTEM_ADMIN_ROLE, true)

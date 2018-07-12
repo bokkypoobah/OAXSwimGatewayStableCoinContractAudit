@@ -295,7 +295,7 @@ describe("Asset Gateway", function () {
 
         describe("SystemAdmin", async () => {
 
-            it("Able to set the address of membership lookup contract \n" + 
+            it("Able to set the address of membership lookup contract " +
                 "and Throw when trying mint and burn if the address is not member", async () => {
                 const deploy = (...args) => create(web3, DEPLOYER, ...args)
                 const {
