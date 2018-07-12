@@ -282,11 +282,9 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         [SYSTEM_ADMIN_ROLE, 'setFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeController(address)'],
-        [SYSTEM_ADMIN_ROLE, 'requestInterestPayment(address,uint256)'],
-        [SYSTEM_ADMIN_ROLE, 'processInterestPayment(address,uint256)'],
         [SYSTEM_ADMIN_ROLE, 'setMintFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setBurnFeeCollector(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setNegativeInterestRateFeeCollector(address)'],
+
         
     ]
 
