@@ -41,12 +41,18 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     }
 
     modifier mintLimited(address guy, uint wad) {
-        require(limitController.isWithinMintLimit(guy, wad));
+        require(
+            limitController.isWithinMintLimit(guy, wad),
+            "Mint limit exceeded"
+        );
         _;
     }
     
     modifier burnLimited(address guy, uint wad) {
-        require(limitController.isWithinBurnLimit(guy, wad));
+        require(
+            limitController.isWithinBurnLimit(guy, wad),
+            "Burn limit exceeded"
+        );
         _;
     }
 

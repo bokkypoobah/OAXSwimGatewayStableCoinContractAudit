@@ -34,9 +34,18 @@ contract LimitSetting is DSAuth, DSStop {
         int256 _defaultLimitCounterResetTimeffset,
         uint256 _defaultSettingDelayHours
     ) public {
-        require(address(_authority) != address(0));
-        require(_defaultMintDailyLimit > 0);
-        require(_defaultBurnDailyLimit > 0);
+        require(
+            address(_authority) != address(0),
+            "DSAuthority is mandatory"
+        );
+        require(
+            _defaultMintDailyLimit > 0,
+            "Daily mint limit must be positive"
+        );
+        require(
+            _defaultBurnDailyLimit > 0,
+            "Daily burn limit must be positive"
+        );
 
         setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeffset);
         resetSettingDelayBuffer();
@@ -52,7 +61,11 @@ contract LimitSetting is DSAuth, DSStop {
 
     // Configurable Minting Quantity Limits reset time point
     function setLimitCounterResetTimeOffset(int256 _timestampOffset) public auth {
-        require(_timestampOffset >= - 39600 && _timestampOffset <= 50400);
+        require(
+            _timestampOffset >= - 39600 && _timestampOffset <= 50400,
+            // FIXME Not sure if this is correct
+            "Time offset must be within [-11, 14] hours"
+        );
         limitCounterResetTimeOffset = _timestampOffset;
     }
 
@@ -72,28 +85,40 @@ contract LimitSetting is DSAuth, DSStop {
     event AdjustBurnLimitRequested(uint wad);
 
     function setDefaultMintDailyLimit(uint256 limit) public auth {
-        require(limit > 0);
+        require(
+            limit > 0,
+            "Daily mint limit must be positive"
+        );
         defaultMintDailyLimitBuffer = limit;
         emit AdjustMintLimitRequested(defaultMintDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setDefaultBurnDailyLimit(uint256 limit) public auth {
-        require(limit > 0);
+        require(
+            limit > 0,
+            "Daily burn limit must be positive"
+        );
         defaultBurnDailyLimitBuffer = limit;
         emit AdjustBurnLimitRequested(defaultBurnDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setCustomMintDailyLimit(address guy, uint256 limit) public auth {
-        require(limit > 0);
+        require(
+            limit > 0,
+            "Custom daily mint limit must be positive"
+        );
         mintCustomDailyLimitBuffer[guy] = limit;
         emit AdjustMintLimitRequested(guy, mintCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function setCustomBurnDailyLimit(address guy, uint256 limit) public auth {
-        require(limit > 0);
+        require(
+            limit > 0,
+            "Custom daily burn limit must be positive"
+        );
         burnCustomDailyLimitBuffer[guy] = limit;
         emit AdjustBurnLimitRequested(guy, burnCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
