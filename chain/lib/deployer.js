@@ -68,7 +68,9 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     mockMembershipAuthority = await deploy(MockMembershipAuthority)
     membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
-    dsGroupFactory = await deploy(DSGroupFactory)
+
+    // FIXME Enable DSGroupFactory deployment once `dsgroup.sol` can compile
+    // dsGroupFactory = await deploy(DSGroupFactory)
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = SYSTEM_ADMIN

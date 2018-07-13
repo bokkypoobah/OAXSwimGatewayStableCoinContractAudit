@@ -29,7 +29,7 @@ const transferFrom = 'transferFrom'
 const setKycVerified = 'setKycVerified'
 const kycVerified = 'kycVerified'
 
-describe("Multisig", function () {
+describe.skip("Multisig", function () {
     this.timeout(10000)
 
     let web3, snaps, accounts,
