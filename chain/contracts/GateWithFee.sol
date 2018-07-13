@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity ^0.4.23;
 
 
 import "dappsys.sol";
@@ -20,8 +20,8 @@ contract GateWithFee is Gate {
 
     TransferFeeController transferFeeController;
 
-    function GateWithFee(
-        DSAuthority _authority, 
+    constructor(
+        DSAuthority _authority,
         DSToken fiatToken, 
         LimitController _limitController, 
         address mintFeeCollector_, 

@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity ^0.4.23;
 
 
 import "dappsys.sol";
@@ -15,7 +15,7 @@ contract LimitController is DSMath, DSStop {
 
     LimitSetting limitSetting;
 
-    function LimitController(DSAuthority _authority, LimitSetting limitSetting_) public {
+    constructor(DSAuthority _authority, LimitSetting limitSetting_) public {
 
         require(address(_authority) != address(0));
         require(address(limitSetting_) != address(0));

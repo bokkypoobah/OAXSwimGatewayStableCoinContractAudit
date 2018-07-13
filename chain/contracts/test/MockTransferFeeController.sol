@@ -1,9 +1,9 @@
-pragma solidity 0.4.19;
+pragma solidity ^0.4.23;
 
 import "../FiatToken.sol";
 
 contract MockTransferFeeController is TransferFeeControllerInterface {
-    function MockTransferFeeController() public {
+    constructor() public {
     }
 
     function calculateTransferFee(address /*from*/, address /*to*/, uint /*wad*/)

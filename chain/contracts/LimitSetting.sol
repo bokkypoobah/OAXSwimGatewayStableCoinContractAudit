@@ -1,31 +1,33 @@
-pragma solidity 0.4.19;
-
+pragma solidity ^0.4.23;
 
 import "dappsys.sol";
 
-
 contract LimitSetting is DSAuth, DSStop {
 
-    //offset timestamp for limit counter reset time point
+    // offset timestamp for limit counter reset time point
     int256 public limitCounterResetTimeOffset;
-    //last reset time for apply daily limit
+
+    // last reset time for apply daily limit
     uint256 public lastSettingResetTime;
-    //delay hours settings for apply daily limit
+
+    // delay hours settings for apply daily limit
     uint256 private defaultDelayHours;
     uint256 private defaultDelayHoursBuffer;
     uint256 private lastDefaultDelayHoursSettingResetTime;
-    //current limit setting
+
+    // current limit setting
     uint256 private defaultMintDailyLimit;
     uint256 private defaultBurnDailyLimit;
-    mapping (address => uint256) private mintCustomDailyLimit;
-    mapping (address => uint256) private burnCustomDailyLimit;
-    //upcoming limit setting
-    uint256 private defaultMintDailyLimitBuffer;   
-    uint256 private defaultBurnDailyLimitBuffer;
-    mapping (address => uint256) private mintCustomDailyLimitBuffer;
-    mapping (address => uint256) private burnCustomDailyLimitBuffer;
+    mapping(address => uint256) private mintCustomDailyLimit;
+    mapping(address => uint256) private burnCustomDailyLimit;
 
-    function LimitSetting(
+    // upcoming limit setting
+    uint256 private defaultMintDailyLimitBuffer;
+    uint256 private defaultBurnDailyLimitBuffer;
+    mapping(address => uint256) private mintCustomDailyLimitBuffer;
+    mapping(address => uint256) private burnCustomDailyLimitBuffer;
+
+    constructor(
         DSAuthority _authority,
         uint256 _defaultMintDailyLimit,
         uint256 _defaultBurnDailyLimit,
@@ -43,14 +45,14 @@ contract LimitSetting is DSAuth, DSStop {
         defaultBurnDailyLimit = _defaultBurnDailyLimit;
         defaultMintDailyLimitBuffer = _defaultMintDailyLimit;
         defaultBurnDailyLimitBuffer = _defaultBurnDailyLimit;
-        
+
         setAuthority(_authority);
         setOwner(0x0);
-    } 
+    }
 
     // Configurable Minting Quantity Limits reset time point
     function setLimitCounterResetTimeOffset(int256 _timestampOffset) public auth {
-        require(_timestampOffset >= -39600 && _timestampOffset <= 50400);
+        require(_timestampOffset >= - 39600 && _timestampOffset <= 50400);
         limitCounterResetTimeOffset = _timestampOffset;
     }
 
@@ -72,28 +74,28 @@ contract LimitSetting is DSAuth, DSStop {
     function setDefaultMintDailyLimit(uint256 limit) public auth {
         require(limit > 0);
         defaultMintDailyLimitBuffer = limit;
-        AdjustMintLimitRequested(defaultMintDailyLimitBuffer);
+        emit AdjustMintLimitRequested(defaultMintDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setDefaultBurnDailyLimit(uint256 limit) public auth {
         require(limit > 0);
         defaultBurnDailyLimitBuffer = limit;
-        AdjustBurnLimitRequested(defaultBurnDailyLimitBuffer);
+        emit AdjustBurnLimitRequested(defaultBurnDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
     function setCustomMintDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
         mintCustomDailyLimitBuffer[guy] = limit;
-        AdjustMintLimitRequested(guy, mintCustomDailyLimitBuffer[guy]);
+        emit AdjustMintLimitRequested(guy, mintCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
     function setCustomBurnDailyLimit(address guy, uint256 limit) public auth {
         require(limit > 0);
         burnCustomDailyLimitBuffer[guy] = limit;
-        AdjustBurnLimitRequested(guy, burnCustomDailyLimitBuffer[guy]);
+        emit AdjustBurnLimitRequested(guy, burnCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
     }
 
@@ -139,7 +141,7 @@ contract LimitSetting is DSAuth, DSStop {
         if (now - lastDefaultDelayHoursSettingResetTime >= 2592000) {
             defaultDelayHours = defaultDelayHoursBuffer;
         }
-        return defaultDelayHours; 
+        return defaultDelayHours;
     }
 
 }

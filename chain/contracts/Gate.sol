@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity ^0.4.23;
 
 
 import "dappsys.sol";
@@ -21,7 +21,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
 
     event Withdrawn(address indexed from, uint256 amount);
 
-    function Gate(DSAuthority _authority, DSToken fiatToken, LimitController _limitController)
+    constructor(DSAuthority _authority, DSToken fiatToken, LimitController _limitController)
     public
     {
         swap(fiatToken);
@@ -37,7 +37,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     auth
     {
         limitController = _limitController;
-        LogSetLimitController(_limitController);
+        emit LogSetLimitController(_limitController);
     }
 
     modifier mintLimited(address guy, uint wad) {
@@ -51,7 +51,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     }
 
     function deposit(uint256 wad) public stoppable {
-        DepositRequested(msg.sender, wad);
+        emit DepositRequested(msg.sender, wad);
     }
 
     function mint(address guy, uint wad) public mintLimited(guy, wad) stoppable {
@@ -62,17 +62,17 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
            Transfer event with the _from address set to 0x0 when tokens are created.
             (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md)
         */
-        Transfer(0x0, guy, wad);
+        emit Transfer(0x0, guy, wad);
     }
 
     function withdraw(uint256 wad) public stoppable {
-        WithdrawalRequested(msg.sender, wad);
+        emit WithdrawalRequested(msg.sender, wad);
     }
 
     function burn(address guy, uint wad) public burnLimited(guy, wad) stoppable {
         super.burn(guy, wad);
         limitController.bumpBurnLimitCounter(wad);
-        Withdrawn(guy, wad);
+        emit Withdrawn(guy, wad);
     }
 
     function setERC20Authority(ERC20Authority _erc20Authority) public auth {
