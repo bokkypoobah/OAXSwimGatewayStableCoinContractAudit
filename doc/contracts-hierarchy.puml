@@ -15,7 +15,6 @@ title Contracts Hierarchy (TODO modify according to changes)
 
     package Kyc.sol {
         interface KycAmlStatus
-        interface KycAmlRule
         interface ControllableKycAmlRule
         interface MembershipAuthorityInterface
         class MembershipWithNoKycAmlRule
@@ -113,9 +112,6 @@ class KycAmlStatus #wheat {
     + **KycAmlStatus(authority)**
     + isKycVerified(guy)
     + setKycVerified(guy, isKycVerified)
-}
-
-interface KycAmlRule #white {
 }
 
 interface ControllableKycAmlRule #white {
@@ -246,9 +242,6 @@ ERC20Authority -[hidden] TokenAuthority
 DSAuth <|-- ERC20Auth
 DSAuth <|-- TokenAuth
 DSAuth <|-- KycAmlStatus
-
-ERC20Authority <|-- KycAmlRule
-TokenAuthority <|-- KycAmlRule
 
 ERC20Authority <|-- ControllableKycAmlRule
 TokenAuthority <|-- ControllableKycAmlRule

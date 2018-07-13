@@ -64,11 +64,6 @@ contract KycAmlStatus is DSAuth {
 }
 
 
-contract KycAmlRule is ERC20Authority, TokenAuthority {
-
-}
-
-
 contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
     AddressControlStatus addressControlStatus;
 
