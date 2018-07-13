@@ -588,10 +588,6 @@ describe("Limits:", function () {
             })
         })
 
-        it.skip('Limits logic is upgrade-able.', async () => {
-
-        })
-
         it('Changes to the mint/burn quantity limit generates an event', async ()=>{
             let randomLimit = 148
             let events = await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", randomLimit))
