@@ -108,7 +108,7 @@ describe("Limits:", function () {
             expect(burnLimitCounter).to.eq(0)
         })
 
-        it('Resets on 00:00 UTC (TODO timezone pending to be changed according to business decision)', async () => {
+        it('Resets on 00:00 UTC', async () => {
             const time = await call(limitController, lastLimitResetTime)
             expect(time | 0).to.be.above(0)
             expect(time % (24 * 60 * 60)).to.eq(0)

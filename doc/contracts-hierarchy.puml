@@ -3,7 +3,7 @@
 '!define SHOW_PACKAGES
 !include dappsys.puml
 
-title Contracts Hierarchy (TODO modify according to changes)
+title Contracts Hierarchy
 
 !ifdef SHOW_PACKAGES
     package TokenAuth.sol {

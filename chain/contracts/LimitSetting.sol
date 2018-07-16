@@ -63,7 +63,6 @@ contract LimitSetting is DSAuth, DSStop {
     function setLimitCounterResetTimeOffset(int256 _timestampOffset) public auth {
         require(
             _timestampOffset >= - 39600 && _timestampOffset <= 50400,
-            // FIXME Not sure if this is correct
             "Time offset must be within [-11, 14] hours"
         );
         limitCounterResetTimeOffset = _timestampOffset;

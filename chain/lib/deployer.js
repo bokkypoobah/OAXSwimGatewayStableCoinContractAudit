@@ -69,9 +69,6 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
-    // FIXME Enable DSGroupFactory deployment once `dsgroup.sol` can compile
-    // dsGroupFactory = await deploy(DSGroupFactory)
-
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = SYSTEM_ADMIN
     }
@@ -206,7 +203,6 @@ const base = async (web3,
         return [gate, token, methodSig]
     }
 
-    //todo factor me out as default
     const gateGuardRules = [
         [gate, limitController, 'bumpMintLimitCounter(uint256)'],
         [gate, limitController, 'bumpBurnLimitCounter(uint256)'],

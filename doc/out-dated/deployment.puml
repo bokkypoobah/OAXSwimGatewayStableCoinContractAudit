@@ -2,7 +2,7 @@
 
 !include ../styling.puml
 
-title Contracts Hierarchy (TODO modify according to changes)
+title Contracts Hierarchy
 
 object gate
 object gateRoles
