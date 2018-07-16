@@ -1,24 +1,24 @@
-pragma solidity 0.4.19;
-
+pragma solidity 0.4.23;
 
 import "dappsys.sol";
 import "LimitSetting.sol";
 
-
 contract LimitController is DSMath, DSStop {
 
     uint256 public mintLimitCounter;
-
     uint256 public burnLimitCounter;
-
     uint256 public lastLimitResetTime;
-
     LimitSetting limitSetting;
 
-    function LimitController(DSAuthority _authority, LimitSetting limitSetting_) public {
-
-        require(address(_authority) != address(0));
-        require(address(limitSetting_) != address(0));
+    constructor(DSAuthority _authority, LimitSetting limitSetting_) public {
+        require(
+            address(_authority) != address(0),
+            "DSAuthority is mandatory"
+        );
+        require(
+            address(limitSetting_) != address(0),
+            "LimitSetting is mandatory"
+        );
 
         limitSetting = limitSetting_;
         resetLimit();

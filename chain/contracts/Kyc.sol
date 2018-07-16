@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.23;
 
 import "dappsys.sol";
 
@@ -8,13 +8,18 @@ import "TokenAuth.sol";
 // ERC20Authority, TokenAuthority
 
 contract AddressControlStatus is DSAuth {
-    mapping (address => bool) public frozenAddress;
+    // frozen - customer violated terms of use
+
+    mapping(address => bool) public frozenAddress;
 
     event FreezeAddress(address indexed guy);
     event UnfreezeAddress(address indexed guy);
 
-    function AddressControlStatus(DSAuthority _authority) public {
-        require(address(_authority) != address(0));
+    constructor(DSAuthority _authority) public {
+        require(
+            address(_authority) != address(0),
+            "Can not authorize address 0x0"
+        );
 
         setAuthority(_authority);
         setOwner(0x0);
@@ -22,24 +27,27 @@ contract AddressControlStatus is DSAuth {
 
     function freezeAddress(address address_) public auth {
         frozenAddress[address_] = true;
-        FreezeAddress(address_);
+        emit FreezeAddress(address_);
     }
 
     function unfreezeAddress(address address_) public auth {
         frozenAddress[address_] = false;
-        UnfreezeAddress(address_);
+        emit UnfreezeAddress(address_);
     }
 
 }
 
 
 contract KycAmlStatus is DSAuth {
-    mapping (address => bool) public kycVerified;
+    mapping(address => bool) public kycVerified;
 
     event KYCVerify(address indexed guy, bool isKycVerified);
 
-    function KycAmlStatus(DSAuthority _authority) public {
-        require(address(_authority) != address(0));
+    constructor(DSAuthority _authority) public {
+        require(
+            address(_authority) != address(0),
+            "Can not authorize address 0x0"
+        );
 
         setAuthority(_authority);
         setOwner(0x0);
@@ -51,21 +59,19 @@ contract KycAmlStatus is DSAuth {
 
     function setKycVerified(address guy, bool _isKycVerified) public auth {
         kycVerified[guy] = _isKycVerified;
-        KYCVerify(guy, _isKycVerified);
+        emit KYCVerify(guy, _isKycVerified);
     }
-}
-
-
-contract KycAmlRule is ERC20Authority, TokenAuthority {
-
 }
 
 
 contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
     AddressControlStatus addressControlStatus;
 
-    function ControllableKycAmlRule(AddressControlStatus addressControlStatus_) public {
-        require(address(addressControlStatus_) != address(0));
+    constructor(AddressControlStatus addressControlStatus_) public {
+        require(
+            address(addressControlStatus_) != address(0),
+            "AddressControlStatus is mandatory"
+        );
 
         addressControlStatus = addressControlStatus_;
 
@@ -76,7 +82,7 @@ contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
 
     }
 
-    function canTransferFrom(address /*src*/, address /*dst*/, address from, address to, uint /*wad*/) 
+    function canTransferFrom(address /*src*/, address /*dst*/, address from, address to, uint /*wad*/)
     public returns (bool) {
         return (!addressControlStatus.frozenAddress(from)) && (!addressControlStatus.frozenAddress(to));
 
@@ -100,8 +106,8 @@ contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
 
 
 contract NoKycAmlRule is ControllableKycAmlRule {
-    
-    function NoKycAmlRule(AddressControlStatus addressControlStatus_) ControllableKycAmlRule(addressControlStatus_) 
+
+    constructor(AddressControlStatus addressControlStatus_) ControllableKycAmlRule(addressControlStatus_)
     public {
     }
 
@@ -131,12 +137,16 @@ contract BoundaryKycAmlRule is NoKycAmlRule {
 
     KycAmlStatus kycAmlStatus;
 
-    function BoundaryKycAmlRule(
-        AddressControlStatus addressControlStatus_, 
-        KycAmlStatus kycAmlStatus_) 
-    NoKycAmlRule(addressControlStatus_) 
+    constructor(
+        AddressControlStatus addressControlStatus_,
+        KycAmlStatus kycAmlStatus_
+    )
+    NoKycAmlRule(addressControlStatus_)
     public {
-        require(address(kycAmlStatus_) != address(0));
+        require(
+            address(kycAmlStatus_) != address(0),
+            "AddressControlStatus is mandatory"
+        );
 
         kycAmlStatus = kycAmlStatus_;
     }
@@ -153,12 +163,14 @@ contract BoundaryKycAmlRule is NoKycAmlRule {
 
 contract FullKycAmlRule is BoundaryKycAmlRule {
 
-    function FullKycAmlRule(AddressControlStatus addressControlStatus_, KycAmlStatus kycAmlStatus_)
+    constructor(
+        AddressControlStatus addressControlStatus_,
+        KycAmlStatus kycAmlStatus_
+    )
     BoundaryKycAmlRule(addressControlStatus_, kycAmlStatus_) public {}
 
     function canTransferFrom(address src, address dst, address from, address to, uint wad) public returns (bool) {
-        return super.canTransferFrom(src, dst, from, to, wad) && kycAmlStatus.isKycVerified(from) && 
-            kycAmlStatus.isKycVerified(to);
+        return super.canTransferFrom(src, dst, from, to, wad) && kycAmlStatus.isKycVerified(from) && kycAmlStatus.isKycVerified(to);
     }
 
     function canTransfer(address src, address dst, address to, uint wad) public returns (bool) {
@@ -177,22 +189,27 @@ contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
 
     MembershipAuthorityInterface membershipAuthority;
 
-    function MembershipWithNoKycAmlRule(
-        DSAuthority _authority, 
-        AddressControlStatus addressControlStatus_, 
-        address membershipAuthority_) 
-    NoKycAmlRule(addressControlStatus_) 
+    constructor(
+        DSAuthority _authority,
+        AddressControlStatus addressControlStatus_,
+        address membershipAuthority_
+    )
+    NoKycAmlRule(addressControlStatus_)
     public {
-        require(address(_authority) != address(0));
-
+        require(
+            address(_authority) != address(0),
+            "DSAuthority is mandatory"
+        );
         setMembershipAuthority(membershipAuthority_);
-
         setAuthority(_authority);
-        setOwner(0x0);        
+        setOwner(0x0);
     }
 
     function setMembershipAuthority(address membershipAuthority_) public auth {
-        require(address(membershipAuthority_) != address(0));
+        require(
+            address(membershipAuthority_) != address(0),
+            "MembershipAuthority is mandatory"
+        );
         membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
     }
 
@@ -210,22 +227,28 @@ contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
 
     MembershipAuthorityInterface membershipAuthority;
 
-    function MembershipWithBoundaryKycAmlRule(
-        DSAuthority _authority, 
-        AddressControlStatus addressControlStatus_, 
-        KycAmlStatus kycAmlStatus_, address membershipAuthority_) 
-    BoundaryKycAmlRule(addressControlStatus_, kycAmlStatus_) 
+    constructor(
+        DSAuthority _authority,
+        AddressControlStatus addressControlStatus_,
+        KycAmlStatus kycAmlStatus_, address membershipAuthority_
+    )
+    BoundaryKycAmlRule(addressControlStatus_, kycAmlStatus_)
     public {
-        require(address(_authority) != address(0));
+        require(
+            address(_authority) != address(0),
+            "DSAuthority is mandatory"
+        );
 
         setMembershipAuthority(membershipAuthority_);
-
         setAuthority(_authority);
-        setOwner(0x0);        
+        setOwner(0x0);
     }
 
     function setMembershipAuthority(address membershipAuthority_) public auth {
-        require(address(membershipAuthority_) != address(0));
+        require(
+            address(membershipAuthority_) != address(0),
+            "MembershipAuthority is mandatory"
+        );
         membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
     }
 
@@ -242,22 +265,27 @@ contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule {
 
     MembershipAuthorityInterface membershipAuthority;
 
-    function MembershipWithFullKycAmlRule(
-        DSAuthority _authority, 
-        AddressControlStatus addressControlStatus_, 
-        KycAmlStatus kycAmlStatus_, address membershipAuthority_) 
-    FullKycAmlRule(addressControlStatus_, kycAmlStatus_) 
+    constructor(
+        DSAuthority _authority,
+        AddressControlStatus addressControlStatus_,
+        KycAmlStatus kycAmlStatus_, address membershipAuthority_
+    )
+    FullKycAmlRule(addressControlStatus_, kycAmlStatus_)
     public {
-        require(address(_authority) != address(0));
-
+        require(
+            address(_authority) != address(0),
+            "DSAuthority is mandatory"
+        );
         setMembershipAuthority(membershipAuthority_);
-
         setAuthority(_authority);
-        setOwner(0x0);        
+        setOwner(0x0);
     }
 
     function setMembershipAuthority(address membershipAuthority_) public auth {
-        require(address(membershipAuthority_) != address(0));
+        require(
+            address(membershipAuthority_) != address(0),
+            "MembershipAuthority is mandatory"
+        );
         membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
     }
 

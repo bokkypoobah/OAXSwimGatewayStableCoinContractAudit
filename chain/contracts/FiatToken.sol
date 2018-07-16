@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.23;
 
 
 // auth, token, guard
@@ -18,7 +18,7 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
     address public transferFeeCollector;
 
-    function FiatToken(
+    constructor(
         DSAuthority _authority, 
         bytes32 symbol, 
         address transferFeeCollector_, 

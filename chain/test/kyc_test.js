@@ -141,12 +141,6 @@ describe("Asset Gateway", function () {
                 })
             })
 
-            // FIXME Should deposits really be rejected?
-            it.skip("rejects deposits FROM non-KYC verified addresses", async () => {
-                await expectThrow(async () =>
-                    send(gate, CUSTOMER, deposit, AMT))
-            })
-
             it("allows transfers FROM KYC verified address to arbitrary addresses", async () => {
                 await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
                 await send(gate, CUSTOMER1, deposit, AMT)
@@ -216,12 +210,6 @@ describe("Asset Gateway", function () {
                 await expectThrow(async () => {
                     await send(gate, MONEY_OPERATOR, mint, CUSTOMER, AMT)
                 })
-            })
-
-            // FIXME Should deposits really be rejected?
-            it.skip("rejects deposits FROM non-KYC verified addresses", async () => {
-                await expectThrow(async () =>
-                    send(gate, CUSTOMER, deposit, AMT))
             })
 
             it("allows transfers BETWEEN KYC verified addresses", async () => {
@@ -295,7 +283,7 @@ describe("Asset Gateway", function () {
 
         describe("SystemAdmin", async () => {
 
-            it("Able to set the address of membership lookup contract \n" + 
+            it("Able to set the address of membership lookup contract " +
                 "and Throw when trying mint and burn if the address is not member", async () => {
                 const deploy = (...args) => create(web3, DEPLOYER, ...args)
                 const {

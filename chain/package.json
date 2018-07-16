@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/oax/asset-gateway-poc.git"
+    "url": "git+ssh://git@gitlab.com/swim-gateway/stable-coin.git"
   },
   "license": "MIT",
   "dependencies": {
@@ -15,10 +15,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "solium --file contracts/FiatToken.sol && solium --file contracts/Gate.sol && solium --file contracts/GateRoles.sol && solium --file contracts/GateWithFee.sol && solium --file contracts/Kyc.sol  && solium --file contracts/solovault.sol  && solium --file contracts/TokenAuth.sol  && mocha",
+    "test": "solium --dir contracts/ && mocha",
     "dev-test": "mocha"
   },
   "devDependencies": {
-    "mocha": "^5.0.0"
+    "solhint": "^1.2.1",
+    "solium": "^1.1.8"
   }
 }

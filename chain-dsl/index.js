@@ -49,9 +49,7 @@ const send = async (contract, sender, methodName, ...params) => {
             return method(...params).send({from: sender})
         },retryOptions)
 
-        if(process.env.NODE_ENV='production'){
-            console.log(`Deployed Method [${methodName}] with [${params}] - ${receipt.transactionHash}`)
-        }
+        console.debug(`Deployed Method [${methodName}] with [${params}] - ${receipt.transactionHash}`)
         return receipt
     } else {
         throw new Error(`${contract.options.name}.${methodName} is undefined`)
@@ -91,9 +89,7 @@ const create = async (web3, DEPLOYER, Contract, ...arguments) => {
         // FIXME https://github.com/ethereum/web3.js/issues/1253 workaround
     }, retryOptions)
      
-    if(process.env.NODE_ENV='production'){
-        console.log(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
-    }
+    console.debug(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
     contract.setProvider(web3.currentProvider)
 
     db.set('deployedContract.'+Contract.NAME.toLowerCase(), {

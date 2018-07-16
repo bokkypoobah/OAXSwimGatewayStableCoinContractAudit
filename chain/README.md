@@ -2,6 +2,9 @@
 
 ## Setup
 
+Older versions of `pnpm` required manual installations per package,
+but with the Nix setup this won't be necessary:
+
 ```bash
 cd ../chain-dsl/ && pnpm install && cd ../chain/ && pnpm install
 ```
@@ -15,18 +18,32 @@ smart contract code changes:
 pnpm test --watch
 ```
 
+In JetBrains IDEs, like IntelliJ or WebStorm, you should set the `node`
+executable path to what `which node` outputs in your `nix-shell`.
+
+This setting is under `Preferences` / `Languages & Frameworks`
+/ `Node.js and NPM` / `Node interpreter` input field.
+
+To run mocha tests, you also need to specify the module path to mocha:
+
+```
+$ dirname $(dirname $(which mocha))
+/nix/store/5l0xmpsk66l8dkrzi0cmkbpszsarapfc-node-mocha-5.2.0
+```
+
+and supply the path under `Run` / `Edit congfigurations...` / `Defaults`
+/ `Mocha` / `Mocha package` input field.
 
 ## Development
+
 To check your contract style:
 ```
-npm install -g solium
-stable-coin/chain$ solium --dir contracts
+stable-coin/chain$ pnpx solium --dir contracts
 ```
 
 Or more strict style check:
 ```
-npm install -g solhint
-stable-coin/chain$ solhint contracts/*.sol
+stable-coin/chain$ pnpx solhint contracts/*.sol
 ```
 
 ## Notes

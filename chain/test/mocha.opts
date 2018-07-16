@@ -1,3 +1,4 @@
 --watch-extensions sol
 --slow 500
 --timeout 6000
+--file test/helpers.js

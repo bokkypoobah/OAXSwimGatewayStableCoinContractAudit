@@ -189,3 +189,4 @@ typings/
 .env
 .idea/
 build/
+chain/config/local.json

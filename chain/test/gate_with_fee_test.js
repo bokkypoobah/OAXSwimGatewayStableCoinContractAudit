@@ -71,15 +71,13 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
         //transfer
         await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", SYSTEM_ADMIN);
         expect(await call(token, "transferFeeCollector")).eq(SYSTEM_ADMIN)
-        //negative interest rate
-        await send(gateWithFee, SYSTEM_ADMIN, "setNegativeInterestRateFeeCollector", SYSTEM_ADMIN)
-        expect(await call(gateWithFee, "negativeInterestRateFeeCollector")).eq(SYSTEM_ADMIN)
+
     })
 
     context("Mint with dynamic fee", async () => {
-        it("When a customer request to mint 10000 tokens and the fee is 25, \n" +
-            "10000 tokens goes to the customer's wallet, \n" +
-            "and 25 tokens goes to the fee collector's wallet. \n" +
+        it("When a customer request to mint 10000 tokens and the fee is 25, " +
+            "10000 tokens goes to the customer's wallet, " +
+            "and 25 tokens goes to the fee collector's wallet. " +
             "(Assume the gate actually collects 10025 fiat from the customer.)", async () => {
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
@@ -93,10 +91,10 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
     })
 
     context("Burn with dynamic fee", async () => {
-        it("When a customer request to burn 10000 tokens and the fee is 25, \n" +
-            "10000 tokens come off from the customer's wallet, \n" +
-            "9975 tokens get burnt, \n" +
-            "and 25 tokens goes to the fee collector's wallet. \n" +
+        it("When a customer request to burn 10000 tokens and the fee is 25, " +
+            "10000 tokens come off from the customer's wallet, " +
+            "9975 tokens get burnt, " +
+            "and 25 tokens goes to the fee collector's wallet. " +
             "(Assume the gate actually sends 9975 fiat to the customer.)", async () => {
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
@@ -159,9 +157,9 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             expect(await call(transferFeeController, "calculateTransferFee", null, null, 9116)).eq(24 * (1));
         })
 
-        it("When a customer transfers 10000 tokens to customer_two and the fee is 25 (0+25bps), \n" +
-            "10000 tokens come off from the customer's wallet, \n" +
-            "9975 tokens goes to customer_two, \n" +
+        it("When a customer transfers 10000 tokens to customer_two and the fee is 25 (0+25bps), " +
+            "10000 tokens come off from the customer's wallet, " +
+            "9975 tokens goes to customer_two, " +
             "and 25 tokens goes to the fee collector's wallet.", async () => {
             await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
@@ -215,48 +213,6 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(9990)
             expect(await call(token, "balanceOf", TRANSFER_FEE_COLLECTOR)).eq(10)
             //expect(await call(token, "balanceOf", SYSTEM_ADMIN)).eq(10) //SYSTEM_ADMIN is transfer fee collector
-        })
-    })
-
-    context("Negative Interest Rate with dynamic fee", async () => {
-
-        it("Gate will emit two relevant events if interest payment is successful.", async () => {
-            await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
-            let startBalance = await call(token, "balanceOf", CUSTOMER1)
-            let AMT1 = wad(1000)
-
-            let events = await txEvents(await send(gateWithFee, SYSTEM_ADMIN, "requestInterestPayment", CUSTOMER1, AMT1))
-            events = events.concat(await txEvents(await send(token, CUSTOMER1, "approve", address(gateWithFee), AMT1)))
-            events = events.concat(await txEvents(await send(gateWithFee, SYSTEM_ADMIN, "processInterestPayment", CUSTOMER1, AMT1)))
-
-            expect(events).containSubset([
-                {NAME: 'InterestPaymentRequest', by: CUSTOMER1, amount: AMT1.toString(10)},
-                {NAME: 'InterestPaymentSuccess', by: CUSTOMER1, amount: AMT1.toString(10)}
-            ])
-
-            expect(await call(token, "balanceOf", CUSTOMER1)).eq(startBalance - AMT1)
-        })
-
-        it("Customer cannot pay more interest than its balance.", async () => {
-            await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
-            let startBalance = await call(token, "balanceOf", CUSTOMER1)
-            let AMT1 = startBalance + 5
-
-            let events = await txEvents(await send(gateWithFee, SYSTEM_ADMIN, "requestInterestPayment", CUSTOMER1, AMT1))
-            events = events.concat(await txEvents(await send(token, CUSTOMER1, "approve", address(gateWithFee), AMT1)))
-
-            await expectThrow(async () => {
-                events = events.concat(await txEvents(await send(gateWithFee, SYSTEM_ADMIN, "processInterestPayment", CUSTOMER1, AMT1)))
-            })
-
-            expect(events).containSubset([
-                {NAME: 'InterestPaymentRequest', by: CUSTOMER1, amount: AMT1.toString(10)},
-            ])
-            expect(events).not.containSubset([
-                {NAME: 'InterestPaymentSuccess', by: CUSTOMER1, amount: AMT1.toString(10)},
-            ])
-
-            expect(await call(token, "balanceOf", CUSTOMER1)).eq(startBalance)
         })
     })
 

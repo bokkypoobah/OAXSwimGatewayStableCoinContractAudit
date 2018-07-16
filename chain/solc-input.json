@@ -136,15 +136,17 @@
       }
     }
   },
+  "DISABLED_sources": {
+    "dsgroup.sol": {
+      "urls": [
+        "contracts/test/dsgroup.sol"
+      ]
+    }
+  },
   "sources": {
     "dappsys.sol": {
       "urls": [
         "contracts/dappsys.sol"
-      ]
-    },
-    "dsgroup.sol": {
-      "urls": [
-        "contracts/test/dsgroup.sol"
       ]
     },
     "solovault.sol": {

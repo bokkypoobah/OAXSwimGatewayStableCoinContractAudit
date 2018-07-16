@@ -1,16 +1,17 @@
-pragma solidity 0.4.19;
-
 /// math.sol -- mixin for inline numerical wizardry
+
+
+
+
+pragma solidity ^0.4.13;
 
 contract DSMath {
     function add(uint x, uint y) internal pure returns (uint z) {
         require((z = x + y) >= x);
     }
-
     function sub(uint x, uint y) internal pure returns (uint z) {
         require((z = x - y) <= x);
     }
-
     function mul(uint x, uint y) internal pure returns (uint z) {
         require(y == 0 || (z = x * y) / y == x);
     }
@@ -18,41 +19,30 @@ contract DSMath {
     function min(uint x, uint y) internal pure returns (uint z) {
         return x <= y ? x : y;
     }
-
     function max(uint x, uint y) internal pure returns (uint z) {
         return x >= y ? x : y;
     }
-
     function imin(int x, int y) internal pure returns (int z) {
         return x <= y ? x : y;
     }
-
     function imax(int x, int y) internal pure returns (int z) {
         return x >= y ? x : y;
     }
 
-    uint internal constant WAD = 10 ** 18;
-
-    uint internal constant RAY = 10 ** 27;
+    uint constant WAD = 10 ** 18;
+    uint constant RAY = 10 ** 27;
 
     function wmul(uint x, uint y) internal pure returns (uint z) {
         z = add(mul(x, y), WAD / 2) / WAD;
     }
-
     function rmul(uint x, uint y) internal pure returns (uint z) {
         z = add(mul(x, y), RAY / 2) / RAY;
     }
-
     function wdiv(uint x, uint y) internal pure returns (uint z) {
         z = add(mul(x, WAD), y / 2) / y;
     }
-
     function rdiv(uint x, uint y) internal pure returns (uint z) {
         z = add(mul(x, RAY), y / 2) / y;
-    }
-
-    function div(uint x, uint y) internal pure returns (uint z) {
-        z = add(mul(x, 1), y / 2) / y;
     }
 
     function rpow(uint x, uint n) internal pure returns (uint z) {
@@ -67,74 +57,67 @@ contract DSMath {
         }
     }
 }
-
 /// erc20.sol -- API for the ERC20 token standard
+
+
+
+pragma solidity ^0.4.8;
 
 contract ERC20Events {
     event Approval(address indexed src, address indexed guy, uint wad);
-
     event Transfer(address indexed src, address indexed dst, uint wad);
 }
 
-
 contract ERC20 is ERC20Events {
     function totalSupply() public view returns (uint);
-
     function balanceOf(address guy) public view returns (uint);
-
     function allowance(address src, address guy) public view returns (uint);
 
     function approve(address guy, uint wad) public returns (bool);
-
     function transfer(address dst, uint wad) public returns (bool);
-
     function transferFrom(
-    address src, address dst, uint wad
-    )
-    public returns (bool);
+        address src, address dst, uint wad
+    ) public returns (bool);
 }
 
-/// auth.sol -- Authoriaation framework
+
+
+pragma solidity ^0.4.23;
 
 contract DSAuthority {
     function canCall(
-    address src, address dst, bytes4 sig
-    )
-    public view returns (bool);
+        address src, address dst, bytes4 sig
+    ) public view returns (bool);
 }
-
 
 contract DSAuthEvents {
     event LogSetAuthority (address indexed authority);
-
     event LogSetOwner     (address indexed owner);
 }
 
-
 contract DSAuth is DSAuthEvents {
     DSAuthority  public  authority;
-
     address      public  owner;
 
-    function DSAuth() public {
+    constructor() public {
         owner = msg.sender;
-        LogSetOwner(msg.sender);
+        emit LogSetOwner(msg.sender);
     }
 
     function setOwner(address owner_)
-    public
-    auth
+        public
+        auth
     {
         owner = owner_;
-        LogSetOwner(owner);
+        emit LogSetOwner(owner);
     }
 
     function setAuthority(DSAuthority authority_)
-    public
-    auth
+        public
+        auth
     {
         authority = authority_;
-        LogSetAuthority(authority);
+        emit LogSetAuthority(authority);
     }
 
     modifier auth {
@@ -145,29 +128,30 @@ contract DSAuth is DSAuthEvents {
     function isAuthorized(address src, bytes4 sig) internal view returns (bool) {
         if (src == address(this)) {
             return true;
-        }
-        else if (src == owner) {
+        } else if (src == owner) {
             return true;
-        }
-        else if (authority == DSAuthority(0)) {
+        } else if (authority == DSAuthority(0)) {
             return false;
-        }
-        else {
+        } else {
             return authority.canCall(src, this, sig);
         }
     }
 }
-
 /// note.sol -- the `note' modifier, for logging calls as events
+
+
+
+
+pragma solidity ^0.4.23;
 
 contract DSNote {
     event LogNote(
-    bytes4   indexed sig,
-    address  indexed guy,
-    bytes32  indexed foo,
-    bytes32  indexed bar,
-    uint wad,
-    bytes fax
+        bytes4   indexed  sig,
+        address  indexed  guy,
+        bytes32  indexed  foo,
+        bytes32  indexed  bar,
+        uint              wad,
+        bytes             fax
     ) anonymous;
 
     modifier note {
@@ -175,17 +159,23 @@ contract DSNote {
         bytes32 bar;
 
         assembly {
-        foo := calldataload(4)
-        bar := calldataload(36)
+            foo := calldataload(4)
+            bar := calldataload(36)
         }
 
-        LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
+        emit LogNote(msg.sig, msg.sender, foo, bar, msg.value, msg.data);
 
         _;
     }
 }
-
 /// stop.sol -- mixin for enable/disable functionality
+
+
+
+
+
+pragma solidity ^0.4.23;
+
 
 contract DSStop is DSNote, DSAuth {
 
@@ -198,73 +188,73 @@ contract DSStop is DSNote, DSAuth {
     function stop() public auth note {
         stopped = true;
     }
-
     function start() public auth note {
         stopped = false;
     }
 
 }
+// guard.sol -- simple whitelist implementation of DSAuthority
 
-/// guard.sol -- simple whitelist implementation of DSAuthority
+
+
+
+
+pragma solidity ^0.4.23;
+
 
 contract DSGuardEvents {
     event LogPermit(
-    bytes32 indexed src,
-    bytes32 indexed dst,
-    bytes32 indexed sig
+        bytes32 indexed src,
+        bytes32 indexed dst,
+        bytes32 indexed sig
     );
 
     event LogForbid(
-    bytes32 indexed src,
-    bytes32 indexed dst,
-    bytes32 indexed sig
+        bytes32 indexed src,
+        bytes32 indexed dst,
+        bytes32 indexed sig
     );
 }
 
-
 contract DSGuard is DSAuth, DSAuthority, DSGuardEvents {
-    bytes32 constant public ANY = bytes32(uint(- 1));
+    bytes32 constant public ANY = bytes32(uint(-1));
 
     mapping (bytes32 => mapping (bytes32 => mapping (bytes32 => bool))) acl;
 
     function canCall(
-    address src_, address dst_, bytes4 sig
-    )
-    public view returns (bool)
-    {
-        var src = bytes32(src_);
-        var dst = bytes32(dst_);
+        address src_, address dst_, bytes4 sig
+    ) public view returns (bool) {
+        bytes32 src = bytes32(src_);
+        bytes32 dst = bytes32(dst_);
 
         return acl[src][dst][sig]
-        || acl[src][dst][ANY]
-        || acl[src][ANY][sig]
-        || acl[src][ANY][ANY]
-        || acl[ANY][dst][sig]
-        || acl[ANY][dst][ANY]
-        || acl[ANY][ANY][sig]
-        || acl[ANY][ANY][ANY];
+            || acl[src][dst][ANY]
+            || acl[src][ANY][sig]
+            || acl[src][ANY][ANY]
+            || acl[ANY][dst][sig]
+            || acl[ANY][dst][ANY]
+            || acl[ANY][ANY][sig]
+            || acl[ANY][ANY][ANY];
     }
 
     function permit(bytes32 src, bytes32 dst, bytes32 sig) public auth {
         acl[src][dst][sig] = true;
-        LogPermit(src, dst, sig);
+        emit LogPermit(src, dst, sig);
     }
 
     function forbid(bytes32 src, bytes32 dst, bytes32 sig) public auth {
         acl[src][dst][sig] = false;
-        LogForbid(src, dst, sig);
+        emit LogForbid(src, dst, sig);
     }
 
     function permit(address src, address dst, bytes32 sig) public {
         permit(bytes32(src), bytes32(dst), sig);
     }
-
     function forbid(address src, address dst, bytes32 sig) public {
         forbid(bytes32(src), bytes32(dst), sig);
     }
 
 }
-
 
 contract DSGuardFactory {
     mapping (address => bool)  public  isGuard;
@@ -275,55 +265,58 @@ contract DSGuardFactory {
         isGuard[guard] = true;
     }
 }
+// roles.sol - roled based authentication
 
-/// roles.sol - roled based authentication
+
+
+
+
+pragma solidity ^0.4.13;
+
 
 contract DSRoles is DSAuth, DSAuthority
 {
-    mapping (address => bool) _root_users;
-
-    mapping (address => bytes32) _user_roles;
-
-    mapping (address => mapping (bytes4 => bytes32)) _capability_roles;
-
-    mapping (address => mapping (bytes4 => bool)) _public_capabilities;
+    mapping(address=>bool) _root_users;
+    mapping(address=>bytes32) _user_roles;
+    mapping(address=>mapping(bytes4=>bytes32)) _capability_roles;
+    mapping(address=>mapping(bytes4=>bool)) _public_capabilities;
 
     function getUserRoles(address who)
-    public
-    view
-    returns (bytes32)
+        public
+        view
+        returns (bytes32)
     {
         return _user_roles[who];
     }
 
     function getCapabilityRoles(address code, bytes4 sig)
-    public
-    view
-    returns (bytes32)
+        public
+        view
+        returns (bytes32)
     {
         return _capability_roles[code][sig];
     }
 
     function isUserRoot(address who)
-    public
-    view
-    returns (bool)
+        public
+        view
+        returns (bool)
     {
         return _root_users[who];
     }
 
     function isCapabilityPublic(address code, bytes4 sig)
-    public
-    view
-    returns (bool)
+        public
+        view
+        returns (bool)
     {
         return _public_capabilities[code][sig];
     }
 
     function hasUserRole(address who, uint8 role)
-    public
-    view
-    returns (bool)
+        public
+        view
+        returns (bool)
     {
         bytes32 roles = getUserRoles(who);
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
@@ -331,79 +324,80 @@ contract DSRoles is DSAuth, DSAuthority
     }
 
     function canCall(address caller, address code, bytes4 sig)
-    public
-    view
-    returns (bool)
+        public
+        view
+        returns (bool)
     {
-        if (isUserRoot(caller) || isCapabilityPublic(code, sig)) {
+        if( isUserRoot(caller) || isCapabilityPublic(code, sig) ) {
             return true;
-        }
-        else {
-            var has_roles = getUserRoles(caller);
-            var needs_one_of = getCapabilityRoles(code, sig);
+        } else {
+            bytes32 has_roles = getUserRoles(caller);
+            bytes32 needs_one_of = getCapabilityRoles(code, sig);
             return bytes32(0) != has_roles & needs_one_of;
         }
     }
 
     function BITNOT(bytes32 input) internal pure returns (bytes32 output) {
-        return (input ^ bytes32(uint(- 1)));
+        return (input ^ bytes32(uint(-1)));
     }
 
     function setRootUser(address who, bool enabled)
-    public
-    auth
+        public
+        auth
     {
         _root_users[who] = enabled;
     }
 
     function setUserRole(address who, uint8 role, bool enabled)
-    public
-    auth
+        public
+        auth
     {
-        var last_roles = _user_roles[who];
+        bytes32 last_roles = _user_roles[who];
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
-        if (enabled) {
+        if( enabled ) {
             _user_roles[who] = last_roles | shifted;
-        }
-        else {
+        } else {
             _user_roles[who] = last_roles & BITNOT(shifted);
         }
     }
 
     function setPublicCapability(address code, bytes4 sig, bool enabled)
-    public
-    auth
+        public
+        auth
     {
         _public_capabilities[code][sig] = enabled;
     }
 
     function setRoleCapability(uint8 role, address code, bytes4 sig, bool enabled)
-    public
-    auth
+        public
+        auth
     {
-        var last_roles = _capability_roles[code][sig];
+        bytes32 last_roles = _capability_roles[code][sig];
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
-        if (enabled) {
+        if( enabled ) {
             _capability_roles[code][sig] = last_roles | shifted;
-        }
-        else {
+        } else {
             _capability_roles[code][sig] = last_roles & BITNOT(shifted);
         }
 
     }
 
 }
-
 /// base.sol -- basic ERC20 implementation
+
+
+
+
+
+pragma solidity ^0.4.23;
+
 
 contract DSTokenBase is ERC20, DSMath {
     uint256                                            _supply;
-
     mapping (address => uint256)                       _balances;
-
     mapping (address => mapping (address => uint256))  _approvals;
 
-    function DSTokenBase(uint supply) public {
+    constructor(uint supply) public {
         _balances[msg.sender] = supply;
         _supply = supply;
     }
@@ -411,11 +405,9 @@ contract DSTokenBase is ERC20, DSMath {
     function totalSupply() public view returns (uint) {
         return _supply;
     }
-
     function balanceOf(address src) public view returns (uint) {
         return _balances[src];
     }
-
     function allowance(address src, address guy) public view returns (uint) {
         return _approvals[src][guy];
     }
@@ -425,8 +417,8 @@ contract DSTokenBase is ERC20, DSMath {
     }
 
     function transferFrom(address src, address dst, uint wad)
-    public
-    returns (bool)
+        public
+        returns (bool)
     {
         if (src != msg.sender) {
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
@@ -435,7 +427,7 @@ contract DSTokenBase is ERC20, DSMath {
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 
-        Transfer(src, dst, wad);
+        emit Transfer(src, dst, wad);
 
         return true;
     }
@@ -443,29 +435,34 @@ contract DSTokenBase is ERC20, DSMath {
     function approve(address guy, uint wad) public returns (bool) {
         _approvals[msg.sender][guy] = wad;
 
-        Approval(msg.sender, guy, wad);
+        emit Approval(msg.sender, guy, wad);
 
         return true;
     }
 }
-
 /// token.sol -- ERC20 implementation with minting and burning
+
+
+
+
+
+pragma solidity ^0.4.23;
+
+
 
 contract DSToken is DSTokenBase(0), DSStop {
 
     bytes32  public  symbol;
 
-
-    function DSToken(bytes32 symbol_) public {
+    constructor(bytes32 symbol_) public {
         symbol = symbol_;
     }
 
     event Mint(address indexed guy, uint wad);
-
     event Burn(address indexed guy, uint wad);
 
     function approve(address guy) public stoppable returns (bool) {
-        return super.approve(guy, uint(- 1));
+        return super.approve(guy, uint(-1));
     }
 
     function approve(address guy, uint wad) public stoppable returns (bool) {
@@ -473,18 +470,18 @@ contract DSToken is DSTokenBase(0), DSStop {
     }
 
     function transferFrom(address src, address dst, uint wad)
-    public
-    stoppable
-    returns (bool)
+        public
+        stoppable
+        returns (bool)
     {
-        if (src != msg.sender && _approvals[src][msg.sender] != uint(- 1)) {
+        if (src != msg.sender && _approvals[src][msg.sender] != uint(-1)) {
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 
-        Transfer(src, dst, wad);
+        emit Transfer(src, dst, wad);
 
         return true;
     }
@@ -492,11 +489,9 @@ contract DSToken is DSTokenBase(0), DSStop {
     function push(address dst, uint wad) public {
         transferFrom(msg.sender, dst, wad);
     }
-
     function pull(address src, uint wad) public {
         transferFrom(src, msg.sender, wad);
     }
-
     function move(address src, address dst, uint wad) public {
         transferFrom(src, dst, wad);
     }
@@ -504,25 +499,22 @@ contract DSToken is DSTokenBase(0), DSStop {
     function mint(uint wad) public {
         mint(msg.sender, wad);
     }
-
     function burn(uint wad) public {
         burn(msg.sender, wad);
     }
-
     function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
-        Mint(guy, wad);
+        emit Mint(guy, wad);
     }
-
     function burn(address guy, uint wad) public auth stoppable {
-        if (guy != msg.sender && _approvals[guy][msg.sender] != uint(- 1)) {
+        if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
         _balances[guy] = sub(_balances[guy], wad);
         _supply = sub(_supply, wad);
-        Burn(guy, wad);
+        emit Burn(guy, wad);
     }
 
     bytes32   public  name = "";
@@ -531,14 +523,19 @@ contract DSToken is DSTokenBase(0), DSStop {
         name = name_;
     }
 }
+// multivault.sol -- vault for holding different kinds of ERC20 tokens
 
-/// multivault.sol -- vault for holding different kinds of ERC20 tokens
+
+
+
+
+pragma solidity ^0.4.13;
+
 
 contract DSMultiVault is DSAuth {
     function push(ERC20 token, address dst, uint wad) public auth {
         require(token.transfer(dst, wad));
     }
-
     function pull(ERC20 token, address src, uint wad) public auth {
         require(token.transferFrom(src, this, wad));
     }
@@ -546,7 +543,6 @@ contract DSMultiVault is DSAuth {
     function push(ERC20 token, address dst) public {
         push(token, dst, token.balanceOf(this));
     }
-
     function pull(ERC20 token, address src) public {
         pull(token, src, token.balanceOf(src));
     }
@@ -554,15 +550,12 @@ contract DSMultiVault is DSAuth {
     function mint(DSToken token, uint wad) public auth {
         token.mint(wad);
     }
-
     function burn(DSToken token, uint wad) public auth {
         token.burn(wad);
     }
-
     function mint(DSToken token, address guy, uint wad) public auth {
         token.mint(guy, wad);
     }
-
     function burn(DSToken token, address guy, uint wad) public auth {
         token.burn(guy, wad);
     }
@@ -571,8 +564,14 @@ contract DSMultiVault is DSAuth {
         token.burn(token.balanceOf(this));
     }
 }
+// vault.sol -- vault for holding a single kind of ERC20 tokens
 
-/// vault.sol -- vault for holding a single kind of ERC20 tokens
+
+
+
+
+pragma solidity ^0.4.23;
+
 
 contract DSVault is DSMultiVault {
     ERC20  public  token;
@@ -584,7 +583,6 @@ contract DSVault is DSMultiVault {
     function push(address dst, uint wad) public {
         push(token, dst, wad);
     }
-
     function pull(address src, uint wad) public {
         pull(token, src, wad);
     }
@@ -592,7 +590,6 @@ contract DSVault is DSMultiVault {
     function push(address dst) public {
         push(token, dst);
     }
-
     function pull(address src) public {
         pull(token, src);
     }
@@ -600,7 +597,6 @@ contract DSVault is DSMultiVault {
     function mint(uint wad) public {
         super.mint(DSToken(token), wad);
     }
-
     function burn(uint wad) public {
         super.burn(DSToken(token), wad);
     }
@@ -609,56 +605,65 @@ contract DSVault is DSMultiVault {
         burn(DSToken(token));
     }
 }
+// exec.sol - base contract used by anything that wants to do "untyped" calls
 
-/// exec.sol - base contract used by anything that wants to do "untyped" calls
+
+
+
+
+pragma solidity ^0.4.23;
 
 contract DSExec {
-    function tryExec(address target, bytes calldata, uint value)
-    internal
-    returns (bool call_ret)
+    function tryExec( address target, bytes calldata, uint value)
+             internal
+             returns (bool call_ret)
     {
         return target.call.value(value)(calldata);
     }
-
-    function exec(address target, bytes calldata, uint value)
-    internal
+    function exec( address target, bytes calldata, uint value)
+             internal
     {
-        if (!tryExec(target, calldata, value)) {
+        if(!tryExec(target, calldata, value)) {
             revert();
         }
     }
 
-    function exec(address t, bytes c)
-    internal
+    function exec( address t, bytes c )
+        internal
     {
         exec(t, c, 0);
     }
-
-    function exec(address t, uint256 v)
-    internal
+    function exec( address t, uint256 v )
+        internal
     {
-        bytes memory c;
-        exec(t, c, v);
+        bytes memory c; exec(t, c, v);
     }
-
-    function tryExec(address t, bytes c)
-    internal
-    returns (bool)
+    function tryExec( address t, bytes c )
+        internal
+        returns (bool)
     {
         return tryExec(t, c, 0);
     }
-
-    function tryExec(address t, uint256 v)
-    internal
-    returns (bool)
+    function tryExec( address t, uint256 v )
+        internal
+        returns (bool)
     {
-        bytes memory c;
-        return tryExec(t, c, v);
+        bytes memory c; return tryExec(t, c, v);
     }
 }
+// thing.sol - `auth` with handy mixins. your things should be DSThings
 
-/// thing.sol - `auth` with handy mixins. your things should be DSThings
+
+
+
+
+pragma solidity ^0.4.13;
+
 
 contract DSThing is DSAuth, DSNote, DSMath {
+
+    function S(string s) internal pure returns (bytes4) {
+        return bytes4(keccak256(s));
+    }
 
 }

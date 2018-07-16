@@ -64,10 +64,11 @@ describe('Gate', function () {
     })
 
     context('CUSTOMER', () => {
-        const pendingDeposits = async (customer) =>
-            gate.getPastEvents('DepositRequested',
+        async function pendingDeposits(customer) {
+            const pastEvents = await gate.getPastEvents('DepositRequested',
                 {fromBlock: 0, filter: {by: customer}})
-                .map(distillEvent)
+            return pastEvents.map(distillEvent)
+        }
 
         it('cannot mint for themselves', async () => {
             await expectThrow(async () =>
@@ -158,28 +159,29 @@ describe('Gate', function () {
     })
 
     context('MONEY_OPERATOR', () => {
-        const pendingDeposits = async (customer) =>
-            gate.getPastEvents('DepositRequested', {fromBlock: 0})
+        async function pendingDeposits(customer) {
+            let pastEvents = await gate.getPastEvents('DepositRequested',
+                {fromBlock: 0})
+            return pastEvents.map(distillEvent)
+        }
+
+        async function pendingWithdrawals() {
+            const withdrawalAndMintTransfers =
+                (await token.getPastEvents('Transfer',
+                    {fromBlock: 0, filter: {dst: address(gate)}}))
                 .map(distillEvent)
 
-        const pendingWithdrawals = async () => {
-            const withdrawalAndMintTransfers =
-                await token.getPastEvents('Transfer',
-                    {
-                        fromBlock: 0,
-                        filter: {dst: address(gate)}
-                    })
-                    .map(distillEvent)
             const isTransferByMint = (ev) => ev.src !== ZERO_ADDR
-            const withdrawalTransfers = withdrawalAndMintTransfers.filter(isTransferByMint)
+            const withdrawalTransfers = withdrawalAndMintTransfers
+                .filter(isTransferByMint)
 
             const burns =
-                await token.getPastEvents('Burn', {fromBlock: 0})
-                    .map(distillEvent)
+                (await token.getPastEvents('Burn', {fromBlock: 0}))
+                .map(distillEvent)
 
             const withdrawals =
-                await gate.getPastEvents('Withdrawn', {fromBlock: 0})
-                    .map(distillEvent)
+                (await gate.getPastEvents('Withdrawn', {fromBlock: 0}))
+                .map(distillEvent)
 
             return withdrawalTransfers.concat(burns).concat(withdrawals)
         }

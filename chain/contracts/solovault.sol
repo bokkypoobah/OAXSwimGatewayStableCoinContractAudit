@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.23;
 
 import "dappsys.sol";
 
@@ -12,11 +12,17 @@ contract DSSoloVault is DSAuth {
     }
 
     function push(address dst, uint wad) public auth {
-        require(token.transfer(dst, wad));
+        require(
+            token.transfer(dst, wad),
+            "Can't push"
+        );
     }
 
     function pull(address src, uint wad) public auth {
-        require(token.transferFrom(src, this, wad));
+        require(
+            token.transferFrom(src, this, wad),
+            "Can't pull"
+        );
     }
 
     function push(address dst) public {

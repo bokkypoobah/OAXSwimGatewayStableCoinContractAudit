@@ -16,7 +16,7 @@ const {
 
 const {
     KycAmlStatus, NoKycAmlRule, BoundaryKycAmlRule, FullKycAmlRule, MockMembershipAuthority, 
-    MembershipRule, GateRoles, DSGuard, FiatToken, TransferFeeController, AddressControlStatus, 
+    MembershipWithBoundaryKycAmlRule, GateRoles, DSGuard, FiatToken, TransferFeeController, AddressControlStatus, 
     LimitController, LimitSetting, GateWithFee
 } = solc(__dirname, '../solc-input.json')
 
@@ -34,7 +34,7 @@ const noKycAmlRule = new web3.eth.Contract(NoKycAmlRule.abi, db.get('deployedCon
 const boundaryKycAmlRule = new web3.eth.Contract(BoundaryKycAmlRule.abi, db.get('deployedContract.boundarykycamlrule.address').value(), options)
 const fullKycAmlRule = new web3.eth.Contract(FullKycAmlRule.abi, db.get('deployedContract.fullkycamlrule.address').value(), options)
 const mockMembershipAuthority = new web3.eth.Contract(MockMembershipAuthority.abi, db.get('deployedContract.mockmembershipauthority.address').value(), options)
-const membershipRule = new web3.eth.Contract(MembershipRule.abi, db.get('deployedContract.membershiprule.address').value(), options)
+const membershipWithBoundaryKycAmlRule = new web3.eth.Contract(MembershipWithBoundaryKycAmlRule.abi, db.get('deployedContract.membershipwithboundarykycamlrule.address').value(), options)
 const fiatTokenGuard = new web3.eth.Contract(DSGuard.abi, db.get('deployedContract.dsguard.address').value(), options)
 const gateRoles = new web3.eth.Contract(GateRoles.abi, db.get('deployedContract.gateroles.address').value(), options)
 const token = new web3.eth.Contract(FiatToken.abi, db.get('deployedContract.fiattoken.address').value(), options)
@@ -45,6 +45,6 @@ const gateWithFee = new web3.eth.Contract(GateWithFee.abi, db.get('deployedContr
 
 module.exports = {
     kycAmlStatus, addressControlStatus, noKycAmlRule, boundaryKycAmlRule, fullKycAmlRule, 
-    mockMembershipAuthority, membershipRule, fiatTokenGuard, gateRoles, token, transferFeeController, 
+    mockMembershipAuthority, membershipWithBoundaryKycAmlRule, fiatTokenGuard, gateRoles, token, transferFeeController, 
     limitController, limitSetting, gateWithFee, web3
 }
