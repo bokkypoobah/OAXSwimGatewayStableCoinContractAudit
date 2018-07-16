@@ -13,6 +13,10 @@ title Contracts Hierarchy (TODO modify according to changes)
         interface TokenAuth
     }
 
+    package AddressStatus.sol {
+        class AddressStatus
+    }
+
     package Kyc.sol {
         interface KycAmlStatus
         interface ControllableKycAmlRule
@@ -73,6 +77,19 @@ interface TokenAuth #white {
     ~ modifier authBurn(guy, wad)
     ..
     + setTokenAuthority(tokenAuthority) //auth//
+}
+
+class AddressStatus #white {
+    .. Inherited properties ..
+    + DSAuthority authority
+
+    .. Own properties ..
+    + {field} (address => bool) status
+    __
+    + **constructor(authority)**
+    # AddressStatusSet(guy, status)
+
+    + set(guy, newStatus)
 }
 
 class FiatToken #wheat {
@@ -241,6 +258,7 @@ ERC20Authority -[hidden] TokenAuthority
 
 DSAuth <|-- ERC20Auth
 DSAuth <|-- TokenAuth
+DSAuth <|-- AddressStatus
 DSAuth <|-- KycAmlStatus
 
 ERC20Authority <|-- ControllableKycAmlRule

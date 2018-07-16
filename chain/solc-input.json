@@ -46,6 +46,14 @@
           "evm.sourceMap"
         ]
       },
+      "AddressStatus.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
       "Kyc.sol": {
         "*": [
           "metadata",
@@ -162,6 +170,11 @@
     "TokenAuth.sol": {
       "urls": [
         "contracts/TokenAuth.sol"
+      ]
+    },
+    "AddressStatus.sol": {
+      "urls": [
+        "contracts/AddressStatus.sol"
       ]
     },
     "Kyc.sol": {
