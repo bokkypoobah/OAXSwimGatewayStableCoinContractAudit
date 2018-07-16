@@ -1,65 +1,40 @@
-const {
-    expect,
-    expectNoAsyncThrow,
-    expectThrow,
-    toBN,
-    solc,
-    ganacheWeb3,
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    send,
-    call,
-    wad,
-    txEvents,
-    create
-} = require('chain-dsl')
-
+const {expect} = require('chain-dsl/test/helpers')
+const {address, send, call, wad, create} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 
 describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", function () {
-    this.timeout(30000)
+    this.timeout(3000)
 
-    let web3, snaps, accounts,
-        gateWithFee,
+    let gateWithFee,
         token,
         transferFeeController,
         DEPLOYER,
         SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
         FEE_COLLECTOR,
         CUSTOMER1,
-        CUSTOMER2,
-        AMT
+        CUSTOMER2
 
     before('deployment', async () => {
-            snaps = []
-            web3 = ganacheWeb3()
             ;[
                 DEPLOYER,
                 SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
                 FEE_COLLECTOR,
                 CUSTOMER1,
                 CUSTOMER2,
+                // FIXME These addresses are undefined in the tests' scope
                 MINT_FEE_COLLECTOR,
                 BURN_FEE_COLLECTOR,
                 TRANSFER_FEE_COLLECTOR,
                 NEGATIVE_INTEREST_RATE_COLLECTOR,
-            ] = accounts = await web3.eth.getAccounts()
-
-            AMT = 100
+            ] = accounts
 
             ;({token, transferFeeController} =
-            await deployer.init(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, null, wad(100000)))
+                await deployer.init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, null, wad(100000)))
 
             ;({gateWithFee} =
-            await deployer.deployGateWithFee(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR))
+                await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR))
         }
     )
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
-
 
     it("SystemAdmin can change fee collector addresses.", async () => {
         //mint
@@ -110,9 +85,8 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             expect(await call(token, "balanceOf", MINT_FEE_COLLECTOR)).eq(25)
             //no checking on approve
             await send(token, CUSTOMER1, "approve", address(gateWithFee), 10001)
-            await expectThrow(async () => {
-                await send(gateWithFee, MONEY_OPERATOR, "burnWithFee", CUSTOMER1, 10001, 25)
-            })
+            await expect(send(gateWithFee, MONEY_OPERATOR, "burnWithFee", CUSTOMER1, 10001, 25)
+            ).to.be.rejected
         })
         it("0 fee is allowed", async () => {
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
@@ -127,16 +101,17 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
 
     context("Transfer with dynamic fee", async () => {
         it("When absolute_fee=0, basis_point_fee=25, fee for amount ( = 10000) is 25", async () => {
-            expectThrow(async () => {
-                await send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25);
-            })
-            expectThrow(async () => {
-                await send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25);
-            })
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25);
+            await expect(send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25)
+            ).to.be.rejected
+
+            await expect(send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25)
+            ).to.be.rejected
+
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25)
+
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
             expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(25 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(25 * (1))
         })
 
         it("When absolute_fee=1, basis_point_fee=25, fee for amount ( = 10000) is 26", async () => {
@@ -176,9 +151,8 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
         })
 
         it("Gate can change transfer fee collector.", async () => {
-            expectThrow(async () => {
-                await send(gateWithFee, CUSTOMER1, "setTransferFeeCollector", CUSTOMER2);
-            })
+            await expect(send(gateWithFee, CUSTOMER1, "setTransferFeeCollector", CUSTOMER2))
+                .to.be.rejected
 
             await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", CUSTOMER2);
             expect(await call(token, "transferFeeCollector")).eq(CUSTOMER2)
@@ -186,14 +160,11 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
 
         it("Gate can change transfer fee controller.", async () => {
             const deploy = (...args) => create(web3, DEPLOYER, ...args)
-            const {
-                MockTransferFeeController
-            } = solc(__dirname, '../solc-input.json')
+            const {MockTransferFeeController} = contractRegistry
             const mockTransferFeeController = await deploy(MockTransferFeeController)
 
-            expectThrow(async () => {
-                await send(gateWithFee, CUSTOMER1, "setTransferFeeController", address(mockTransferFeeController));
-            })
+            await expect(send(gateWithFee, CUSTOMER1, "setTransferFeeController", address(mockTransferFeeController))
+            ).to.be.rejected
 
             await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeController", address(mockTransferFeeController));
             expect(await call(token, "transferFeeController")).eq(address(mockTransferFeeController))
@@ -218,9 +189,9 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
 
     context("Mint, Burn, Transfer and Negative Interest Rate all have fees.", async () => {
         it("Normal customer can not set transfer fees.", async () => {
-            expectThrow(async () => {
-                await send(transferFeeController, CUSTOMER1, "setDefaultTransferFee", 0, 25);
-            })
+            await expect(send(transferFeeController, CUSTOMER1,
+                "setDefaultTransferFee", 0, 25)
+            ).to.be.rejected
         })
 
         it("Mint, Burn and Transfer fees don't duplicate.", async () => {
@@ -241,8 +212,5 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
             expect(await call(token, "balanceOf", BURN_FEE_COLLECTOR)).eq(25)
         })
-
     })
-
-
 })

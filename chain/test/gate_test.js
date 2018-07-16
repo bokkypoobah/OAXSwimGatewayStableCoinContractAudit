@@ -3,8 +3,6 @@ const {
     expectThrow,
     expectNoAsyncThrow,
     toBN,
-    solc,
-    ganacheWeb3,
     ZERO_ADDR,
 } = require('chain-dsl/test/helpers')
 
@@ -32,34 +30,16 @@ const pull = 'pull(address,uint256)'
 describe('Gate', function () {
     this.timeout(100000)
 
-    let web3, snaps, accounts, gate, token,
-        DEPLOYER,
-        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        CUSTOMER,
-        CUSTOMER1,
-        CUSTOMER2
+    let gate, token
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
-        ;[
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            CUSTOMER,
-            CUSTOMER1,
-            CUSTOMER2
-        ] = accounts = await web3.eth.getAccounts()
-
-        ;({gate, token} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
+        ;({gate, token} = await deploy.base(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
 
     context('DEPLOYER', () => {
         it('cannot mint for customer', async () => {
-            await expectThrow(async () =>
-                send(gate, DEPLOYER, mint, CUSTOMER, 123))
+            await expect(send(gate, DEPLOYER, mint, CUSTOMER, 123))
+                .to.be.rejected
         })
     })
 

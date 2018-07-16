@@ -2,55 +2,20 @@
 switch from a no fee scheme to a has fee scheme does not break existing balances of the gateway
  */
 
-const {
-    expect,
-    expectNoAsyncThrow,
-    expectThrow,
-    toBN,
-    solc,
-    ganacheWeb3,
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    send,
-    call,
-} = require('chain-dsl')
-
+const {expect, expectThrow} = require('chain-dsl/test/helpers')
+const {send, call} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 const mint = 'mint(address,uint256)'
 
 describe("Upgrade Gate Regarding Fee", function () {
-    this.timeout(70000)
+    this.timeout(3000)
 
-    let web3, snaps, accounts,
-        gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, token,
-        DEPLOYER,
-        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        CUSTOMER,
-        CUSTOMER1,
-        CUSTOMER2,
-        AMT
+    let gate, token
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
-        ;[
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            CUSTOMER,
-            CUSTOMER1,
-            CUSTOMER2
-        ] = accounts = await web3.eth.getAccounts()
-
-        AMT = 100
-
-        ;({gate, token} =
-            await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
+        ;({gate, token} = await deployer.base(web3, contractRegistry,
+            DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
 
     context("Switch between a no fee scheme and a has fee scheme gateway does not break existing balances of the (swim) token.", async () => {
         it("When switched to new gate with fee, old gate should have no control over token.", async () => {
@@ -60,8 +25,8 @@ describe("Upgrade Gate Regarding Fee", function () {
 
             //switch to has-fee gate
             //switch step 1, deploy gate with fee
-            let {gateWithFee} = await deployer.deployGateWithFee(web3,
-                solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, DEPLOYER)
+            let {gateWithFee} = await deployer.deployGateWithFee(web3, contractRegistry,
+                DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, DEPLOYER)
             //switch step 2, pause old gate
             await send(gate, SYSTEM_ADMIN, "stop")
 
@@ -80,7 +45,7 @@ describe("Upgrade Gate Regarding Fee", function () {
 
             //switch to has-fee gate
             //switch step 1, deploy gate with fee
-            let {gateWithFee} = await deployer.deployGateWithFee(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, DEPLOYER)
+            let {gateWithFee} = await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, DEPLOYER)
             //switch step 2, pause old gate
             await send(gate, SYSTEM_ADMIN, "stop")
 

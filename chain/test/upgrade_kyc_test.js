@@ -2,63 +2,28 @@
 switch btw no/boundary/full kyc schemes does not break existing balances of the gateway
  */
 
-const {
-    expect,
-    expectNoAsyncThrow,
-    expectThrow,
-    toBN,
-    solc,
-    ganacheWeb3,
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    send,
-    call,
-} = require('chain-dsl')
-
+const {expect, expectThrow} = require('chain-dsl/test/helpers')
+const {address, send, call} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 const mint = 'mint(address,uint256)'
 
 describe("Upgrade Gate Regarding Kyc", function () {
-    this.timeout(50000)
+    this.timeout(3000)
 
-    let web3, snaps, accounts,
-        gate,
+    let gate,
         token,
-        kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule,
-        DEPLOYER,
-        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        CUSTOMER,
-        CUSTOMER1,
-        CUSTOMER2,
-        AMT
+        kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
-        ;[
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            CUSTOMER,
-            CUSTOMER1,
-            CUSTOMER2
-        ] = accounts = await web3.eth.getAccounts()
-
-        AMT = 100
-
         ;({
             gate,
             token,
             boundaryKycAmlRule,
             fullKycAmlRule,
             kycAmlStatus
-        } =
-            await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
+        } = await deployer.base(web3, contractRegistry,
+            DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
 
     context("Switch between different kyc policies gateways does not break existing balances of the (swim) token.", async () => {
 
@@ -80,9 +45,8 @@ describe("Upgrade Gate Regarding Kyc", function () {
             expect(await call(token, "balanceOf", CUSTOMER)).eq(90)
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(10)
 
-            await expectThrow(async () => {
-                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 1000)
-            })
+            await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, 1000))
+                .to.be.rejected
 
             await send(kycAmlStatus, KYC_OPERATOR, "setKycVerified", CUSTOMER, true)
             await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 1000)
@@ -92,15 +56,17 @@ describe("Upgrade Gate Regarding Kyc", function () {
             await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(fullKycAmlRule))
             await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(fullKycAmlRule))
 
-            await expectThrow(async () => {
-                await send(token, CUSTOMER, "transfer", CUSTOMER2, 10)
-                await send(token, CUSTOMER2, "transfer", CUSTOMER, 10)
-            })
+            await expect(send(token, CUSTOMER, "transfer", CUSTOMER2, 10))
+                .to.be.rejected
+
+            await expect(send(token, CUSTOMER2, "transfer", CUSTOMER, 10))
+                .to.be.rejected
+
 
             await send(token, CUSTOMER2, "approve", address(gate), 10)
-            await expectThrow(async () => {
-                await send(gate, MONEY_OPERATOR, "burn", CUSTOMER2, 10)
-            })
+            await expect(send(gate, MONEY_OPERATOR, "burn", CUSTOMER2, 10))
+                .to.be.rejected
+
 
             await send(kycAmlStatus, KYC_OPERATOR, "setKycVerified", CUSTOMER2, true)
             await send(token, CUSTOMER2, "transfer", CUSTOMER, 10)
@@ -111,5 +77,4 @@ describe("Upgrade Gate Regarding Kyc", function () {
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(6)
         })
     })
-
 })

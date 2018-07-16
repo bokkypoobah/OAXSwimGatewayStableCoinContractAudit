@@ -1,21 +1,5 @@
-const {
-    expect,
-    expectAsyncThrow,
-    expectNoAsyncThrow,
-    expectThrow,
-    toBN,
-    solc,
-    ganacheWeb3,
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    wad,
-    send,
-    call,
-    txEvents
-} = require('chain-dsl')
-
+const {expect, expectNoAsyncThrow, expectThrow} = require('chain-dsl/test/helpers')
+const {address, wad, send, call, txEvents} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 
 const mint = 'mint(address,uint256)'
@@ -32,9 +16,9 @@ function hours(hrs) {
 }
 
 describe("Limits:", function () {
-    this.timeout(30000)
+    this.timeout(3000)
 
-    let web3, snaps, accounts, gate, token, limitController, limitSetting,
+    let gate, token, limitController, limitSetting,
         DEPLOYER,
         SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
         CUSTOMER,
@@ -45,8 +29,6 @@ describe("Limits:", function () {
         DEFAULT_DAILY_BURN_LIMIT
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
         ;[
             DEPLOYER,
             SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
@@ -68,7 +50,7 @@ describe("Limits:", function () {
             limitSetting
         } = await deployer.base(
             web3,
-            solc(__dirname, '../solc-input.json'),
+            contractRegistry,
             DEPLOYER,
             SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
             SYSTEM_ADMIN,
@@ -78,9 +60,6 @@ describe("Limits:", function () {
             DEFAULT_SETTING_DELAY_HOURS
         ))
     })
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
 
     context("Limits Enforcement -", async () => {
 

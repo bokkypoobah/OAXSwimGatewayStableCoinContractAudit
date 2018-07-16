@@ -1,34 +1,19 @@
-const {
-    expect,
-    solc,
-    ganacheWeb3,
-    ZERO_ADDR
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    bytes32,
-    send,
-    call,
-    create,
-    sig
-} = require('chain-dsl')
-
+const {expect, ZERO_ADDR} = require('chain-dsl/test/helpers')
+const {address, bytes32, send, call, create, sig} = require('chain-dsl')
 const set = 'set(address,bool)'
+const status = 'status(address)'
 
 describe('AddressStatus', function () {
     this.timeout(8000)
 
-    let web3, snaps, DEPLOYER, AUTHORIZED, SOMEONE,
+    let DEPLOYER, AUTHORIZED, SOMEONE,
         deploy, AddressStatus, authority, addressStatus
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
-        ;[DEPLOYER, AUTHORIZED, SOMEONE] = await web3.eth.getAccounts()
+        ;[DEPLOYER, AUTHORIZED, SOMEONE] = accounts
         deploy = (...args) => create(web3, DEPLOYER, ...args)
 
-        ;({DSGuard, AddressStatus} = solc(__dirname, '../solc-input.json'))
+        ;({DSGuard, AddressStatus} = contractRegistry)
 
         authority = await deploy(DSGuard)
         addressStatus = await deploy(AddressStatus, address(authority))
@@ -39,9 +24,6 @@ describe('AddressStatus', function () {
             sig(set))
     })
 
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
-
     describe('new', function () {
         it('requires an authority', async () => {
             await expect(deploy(AddressStatus, ZERO_ADDR)).to.be.rejected
@@ -50,12 +32,12 @@ describe('AddressStatus', function () {
 
     describe('#set', function () {
         it('to true', async () => {
-            await expect(call(addressStatus, 'status', SOMEONE))
+            await expect(call(addressStatus, status, SOMEONE))
                 .to.eventually.equal(false)
 
             await send(addressStatus, AUTHORIZED, set, SOMEONE, true)
 
-            await expect(call(addressStatus, 'status', SOMEONE))
+            await expect(call(addressStatus, status, SOMEONE))
                 .to.eventually.equal(true)
         })
 
