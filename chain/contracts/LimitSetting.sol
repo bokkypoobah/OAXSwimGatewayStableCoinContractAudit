@@ -123,7 +123,7 @@ contract LimitSetting is DSAuth, DSStop {
         resetSettingDelayBuffer();
     }
 
-    function getMintDailyLimit(address guy) public returns (uint) {
+    function getMintDailyLimit(address guy) public returns (uint256) {
         assert(now >= lastSettingResetTime);
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
             if (mintCustomDailyLimitBuffer[guy] > 0) {
@@ -140,7 +140,7 @@ contract LimitSetting is DSAuth, DSStop {
         }
     }
 
-    function getBurnDailyLimit(address guy) public returns (uint) {
+    function getBurnDailyLimit(address guy) public returns (uint256) {
         assert(now >= lastSettingResetTime);
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
             if (burnCustomDailyLimitBuffer[guy] > 0) {
