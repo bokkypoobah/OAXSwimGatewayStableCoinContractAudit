@@ -5,11 +5,22 @@ let
   nodejs = nodejs-8_x;
   nodepkgs = nodePackages_8_x;
   geth = (lib.getBin go-ethereum);
+
+  solc-0_4_23-tree-url = https://github.com/nixos/nixpkgs/archive/bd991be8d3cf62cc3b6c704ed0cd21b75f1ddd8a.tar.gz;
+  solc-0_4_23 = (lib.getBin (import (builtins.fetchTarball solc-0_4_23-tree-url) {}).solc);
+
+  solc23 = pkgs.runCommand "solc-0.4.23-wrapper" {} ''
+    mkdir -p $out/bin
+    echo '#!${stdenv.shell}' > $out/bin/solc23
+    echo 'exec ${solc-0_4_23}/bin/solc "$@"' >> $out/bin/solc23
+    chmod +x $out/bin/solc23
+  '';
+
   solcBin = (lib.getBin solc);
 
 in mkShell rec {
   buildInputs = [
-    solcBin geth nodejs nodepkgs.pnpm nodepkgs.mocha
+    solcBin solc23 geth nodejs nodepkgs.pnpm nodepkgs.mocha
   ];
 
   shellHook = ''
