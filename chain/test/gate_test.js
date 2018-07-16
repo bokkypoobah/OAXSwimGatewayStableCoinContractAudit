@@ -22,8 +22,6 @@ const mintForSelf = 'mint(uint256)'
 const burn = 'burn(address,uint256)'
 const deposit = 'deposit'
 const approve = 'approve'
-const transfer = 'transfer'
-const transferFrom = 'transferFrom'
 const push = 'push(address,uint256)'
 const pull = 'pull(address,uint256)'
 

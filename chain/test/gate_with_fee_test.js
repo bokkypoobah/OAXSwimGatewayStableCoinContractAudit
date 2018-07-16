@@ -10,7 +10,6 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
         transferFeeController,
         DEPLOYER,
         SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        FEE_COLLECTOR,
         CUSTOMER1,
         CUSTOMER2
 
@@ -18,21 +17,18 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
             ;[
                 DEPLOYER,
                 SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-                FEE_COLLECTOR,
                 CUSTOMER1,
                 CUSTOMER2,
-                // FIXME These addresses are undefined in the tests' scope
+                TRANSFER_FEE_COLLECTOR,
                 MINT_FEE_COLLECTOR,
                 BURN_FEE_COLLECTOR,
-                TRANSFER_FEE_COLLECTOR,
-                NEGATIVE_INTEREST_RATE_COLLECTOR,
             ] = accounts
 
             ;({token, transferFeeController} =
                 await deployer.init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, null, wad(100000)))
 
             ;({gateWithFee} =
-                await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR, NEGATIVE_INTEREST_RATE_COLLECTOR))
+                await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR))
         }
     )
 

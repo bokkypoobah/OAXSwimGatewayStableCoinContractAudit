@@ -1,5 +1,5 @@
 const {expect, toBN, fromWei, toWei, ganacheWeb3} = require('chain-dsl/test/helpers')
-const {address, send, call, balance, bytes32, sig} = require('chain-dsl')
+const {address, send, balance, bytes32, sig} = require('chain-dsl')
 const deploy = require('../lib/deployer')
 
 describe('Deployment', function () {

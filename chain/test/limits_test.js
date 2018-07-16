@@ -3,12 +3,8 @@ const {address, wad, send, call, txEvents} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 
 const mint = 'mint(address,uint256)'
-const withdraw = 'withdraw'
 const burn = 'burn(address,uint256)'
-const deposit = 'deposit'
 const approve = 'approve'
-const transfer = 'transfer'
-const transferFrom = 'transferFrom'
 const lastLimitResetTime = 'lastLimitResetTime'
 
 function hours(hrs) {

@@ -244,7 +244,7 @@ const base = async (web3,
     }
 }
 
-const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR,) => {
+const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const {
         GateWithFee
@@ -324,23 +324,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     return {gateWithFee}
 }
 
-const deployMultisig = async (web3, contractRegistry, DEPLOYER, members, quorum, window) => {
-    const deploy = (...args) => create(web3, DEPLOYER, ...args)
-    
-    const {
-        DSGroup
-    } = contractRegistry
-    
-    const dsGroup = await deploy(DSGroup, members, quorum, window)
-    
-    return {
-        dsGroup
-    }
-}
-
 module.exports = {
     init,
     base,
-    deployGateWithFee,
-    deployMultisig
+    deployGateWithFee
 }

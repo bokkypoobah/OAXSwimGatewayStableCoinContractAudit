@@ -2,7 +2,7 @@
 switch btw no/boundary/full kyc schemes does not break existing balances of the gateway
  */
 
-const {expect, expectThrow} = require('chain-dsl/test/helpers')
+const {expect} = require('chain-dsl/test/helpers')
 const {address, send, call} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 const mint = 'mint(address,uint256)'
