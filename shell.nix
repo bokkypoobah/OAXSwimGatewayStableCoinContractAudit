@@ -4,10 +4,9 @@ with import (builtins.fetchTarball "https://d3g5gsiof5omrk.cloudfront.net/nixpkg
 let
   nodejs = nodejs-8_x;
   nodepkgs = nodePackages_8_x;
-  geth = (lib.getBin go-ethereum);
 
   solc-0_4_23-tree-url = https://github.com/nixos/nixpkgs/archive/bd991be8d3cf62cc3b6c704ed0cd21b75f1ddd8a.tar.gz;
-  solc-0_4_23 = (lib.getBin (import (builtins.fetchTarball solc-0_4_23-tree-url) {}).solc);
+  solc-0_4_23 = ((import (builtins.fetchTarball solc-0_4_23-tree-url) {}).solc);
 
   solc23 = pkgs.runCommand "solc-0.4.23-wrapper" {} ''
     mkdir -p $out/bin
@@ -16,11 +15,9 @@ let
     chmod +x $out/bin/solc23
   '';
 
-  solcBin = (lib.getBin solc);
-
 in mkShell rec {
   buildInputs = [
-    solcBin solc23 geth nodejs nodepkgs.pnpm nodepkgs.mocha
+    solc solc23 go-ethereum nodejs nodepkgs.pnpm nodepkgs.mocha
   ];
 
   shellHook = ''
