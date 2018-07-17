@@ -51,3 +51,33 @@ maintenance/evolution.
 
 Further documentation can be found under
 [chain/README.md](./chain/README.md).
+
+
+### `doc/`
+
+This folder contains further, more detailed documentation, including some
+diagrams (`*.puml` files), which are described using the
+[PlantUML language](http://plantuml.com/PlantUML_Language_Reference_Guide.pdf).
+
+You can render these diagram descriptions into `.png` or `.svg` format image
+files using the [`plantuml` command](http://plantuml.com/command-line),
+which has already been installed for you via the Nix package manager.
+
+For example, you can just run:
+```
+plantuml -tsvg doc/contracts-hierarchy.puml
+```
+
+and on macOS you can view the resulting file with:
+```
+open -a 'Google Chrome' doc/contracts-hierarchy.svg
+```
+
+PlantUML has integration with many tools as documented here:
+http://plantuml.com/running
+
+Developers use the JetBrains [plugin](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
+from within WebStorm or IntelliJ.
+
+For authoring single-file diagrams, we recommend the https://www.planttext.com/
+online tool.

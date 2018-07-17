@@ -17,7 +17,7 @@ let
 
 in mkShell rec {
   buildInputs = [
-    solc solc23 go-ethereum nodejs nodepkgs.pnpm nodepkgs.mocha
+    solc solc23 go-ethereum nodejs nodepkgs.pnpm nodepkgs.mocha plantuml
   ];
 
   shellHook = ''
