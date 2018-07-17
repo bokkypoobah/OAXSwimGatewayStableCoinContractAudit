@@ -1,5 +1,8 @@
 # Stable coin
 
+To understand the reasons behind the current smart contract design,
+please refer to [doc/design.md](./doc/design.md).
+
 ## Setup
 
 Prerequisite on both macOS and Linux:
