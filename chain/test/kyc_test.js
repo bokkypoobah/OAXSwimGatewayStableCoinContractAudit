@@ -1,20 +1,5 @@
-const {
-    expect,
-    expectNoAsyncThrow,
-    expectThrow,
-    toBN,
-    solc,
-    ganacheWeb3,
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    send,
-    call,
-    create,
-    txEvents
-} = require('chain-dsl')
-
+const {expect, expectNoAsyncThrow, expectThrow} = require('chain-dsl/test/helpers')
+const {address, send, call, create, txEvents} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 
 const mint = 'mint(address,uint256)'
@@ -31,34 +16,15 @@ const kycVerified = 'kycVerified'
 describe("Asset Gateway", function () {
     this.timeout(10000)
 
-    let web3, snaps, accounts,
-        gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule, token,
-        DEPLOYER,
-        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-        CUSTOMER,
-        CUSTOMER1,
-        CUSTOMER2,
+    let gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule, token,
         AMT
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
-        ;[
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            CUSTOMER,
-            CUSTOMER1,
-            CUSTOMER2
-        ] = accounts = await web3.eth.getAccounts()
-
         AMT = 100
 
         ;({gate, token, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule} =
-            await deployer.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
+            await deployer.base(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
 
     it("operators can update others' KYC status", async () => {
         let events = await txEvents(send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER, true))
@@ -286,9 +252,7 @@ describe("Asset Gateway", function () {
             it("Able to set the address of membership lookup contract " +
                 "and Throw when trying mint and burn if the address is not member", async () => {
                 const deploy = (...args) => create(web3, DEPLOYER, ...args)
-                const {
-                    MockMembershipAuthorityFalse
-                } = solc(__dirname, '../solc-input.json')
+                const {MockMembershipAuthorityFalse} = contractRegistry
                 const mockMembershipAuthorityFalse = await deploy(MockMembershipAuthorityFalse)
 
                 await send(membershipWithBoundaryKycAmlRule, SYSTEM_ADMIN, "setMembershipAuthority", address(mockMembershipAuthorityFalse))

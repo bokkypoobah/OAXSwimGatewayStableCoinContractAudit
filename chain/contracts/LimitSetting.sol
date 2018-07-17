@@ -63,7 +63,6 @@ contract LimitSetting is DSAuth, DSStop {
     function setLimitCounterResetTimeOffset(int256 _timestampOffset) public auth {
         require(
             _timestampOffset >= - 39600 && _timestampOffset <= 50400,
-            // FIXME Not sure if this is correct
             "Time offset must be within [-11, 14] hours"
         );
         limitCounterResetTimeOffset = _timestampOffset;
@@ -124,7 +123,7 @@ contract LimitSetting is DSAuth, DSStop {
         resetSettingDelayBuffer();
     }
 
-    function getMintDailyLimit(address guy) public returns (uint) {
+    function getMintDailyLimit(address guy) public returns (uint256) {
         assert(now >= lastSettingResetTime);
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
             if (mintCustomDailyLimitBuffer[guy] > 0) {
@@ -141,7 +140,7 @@ contract LimitSetting is DSAuth, DSStop {
         }
     }
 
-    function getBurnDailyLimit(address guy) public returns (uint) {
+    function getBurnDailyLimit(address guy) public returns (uint256) {
         assert(now >= lastSettingResetTime);
         if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
             if (burnCustomDailyLimitBuffer[guy] > 0) {

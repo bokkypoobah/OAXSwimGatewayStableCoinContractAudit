@@ -27,22 +27,18 @@ contract LimitController is DSMath, DSStop {
     }
 
     function isWithinMintLimit(address guy, uint256 wad) public returns (bool) {
-        //TODO test me and see if this can be split into a separate function
         if (now - lastLimitResetTime >= 1 days) {
             resetLimit();
         }
 
-        //TODO test me with overflows and unexpected state changes
         return (add(mintLimitCounter, wad) <= limitSetting.getMintDailyLimit(guy));
     }
 
     function isWithinBurnLimit(address guy, uint256 wad) public returns (bool) {
-        //TODO test me and see if this can be split into a separate function
         if (now - lastLimitResetTime >= 1 days) {
             resetLimit();
         }
 
-        //TODO test me with overflows and unexpected state changes
         return (add(burnLimitCounter, wad) <= limitSetting.getBurnDailyLimit(guy));
     }
 

@@ -6,6 +6,7 @@ dependencies:
 devDependencies:
   babel-runtime: 6.26.0
   chai: 4.1.2
+  chai-as-promised: 7.1.1
   chai-subset: 1.6.0
   solc: 0.4.23
   web3: 1.0.0-beta.34
@@ -1051,6 +1052,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-qg0yYptu6XIgBBHL1EYckHvCt60=
+  /chai-as-promised/7.1.1:
+    dependencies:
+      check-error: 1.0.2
+    dev: true
+    peerDependencies:
+      chai: '>= 2.1.2 < 5'
+    resolution:
+      integrity: sha512-azL6xMoi+uxu6z4rhWQ1jbdUhOMhis2PvscD/xjLqNMkv3BPPp2JyyuTHOrf9BOosGpNQ11v6BKv/g57RXbiaA==
   /chai-subset/1.6.0:
     dev: true
     engines:
@@ -5762,6 +5771,7 @@ specifiers:
   async-retry: ^1.2.1
   babel-runtime: ^6.26.0
   chai: ^4.1.2
+  chai-as-promised: ^7.1.1
   chai-subset: ^1.6.0
   ganache-core: ^2.1.0-beta.0
   lowdb: ^1.0.0

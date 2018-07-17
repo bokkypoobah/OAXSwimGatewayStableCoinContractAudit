@@ -185,8 +185,8 @@ class DSToken {
     __
 
     + **DSToken(symbol)**
-    ~ Mint(guy, wad)
-    ~ Burn(guy, wad)
+    # Mint(guy, wad)
+    # Burn(guy, wad)
 
     + approve(guy) //stoppable//
     + approve(guy, wad) //stoppable//

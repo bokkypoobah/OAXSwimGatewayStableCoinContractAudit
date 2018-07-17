@@ -69,9 +69,6 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
-    // FIXME Enable DSGroupFactory deployment once `dsgroup.sol` can compile
-    // dsGroupFactory = await deploy(DSGroupFactory)
-
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = SYSTEM_ADMIN
     }
@@ -206,7 +203,6 @@ const base = async (web3,
         return [gate, token, methodSig]
     }
 
-    //todo factor me out as default
     const gateGuardRules = [
         [gate, limitController, 'bumpMintLimitCounter(uint256)'],
         [gate, limitController, 'bumpBurnLimitCounter(uint256)'],
@@ -244,7 +240,7 @@ const base = async (web3,
     }
 }
 
-const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR,) => {
+const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const {
         GateWithFee
@@ -324,23 +320,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     return {gateWithFee}
 }
 
-const deployMultisig = async (web3, contractRegistry, DEPLOYER, members, quorum, window) => {
-    const deploy = (...args) => create(web3, DEPLOYER, ...args)
-    
-    const {
-        DSGroup
-    } = contractRegistry
-    
-    const dsGroup = await deploy(DSGroup, members, quorum, window)
-    
-    return {
-        dsGroup
-    }
-}
-
 module.exports = {
     init,
     base,
-    deployGateWithFee,
-    deployMultisig
+    deployGateWithFee
 }

@@ -212,31 +212,6 @@ const transferOwnership = async(DEPLOYER, SYSTEM_ADMIN)=>{
     await send(gateRoles, DEPLOYER, 'setOwner', SYSTEM_ADMIN)
 }
 
-const multisigContract = async (contractRegistry, DEPLOYER, members, quorum, window) => {
-    const deploy = (...args) => create(web3, DEPLOYER, ...args)
-    
-    const {
-        DSGroup
-    } = contractRegistry
- 
-    const dsGroup = await deploy(DSGroup, members, quorum, window)
-    
-    return {
-        dsGroup
-    }
-}
-
-const multisigSetting = async (DEPLOYER, SYSTEM_ADMIN, MONEY_OPERATOR, SYSTEM_ADMIN_GROUP, MONEY_OPERATOR_GROUP, SYSTEM_ADMIN_GROUP_CONTRACT, MONEY_OPERATOR_GROUP_CONTRACT) => {
-
-    const SYSTEM_ADMIN_ROLE = await call(gateRoles, 'SYSTEM_ADMIN')
-    const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
-    
-    // Assign new permission 
-    await send(gateRoles, SYSTEM_ADMIN, 'setUserRole', SYSTEM_ADMIN_GROUP, SYSTEM_ADMIN_ROLE, true)
-    await send(gateRoles, MONEY_OPERATOR, 'setUserRole', MONEY_OPERATOR_GROUP, MONEY_OPERATOR_ROLE, true)
-
-}
-
 const toCallData = async (contractName, methodName, ...args) => {
     return eval(contractName).methods[methodName](...args).encodeABI()
 }
@@ -246,9 +221,6 @@ module.exports = {
     initSettings,
     gateWithFeeContract,
     gateWithFeeSetting,
-    multisigContract,
-    multisigSetting,
     transferOwnership,
-    toCallData,
-    
+    toCallData
 }

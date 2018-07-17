@@ -1,4 +1,4 @@
-const {Assertion, expect} = chai = require('chai')
+const {Assertion, expect} = Chai = require('chai')
 const Web3 = require('web3')
 const {BN, toBN, fromWei, toWei, padLeft} = require('web3-utils')
 const Ganache = require("ganache-core")
@@ -6,7 +6,8 @@ const _solc = require('solc')
 const path = require('path')
 const fs = require('fs')
 
-chai.use(require('chai-subset'))
+Chai.use(require('chai-subset'))
+Chai.use(require('chai-as-promised'))
 
 Assertion.addMethod('eq', function (N) {
     this.assert(toBN(this._obj).eq(toBN(N)),

@@ -1,44 +1,19 @@
-const {
-    expect,
-    toBN,
-    fromWei,
-    toWei,
-    solc,
-    ganacheWeb3,
-    expectThrow,
-    expectNoAsyncThrow,
-} = require('chain-dsl/test/helpers')
-
-const {
-    address,
-    send,
-    call,
-    balance,
-    bytes32,
-    sig,
-} = require('chain-dsl')
-
+const {expect, toBN, fromWei, toWei, ganacheWeb3} = require('chain-dsl/test/helpers')
+const {address, send, balance, bytes32, sig} = require('chain-dsl')
 const deploy = require('../lib/deployer')
 
 describe('Deployment', function () {
     this.timeout(10000)
 
-    let web3, snaps, accounts, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, CUSTOMER, token, fiatTokenGuard
+    let web3, token, fiatTokenGuard
 
     before('deployment', async () => {
-        snaps = []
-        web3 = ganacheWeb3()
-        ;[
-            DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
-            CUSTOMER
-        ] = accounts = await web3.eth.getAccounts()
-
-        ;({token, fiatTokenGuard} = await deploy.base(web3, solc(__dirname, '../solc-input.json'), DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
+        web3 = ganacheWeb3() // Start with a fresh DEPLOYER balance
+        ;({
+            token,
+            fiatTokenGuard
+        } = await deploy.base(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
-
-    beforeEach(async () => snaps.push(await web3.evm.snapshot()))
-    afterEach(async () => web3.evm.revert(snaps.pop()))
 
     it('Gate is deployed', async () => {
         const symbol = web3.utils.hexToUtf8((await token.methods.symbol().call()))
@@ -58,11 +33,12 @@ describe('Deployment', function () {
     })
 
     it("Only deployer can control DSGuard.", async () => {
-        await expectThrow(async () =>
-            send(fiatTokenGuard, CUSTOMER, "permit",
-                bytes32((CUSTOMER)), bytes32(address(token)), sig("mint")))
-        await expectNoAsyncThrow(async () =>
-            send(fiatTokenGuard, DEPLOYER, "permit",
-                bytes32((CUSTOMER)), bytes32(address(token)), sig("mint")))
+        await expect(send(fiatTokenGuard, CUSTOMER, "permit",
+            bytes32((CUSTOMER)), bytes32(address(token)), sig("mint"))
+        ).to.be.rejected
+
+        await expect(send(fiatTokenGuard, DEPLOYER, "permit",
+            bytes32((CUSTOMER)), bytes32(address(token)), sig("mint"))
+        ).to.be.fulfilled
     })
 })
