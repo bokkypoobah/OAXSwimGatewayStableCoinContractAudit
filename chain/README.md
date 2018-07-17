@@ -1,13 +1,8 @@
-# stable-coin
+# Stable coin smart contract system
 
 ## Setup
 
-Older versions of `pnpm` required manual installations per package,
-but with the Nix setup this won't be necessary:
-
-```bash
-cd ../chain-dsl/ && pnpm install && cd ../chain/ && pnpm install
-```
+Refer to the main [README.md](../README.md).
 
 ## Test
 
