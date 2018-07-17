@@ -1,0 +1,254 @@
+@startuml
+
+'!define SHOW_PACKAGES
+'!include dappsys.puml
+
+title Contracts Hierarchy
+
+!ifdef SHOW_PACKAGES
+    package TokenAuth.sol {
+        interface ERC20Authority
+        interface ERC20Auth
+        interface TokenAuthority
+        interface TokenAuth
+    }
+
+    package AddressStatus.sol {
+        class AddressStatus
+    }
+
+    package Membership.sol {
+        interface MembershipInterface
+        class MockOAXMembership
+    }
+
+    package TokenRules.sol {
+        class BaseRules
+        class BoundaryKycRules
+        class FullKycRules
+    }
+
+    package solovault.sol {
+        class DSSoloVault
+    }
+
+    package FiatToken.sol {
+        class FiatToken
+    }
+
+    package Gate.sol {
+        class Gate
+    }
+
+    package GateRoles.sol {
+        class GateRoles
+    }
+!endif
+
+interface ERC20Authority #white {
+    + canApprove(src, dst, guy, wad)
+    + canTransfer(src, dst, to, wad)
+    + canTransferFrom(src, dst, from, to, wad)
+}
+
+interface ERC20Auth #white {
+    + ERC20Authority erc20Authority
+    __
+    ~ modifier authApprove(guy, wad)
+    ~ modifier authTransfer(to, wad)
+    ~ modifier authTransferFrom(from, to, wad)
+    ..
+    + setERC20Authority(erc20Authority) //auth//
+    + approve(guy, wad) //authApprove//
+    + transfer(dst, wad) //authTransfer//
+    + transferFrom(src, dst, wad) //authTransferFrom//
+}
+
+interface TokenAuthority #white {
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
+}
+
+interface TokenAuth #white {
+    + TokenAuthority tokenAuthority
+    __
+    ~ modifier authMint(guy, wad)
+    ~ modifier authBurn(guy, wad)
+    ..
+    + setTokenAuthority(tokenAuthority) //auth//
+}
+
+class AddressStatus #wheat {
+    .. Inherited properties ..
+    + DSAuthority authority
+
+    .. Own properties ..
+    + {field} (address => bool) status
+    __
+    + **constructor(authority)**
+    # AddressStatusSet(guy, status)
+
+    + set(guy, newStatus)
+}
+
+class FiatToken #wheat {
+    .. Inherited properties ..
+    + bytes32 symbol
+    + DSAuthority authority
+    + ERC20Authority erc20Authority
+    + TokenAuthority tokenAuthority
+    .. Own properties ..
+    __
+    + **FiatToken(authority, symbol)**
+    + mint(guy, wad) //authMint//
+    + burn(guy, wad) //authBurn//
+}
+
+class DSSoloVault #white {
+    + ERC20 token
+    __
+    + swap(ERC20 token_) //auth//
+    + push(dst, wad)
+    + pull(src, wad)
+    + push(dst)
+    + pull(src)
+    + mint(wad)
+    + burn(wad)
+    + burn()
+    .. Extensions ..
+    + mint(guy, wad)
+    + burn(guy, wad)
+    + approve(guy, wad)
+    + approve(guy)
+}
+
+class BaseRules #white {
+    + AddressStatus blacklist
+    + AddressStatus whitelist
+    + Membership membership
+    __
+    + **constructor(blacklist, whitelist, membership)**
+    + canApprove(src, dst, guy, wad)
+    + canTransfer(src, dst, to, wad)
+    + canTransferFrom(src, dst, from, to, wad)
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
+}
+
+class BoundaryKycRules #white {
+    .. Inherited properties ..
+    + AddressStatus blacklist
+    + AddressStatus whitelist
+    + Membership membership
+
+    .. Own properties ..
+    + AddressStatus kyc
+    __
+    + **constructor(blacklist, whitelist, membership, kyc)**
+    + canMint(src, dst, guy, wad)
+    + canBurn(src, dst, guy, wad)
+}
+
+class FullKycRules #white {
+    .. Inherited properties ..
+    + AddressStatus blacklist
+    + AddressStatus whitelist
+    + Membership membership
+    + AddressStatus kyc
+    __
+    + **constructor(blacklist, whitelist, membership, kyc)**
+    + canTransfer(src, dst, to, wad)
+    + canTransferFrom(src, dst, from, to, wad)
+}
+
+interface MembershipInterface #white {
+    + isMember(sender)
+}
+
+class MockOAXMembership #white {
+    .. Inherited properties ..
+    + {field} (address => bool) status
+    __
+    + **constructor()**
+    + isMember(sender)
+}
+
+class GateRoles #wheat {
+    + SYSTEM_ADMIN = 1
+    + KYC_OPERATOR = 2
+    + MONEY_OPERATOR = 3
+}
+
+class Gate #wheat {
+    .. Inherited properties ..
+    + DSAuthority authority
+    + FiatToken token
+    .. Own properties ..
+    + uint dailyLimit
+    + uint limitCounter
+    + uint lastLimitResetTime
+    __
+    ~ modifier limited(wad)
+    ..
+    + **Gate(authority, token, dailyLimit)**
+    + deposit(wad)
+    + mint(guy, wad) //limited(wad)//
+    + withdraw(wad)
+    + burn(guy, wad) //limited(wad)//
+    - resetLimit()
+}
+
+'========== Connections ==========
+
+!ifndef DAPPSYS
+    interface ERC20
+    ERC20 <|-- DSTokenBase
+    DSTokenBase <|-- DSToken
+!else
+    hide DSMultiVault
+'    hide DSMultiVaultEvents
+    hide DSVault
+    hide DSGuardFactory
+    hide DSNote
+!endif
+
+' Force ERC20 and token related auth contracts on the same line
+ERC20Auth -[hidden] TokenAuth
+TokenAuth -[hidden] ERC20Authority
+ERC20Authority -[hidden] TokenAuthority
+
+DSAuth <|-- ERC20Auth
+DSAuth <|-- TokenAuth
+DSAuth <|-- AddressStatus
+DSAuth <|-- MembershipInterface
+
+ERC20Authority <|-- BaseRules
+TokenAuthority <|-- BaseRules
+
+MembershipInterface <|-- MockOAXMembership
+AddressStatus <|-- MockOAXMembership
+
+BaseRules <|-- BoundaryKycRules
+BoundaryKycRules <|-- FullKycRules
+
+DSRoles <|-- GateRoles
+DSToken <|-- FiatToken
+ERC20Auth <|-- FiatToken
+TokenAuth <|-- FiatToken
+DSSoloVault <|-- Gate
+
+AddressStatus o-up- GateRoles
+FullKycRules o-up- AddressStatus
+FullKycRules o-up- AddressStatus
+FullKycRules o-up- AddressStatus
+FullKycRules o-up- MockOAXMembership
+
+FiatToken o-up- DSGuard
+'FiatToken o.up. BaseRules
+'FiatToken o.up. BoundaryKycRules
+FiatToken o-up- FullKycRules
+Gate o-up- GateRoles
+'KycAmlStatus o-up- GateRoles
+Gate o- FiatToken
+
+@enduml
