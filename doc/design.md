@@ -131,6 +131,8 @@ Consequently the owner privileges are dropped with `setOwner(0x0)`.
 
 ## Token authorization
 
+### `ERC20Auth` & `ERC20Authority`
+
 While the `DSAuth` system is very flexible and powerful, it can only grant
 or reject operations based on 3 parameters:
 
@@ -146,10 +148,58 @@ which define only 3 operations:
 * `transferFrom(from, to, value)`
 * `approve(spender, value)`
 
-This allows us to extend the authorization logic, by allowing it to
-depend on the parameters of these specific EIP20 operations.
+Having these operations standardized, allows us to apply the
+`DSAuth:auth` modifier + `DSAuthority#canCall` method pattern
+to implement such authorzation logic, which depends also on the
+parameters to these functions.
 
+The result is an `ERC20Authority` interface with 3 boolean authorization
+functions:
 
+* `canTransfer(src, dst, to, wad)`
+* `canTransferFrom(src, dst, from, to, wad)`
+* `canApprove(src, dst, guy, wad)`
+
+Contracts implementing this interface are named as `*Rules`, to avoid
+confusion with the more generic, less fine-grained `DSAuthority` contracts.
+
+_See: TokenAuth.sol: `BaseRules`, `BoundaryKycRules`, `FullKycRules`_
+
+After having a contract with the token authorization rules, we can plug it
+into a token contract (eg. `FiatToken.sol:FiatToken`) via the
+`TokenAuth.sol:ERC20Auth` mixin and apply its `authTransfer`,
+`authTransferFrom`, `authApprove` modifiers on the corresponding EIP20
+operations.
+
+### `TokenAuth` & `TokenAuthority`
+
+While it's not an official standard, it's a common practice to define
+`mint` and `burn` operations which control the `totalSupply` of a token.
+
+Obviously it's a very sensitive operation, because it affects the economics
+of a token, hence it's desirable to apply restrictions on the `mint` & `burn`
+operations.
+
+Extending the `ERC20Auth` approach, we have also defined `authMint`/`authBurn`
+modifiers which consult the `canMint`/`canBurn` methods in a `TokenAuthority`
+implementation, eg. `TokenRules.sol:BoundaryKycRules`.
+
+### `setERC20Authority` & `setTokenAuthority`
+
+Tokens enforcing restrictions on their transfer/approve/mint/burn operations
+allow switching their token rule contracts with the `set{ERC20,Token}Authority`
+operation.
+
+This means the regular `DSAuthority` rules should govern who is allowed to
+call these rule changing methods.
+
+Currently the transfer/approve and the mint/burn operations are allowed to
+be controlled by two different rule contract, but for the sake of simplicity
+both rule sets are implemented in the same contract (eg. `FullKycRules`)
+and the same contract is plugged in as an `erc20Authority` and a `tokenAuthority`.
+non-atomically, allowing for a transient state, which might be undesirable.
+
+FIXME Explore the consequences of merging the the ERC20 and Token authorities.
 
 # Draft notes
 
