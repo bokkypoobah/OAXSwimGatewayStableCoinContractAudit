@@ -9,7 +9,7 @@ interface ERC20Authority {
 }
 
 
-contract ERC20Auth is ERC20, DSAuth {
+contract ERC20Auth is DSAuth {
     ERC20Authority public erc20Authority;
 
     modifier authApprove(address guy, uint wad) {
