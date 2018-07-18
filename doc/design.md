@@ -46,7 +46,7 @@ smart contract state.
 We will refer to such methods as **operations**.
 
 
-## *Transacting* an operation
+### *Transacting* an operation
 
 The code describing a method can be *run* or *executed* in 2 ways:
 
@@ -68,6 +68,7 @@ no way to access their return value.
 Because of that *transacting a method* is not a great expression,
 since it can refer to *read-only* methods, which are rather useless
 to transact as we have just established.
+
 
 
 ## General principles and guidelines
@@ -201,10 +202,21 @@ non-atomically, allowing for a transient state, which might be undesirable.
 
 FIXME Explore the consequences of merging the the ERC20 and Token authorities.
 
-# Draft notes
 
-For this reason most contracts derive from the `DSAuth` contract, which
-provide an `auth` modifier. The `auth` modifier decides whether access
-should be granted or prohibited, by consulting some `authority` smart contract
-which defines the authorization rules in a `canCall` method (defined by the
-`DSAuthority` interface)
+
+## `AddressStatus` for defining authorization
+
+After creating custom implementations for KYC/AML, asset freezing for
+compliance, whitelisting for specific jurisdictions and OAX membership checks,
+a patterns has crystalized.
+
+All this functionality can be implemented as a database contract, which
+provides an address lookup for a logical value.
+
+While it's more descriptive call the lookup functions in a domain specific way,
+in a smart contract context, it's less risky to use a common, generic but well
+tested implementation.
+
+
+
+#### Draft notes
