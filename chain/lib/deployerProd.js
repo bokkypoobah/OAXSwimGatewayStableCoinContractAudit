@@ -203,9 +203,6 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipWithBoundaryKycAmlRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipWithBoundaryKycAmlRule))
-
 }
 
 const transferOwnership = async(DEPLOYER, SYSTEM_ADMIN)=>{
