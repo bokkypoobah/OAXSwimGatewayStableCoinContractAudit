@@ -213,10 +213,29 @@ a patterns has crystalized.
 All this functionality can be implemented as a database contract, which
 provides an address lookup for a logical value.
 
-While it's more descriptive call the lookup functions in a domain specific way,
-in a smart contract context, it's less risky to use a common, generic but well
+While it's more descriptive to call the lookup functions in a domain specific
+way, in a smart contract context, it's less risky to use a generic but well
 tested implementation.
 
+|       | AddressControlStatus | AddressStatus |
+| ----- | -------------------- | ------------- |
+| event | **FreezeAddress**(guy) | **AddressStatusSet**(guy, `true`) |
+| event | **UnfreezeAddress**(guy) | **AddressStatusSet**(guy, `false`) |
+| write | _addressControlStatus_.**freezeAddress**(address) | _blacklist_.**set**(guy, `true`) |
+| write | _addressControlStatus_.**unfreezeAddress**(address) | _blacklist_.**set**(guy, `false`) |
+| read  | _addressControlStatus_.**frozenAddress**(address) |  _blacklist_.**status**(guy) |
+
+|       | KycAmlStatus | AddressStatus |
+| ----- | ------------ | ------------- |
+| event | **KYCVerify**(guy, isKycVerified) | **AddressStatusSet**(guy, status) |
+| write | _kycAmlStatus_.**setKycVerified**(guy, _isKycVerified) | _kyc_.**set**(guy, newStatus) |
+| read  | _kycAmlStatus_.**isKycVerified**(guy) | _kyc_.**status**(guy) |
+| read  | _kycAmlStatus_.**kycVerified**(guy) | _kyc_.**status**(guy) |
+
+
+|       | MembershipAuthorityInterface | AddressStatus |
+| ----- | ---------------------------- | ------------- |
+| read  | _membershipAuthority_.**isMember**(sender) | _membership_.**status**(guy) |
 
 
 #### Draft notes
