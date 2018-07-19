@@ -2,7 +2,7 @@ const {expect} = require('chain-dsl/test/helpers')
 const {address, send, call, wad, create} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 
-describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", function () {
+describe("Gate with Mint, Burn and Transfer Fee", function () {
     this.timeout(3000)
 
     let gateWithFee,
@@ -183,7 +183,7 @@ describe("Gate with Mint, Burn and Transfer Fee and Negative Interest Rate", fun
         })
     })
 
-    context("Mint, Burn, Transfer and Negative Interest Rate all have fees.", async () => {
+    context("Mint, Burn and Transfer all have fees.", async () => {
         it("Normal customer can not set transfer fees.", async () => {
             await expect(send(transferFeeController, CUSTOMER1,
                 "setDefaultTransferFee", 0, 25)

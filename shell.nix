@@ -1,5 +1,5 @@
 # curl -sI https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz | awk '/Location:/ {print $2}'
-with import (builtins.fetchTarball "https://d3g5gsiof5omrk.cloudfront.net/nixpkgs/nixpkgs-18.09pre144939.14a9ca27e69/nixexprs.tar.xz") {};
+with import (builtins.fetchTarball "https://d3g5gsiof5omrk.cloudfront.net/nixpkgs/nixpkgs-18.09pre146263.d1eaa5b6510/nixexprs.tar.xz") {};
 
 let
   nodejs = nodejs-8_x;
@@ -17,7 +17,7 @@ let
 
 in mkShell rec {
   buildInputs = [
-    solc solc23 go-ethereum nodejs nodepkgs.pnpm nodepkgs.mocha
+    solc solc23 go-ethereum nodejs nodepkgs.pnpm nodepkgs.mocha plantuml
   ];
 
   shellHook = ''
