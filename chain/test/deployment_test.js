@@ -18,6 +18,8 @@ describe('Deployment', function () {
     it('Gate is deployed', async () => {
         const symbol = web3.utils.hexToUtf8((await token.methods.symbol().call()))
         expect(symbol).equal('TOKUSD')
+        const name = web3.utils.hexToUtf8((await token.methods.name().call()))
+        expect(name).equal('USD Token')
     })
 
     const MAX_COST = 700 /* USD */;
