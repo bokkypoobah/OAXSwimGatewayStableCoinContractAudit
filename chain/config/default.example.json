@@ -2,7 +2,8 @@
     "mnemonic": "castle float example cancel hurt victory intact illegal matter asthma assist undo only lock high",
     "remoteNode": "http://127.0.0.1:8545",
     "general":{
-        "TOKEN_SYMBOL": "TTUSD"
+        "TOKEN_SYMBOL": "TTUSD",
+        "TOKEN_NAME": "USD Token"
     },
     "limit":{
         "MINT_LIMIT": 10000,

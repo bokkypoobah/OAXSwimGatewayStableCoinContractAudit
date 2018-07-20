@@ -62,6 +62,7 @@ async function main() {
             } = await deployer.initContract(compiledContracts(),
                 DEPLOYER, role.SYSTEM_ADMIN,
                 general.TOKEN_SYMBOL,
+                general.TOKEN_NAME,
                 collector.TRANSFER_FEE_COLLECTOR,
                 wad(limit.MINT_LIMIT),
                 wad(limit.BURN_LIMIT),
