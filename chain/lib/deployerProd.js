@@ -17,6 +17,7 @@ let {
 
 const initContract = async (contractRegistry, 
         DEPLOYER, SYSTEM_ADMIN,
+        TOKEN_SYMBOL,
         TRANSFER_FEE_COLLECTOR,
         MINT_LIMIT = wad(10000),
         BURN_LIMIT = wad(10000),
@@ -59,7 +60,7 @@ const initContract = async (contractRegistry,
     token = await deploy(
         FiatToken,
         address(fiatTokenGuard),
-        web3.utils.utf8ToHex('TOKUSD'),
+        web3.utils.utf8ToHex(TOKEN_SYMBOL),
         TRANSFER_FEE_COLLECTOR,
         address(transferFeeController)
     )
