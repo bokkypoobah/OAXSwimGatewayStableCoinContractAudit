@@ -190,3 +190,13 @@ typings/
 .idea/
 build/
 chain/config/local.json
+
+.DS_Store
+.project
+.settings
+audit/code-review/**/*.sol
+audit/test/testchain/geth
+audit/test/testchain/geth.ipc
+audit/test/testchain/history
+audit/test/contracts
+private

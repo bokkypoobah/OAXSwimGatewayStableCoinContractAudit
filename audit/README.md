@@ -1,6 +1,8 @@
 # OAX Swim Gateway Stable Coin Contract Audit
 
-Commits [b99ddc6](https://github.com/swim-gateway/stable-coin/commit/b99ddc69af6c4f23789a62c331cc51318af709f8).
+Status: Work in progress
+
+Commits from [swim-gateway/stable-coin master-gitlab branch](https://github.com/swim-gateway/stable-coin/tree/master-gitlab) in commits [75cc80c](https://github.com/swim-gateway/stable-coin/commit/75cc80c5d494625d3e7262756973ec0394dfcf11) and [a53dce5](https://github.com/swim-gateway/stable-coin/commit/a53dce5fb53f2ff4461d15c2e3450faf0a9b61ac).
 
 <br />
 
@@ -33,15 +35,18 @@ Commits [b99ddc6](https://github.com/swim-gateway/stable-coin/commit/b99ddc69af6
   * [ ] contract LimitController is DSMath, DSStop
 * [ ] [code-review/LimitSetting.md](code-review/LimitSetting.md)
   * [ ] contract LimitSetting is DSAuth, DSStop
-* [ ] [code-review/Multisig.md](code-review/Multisig.md)
-  * [ ] contract MultiSigWallet
-  * [ ] contract MultiSigWalletFactory is Factory
-  * [ ] contract MultiSigWalletFactory is Factory
+* [ ] [code-review/Membership.md](code-review/Membership.md)
+  * [ ] interface MembershipInterface
+  * [ ] contract MockOAXMembership is AddressStatus, MembershipInterface
 * [ ] [code-review/TokenAuth.md](code-review/TokenAuth.md)
-  * [ ] contract ERC20Authority
-  * [ ] contract ERC20Auth is ERC20, DSAuth
-  * [ ] contract TokenAuthority
+  * [ ] interface ERC20Authority
+  * [ ] contract ERC20Auth is DSAuth
+  * [ ] interface TokenAuthority
   * [ ] contract TokenAuth is DSAuth
+* [ ] [code-review/TokenRules.md](code-review/TokenRules.md)
+  * [ ] contract BaseRules is ERC20Authority, TokenAuthority
+  * [ ] contract BoundaryKycRules is BaseRules
+  * [ ] contract FullKycRules is BoundaryKycRules
 * [ ] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
   * [ ] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 * [ ] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
@@ -67,3 +72,9 @@ Commits [b99ddc6](https://github.com/swim-gateway/stable-coin/commit/b99ddc69af6
   * [x] contract DSThing is DSAuth, DSNote, DSMath
 * [ ] [code-review/solovault.md](code-review/solovault.md)
   * [ ] contract DSSoloVault is DSAuth
+
+<br />
+
+### Outside Scope
+
+* [../../chain/contracts/Multisig.sol](../../chain/contracts/Multisig.sol) - **NOTE** *MultiSigWalletFactory* is included twice in this file
