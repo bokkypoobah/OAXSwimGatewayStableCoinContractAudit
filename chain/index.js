@@ -37,6 +37,7 @@ async function main() {
         DEPLOYER,
     ] = provider.addresses
 
+    const general = config.get('general')
     const role = config.get('role')
     const collector = config.get('collector')
     const limit = config.get('limit')
@@ -60,6 +61,8 @@ async function main() {
                 token
             } = await deployer.initContract(compiledContracts(),
                 DEPLOYER, role.SYSTEM_ADMIN,
+                general.TOKEN_SYMBOL,
+                general.TOKEN_NAME,
                 collector.TRANSFER_FEE_COLLECTOR,
                 wad(limit.MINT_LIMIT),
                 wad(limit.BURN_LIMIT),

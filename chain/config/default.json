@@ -1,6 +1,10 @@
 {
     "mnemonic": "castle float example cancel hurt victory intact illegal matter asthma assist undo only lock high",
-    "remoteNode": "http://58.152.87.164:8545",
+    "remoteNode": "http://127.0.0.1:8545",
+    "general":{
+        "TOKEN_SYMBOL": "TTUSD",
+        "TOKEN_NAME": "USD Token"
+    },
     "limit":{
         "MINT_LIMIT": 10000,
         "BURN_LIMIT": 10000,
@@ -8,13 +12,13 @@
         "DEFAULT_SETTING_DELAY_HOURS": 0
     },
     "collector": {
-        "TRANSFER_FEE_COLLECTOR": "0x0",
-        "MINT_FEE_COLLECTOR": "0x0",
-        "BURN_FEE_COLLECTOR": "0x0"
+        "TRANSFER_FEE_COLLECTOR": "0x0000000000000000000000000000000000000000",
+        "MINT_FEE_COLLECTOR": "0x0000000000000000000000000000000000000000",
+        "BURN_FEE_COLLECTOR": "0x0000000000000000000000000000000000000000"
     },
     "role": {
-        "SYSTEM_ADMIN": "0x0",
-        "KYC_OPERATOR": "0x0",
-        "MONEY_OPERATOR": "0x0"
+        "SYSTEM_ADMIN": "0x0000000000000000000000000000000000000000",
+        "KYC_OPERATOR": "0x0000000000000000000000000000000000000000",
+        "MONEY_OPERATOR": "0x0000000000000000000000000000000000000000"
     }
 }

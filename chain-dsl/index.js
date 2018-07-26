@@ -17,7 +17,7 @@ const wad = amount => amount
 const sig = (methodSig) => abi.encodeFunctionSignature(methodSig)
 const createInstance = (web3, abi,address) => new web3.eth.Contract(abi, address)
 
-const retryOptions = {retries: 0, minTimeout: 120000, onRetry: (err, i) => {
+const retryOptions = {retries: 0, minTimeout: 60000, onRetry: (err, i) => {
     if (err) {
         console.log(`Retry error #${i}: ${err}`)
     }}

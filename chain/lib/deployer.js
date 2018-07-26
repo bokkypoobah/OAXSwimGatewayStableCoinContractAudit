@@ -77,6 +77,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         FiatToken,
         address(fiatTokenGuard),
         web3.utils.utf8ToHex('TOKUSD'),
+        web3.utils.utf8ToHex('USD Token'),
         FEE_COLLECTOR,
         address(transferFeeController)
     )

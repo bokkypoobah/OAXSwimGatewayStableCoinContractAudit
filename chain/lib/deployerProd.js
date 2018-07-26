@@ -17,6 +17,8 @@ let {
 
 const initContract = async (contractRegistry, 
         DEPLOYER, SYSTEM_ADMIN,
+        TOKEN_SYMBOL,
+        TOKEN_NAME,
         TRANSFER_FEE_COLLECTOR,
         MINT_LIMIT = wad(10000),
         BURN_LIMIT = wad(10000),
@@ -59,7 +61,8 @@ const initContract = async (contractRegistry,
     token = await deploy(
         FiatToken,
         address(fiatTokenGuard),
-        web3.utils.utf8ToHex('TOKUSD'),
+        web3.utils.utf8ToHex(TOKEN_SYMBOL),
+        web3.utils.utf8ToHex(TOKEN_NAME),
         TRANSFER_FEE_COLLECTOR,
         address(transferFeeController)
     )
@@ -202,9 +205,6 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
     for(let [src, dst, method] of gateAsGuardToOtherContractRules){
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
-
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(membershipWithBoundaryKycAmlRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipWithBoundaryKycAmlRule))
 
 }
 

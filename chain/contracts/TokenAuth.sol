@@ -1,22 +1,15 @@
 pragma solidity 0.4.23;
 
+import "dappsys.sol"; // Uses auth.sol, token.sol
 
-import "dappsys.sol";
-
-// auth, token, guard
-
-contract ERC20Authority {
-
-    function canApprove(address src, address dst, address guy, uint wad) public returns (bool);
-
-    function canTransfer(address src, address dst, address to, uint wad) public returns (bool);
-
-    function canTransferFrom(address src, address dst, address from, address to, uint wad) public returns (bool);
-    
+interface ERC20Authority {
+    function canApprove(address src, address dst, address guy, uint wad) external returns (bool);
+    function canTransfer(address src, address dst, address to, uint wad) external returns (bool);
+    function canTransferFrom(address src, address dst, address from, address to, uint wad) external returns (bool);
 }
 
 
-contract ERC20Auth is ERC20, DSAuth {
+contract ERC20Auth is DSAuth {
     ERC20Authority public erc20Authority;
 
     modifier authApprove(address guy, uint wad) {
@@ -40,10 +33,9 @@ contract ERC20Auth is ERC20, DSAuth {
 }
 
 
-contract TokenAuthority {
-    function canMint(address src, address dst, address guy, uint wad) public returns (bool);
-
-    function canBurn(address src, address dst, address guy, uint wad) public returns (bool);
+interface TokenAuthority {
+    function canMint(address src, address dst, address guy, uint wad) external returns (bool);
+    function canBurn(address src, address dst, address guy, uint wad) external returns (bool);
 }
 
 
