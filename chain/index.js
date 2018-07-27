@@ -114,6 +114,10 @@ async function main() {
             log('==================')
             log(await deployer.toCallData(contractName, methodName, ...process.argv.slice(5)))
             break;
+        case '--sig':
+            const method = args[1]
+            log(await web3.eth.abi.encodeFunctionSignature(method))
+            break;
         case '--no-deploy':
         default:
             log('\nContracts are not deployed again...')
