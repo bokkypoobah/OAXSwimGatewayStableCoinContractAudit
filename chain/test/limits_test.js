@@ -628,5 +628,14 @@ describe("Limits:", function () {
             ])
         })
 
+        it('Cannot set custom limit address to 0x0', async ()=>{
+            await expectThrow(async () => {
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", "0x0" , 100)
+            })
+            await expectThrow(async () => {
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", "0x0" , 100)
+            })
+        })
+
     })
 })
