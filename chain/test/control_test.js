@@ -25,14 +25,14 @@ describe("Control", function () {
     })
 
     context("System wide control.", async () => {
-        it("SystemAdmin can toggle two flags to stop/start any activity regarding SWIM including mint, burn, approve and transfer.", async () => {
+        it("Money operator can toggle two flags to stop/start any activity regarding SWIM including mint, burn, approve and transfer.", async () => {
             await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 10)
 
             expect(await call(token, "balanceOf", CUSTOMER)).eq(10)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
 
-            await send(gate, SYSTEM_ADMIN, "stop")
-            await send(gate, SYSTEM_ADMIN, "stopToken")
+            await send(gate, MONEY_OPERATOR, "stop")
+            await send(gate, MONEY_OPERATOR, "stopToken")
 
             await expect(send(token, CUSTOMER, "transfer", CUSTOMER1, 1))
                 .to.be.rejected
@@ -43,8 +43,8 @@ describe("Control", function () {
             await expect(send(token, CUSTOMER, "approve", address(gate), 10))
                 .to.be.rejected
 
-            await send(gate, SYSTEM_ADMIN, "start")
-            await send(gate, SYSTEM_ADMIN, "startToken")
+            await send(gate, MONEY_OPERATOR, "start")
+            await send(gate, MONEY_OPERATOR, "startToken")
 
             await send(token, CUSTOMER, "transfer", CUSTOMER1, 1)
             expect(await call(token, "balanceOf", CUSTOMER)).eq(9)

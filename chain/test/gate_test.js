@@ -252,6 +252,18 @@ describe('Gate', function () {
             await expectThrow(async () => {
                 await send(gate, CUSTOMER1, "startToken")
             })
+            await expectThrow(async () => {
+                await send(gate, SYSTEM_ADMIN, "stopToken")
+            })
+            await expectThrow(async () => {
+                await send(gate, SYSTEM_ADMIN, "startToken")
+            })
+            await expectThrow(async () => {
+                await send(gate, DEPLOYER, "stopToken")
+            })
+            await expectThrow(async () => {
+                await send(gate, DEPLOYER, "startToken")
+            })
         })
 
         it("SystemAdmin can stop and start token via gate.", async () => {
@@ -259,7 +271,7 @@ describe('Gate', function () {
             await send(gate, MONEY_OPERATOR, mintForSelf, 10)
             await send(gate, MONEY_OPERATOR, approve, CUSTOMER, 3)
 
-            await send(gate, SYSTEM_ADMIN, "stopToken")
+            await send(gate, MONEY_OPERATOR, "stopToken")
             await expectThrow(async () => {
                 await send(token, CUSTOMER, pull, address(gate), 2)
             })
@@ -270,7 +282,7 @@ describe('Gate', function () {
                 await send(gate, MONEY_OPERATOR, approve, CUSTOMER, 3)
             })
 
-            await send(gate, SYSTEM_ADMIN, "startToken")
+            await send(gate, MONEY_OPERATOR, "startToken")
             await expectNoAsyncThrow(async () => {
                 await send(token, CUSTOMER, pull, address(gate), 2)
             })
