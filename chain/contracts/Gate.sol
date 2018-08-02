@@ -60,7 +60,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         emit DepositRequested(msg.sender, wad);
     }
 
-    function mint(address guy, uint wad) public mintLimited(guy, wad) stoppable {
+    function mint(address guy, uint wad) public mintLimited(msg.sender, wad) stoppable {
         super.mint(guy, wad);
         limitController.bumpMintLimitCounter(wad);
         /* Because the EIP20 standard says so, we emit a Transfer event:
@@ -75,7 +75,7 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         emit WithdrawalRequested(msg.sender, wad);
     }
 
-    function burn(address guy, uint wad) public burnLimited(guy, wad) stoppable {
+    function burn(address guy, uint wad) public burnLimited(msg.sender, wad) stoppable {
         super.burn(guy, wad);
         limitController.bumpBurnLimitCounter(wad);
         emit Withdrawn(guy, wad);

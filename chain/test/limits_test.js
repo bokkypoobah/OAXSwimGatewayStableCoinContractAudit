@@ -12,11 +12,11 @@ function hours(hrs) {
 }
 
 describe("Limits:", function () {
-    this.timeout(3000)
+    this.timeout(30000)
 
-    let gate, token, limitController, limitSetting,
+    let gate, gateRoles, token, limitController, limitSetting,
         DEPLOYER,
-        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+        SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MONEY_OPERATOR_2,
         CUSTOMER,
         CUSTOMER_TWO,
         MIN_AMT,
@@ -27,7 +27,7 @@ describe("Limits:", function () {
     before('deployment', async () => {
         ;[
             DEPLOYER,
-            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+            SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MONEY_OPERATOR_2,
             CUSTOMER,
             CUSTOMER_TWO
         ] = accounts = await web3.eth.getAccounts()
@@ -41,7 +41,7 @@ describe("Limits:", function () {
 
 
         ;({
-            gate, token,
+            gate, gateRoles, token,
             limitController,
             limitSetting
         } = await deployer.base(
@@ -55,21 +55,68 @@ describe("Limits:", function () {
             DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
             DEFAULT_SETTING_DELAY_HOURS
         ))
+
+        const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
+        await send(gateRoles, DEPLOYER, 'setUserRole', MONEY_OPERATOR_2, MONEY_OPERATOR_ROLE, true)
+
     })
 
     context("Limits Enforcement -", async () => {
 
-        it('Can never mint more than the daily mint limit at once', async () => {
-            web3.evm.increaseTime(hours(2 * 24))
+        it("should be able to apply all limit setting", async () => {
+
+
+            await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", wad(25000))
+            await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, wad(10000))
+            await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR_2, wad(25000))
+
+            await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, wad(9000)))
+            expect(await call(limitController, 'mintLimitCounter')).to.eq(9000)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(9000)
+
+            await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, wad(5000)))
+            expect(await call(limitController, 'mintLimitCounter')).to.eq(14000)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(14000)
+
             await expectThrow(async () =>
-                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT + 1))
+                send(gate, MONEY_OPERATOR, mint, CUSTOMER, wad(11000)))
+            expect(await call(limitController, 'mintLimitCounter')).to.eq(14000)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(14000)
+
+            await expectNoAsyncThrow(async () =>
+                send(gate, MONEY_OPERATOR_2, mint, CUSTOMER, wad(11000)))
+            expect(await call(limitController, 'mintLimitCounter')).to.eq(25000)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(25000)
+
+            await expectThrow(async () =>
+                send(gate, MONEY_OPERATOR, mint, CUSTOMER, wad(2000)))
+            expect(await call(limitController, 'mintLimitCounter')).to.eq(25000)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(25000)
+        })
+
+        it("Non-custom MONEY_OPERATOR should be able to mint any amount within the limit", async()=>{
+
+            await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", wad(25000))
+
+            await expect(send(gate, MONEY_OPERATOR_2, mint, CUSTOMER, wad(25000)))
+            expect(await call(limitController, 'mintLimitCounter')).to.eq(25000)
+            expect(await call(token, "balanceOf", CUSTOMER)).eq(25000)
+
+        })
+
+        it('No one can mint more than the daily mint in a same day', async () => {
+            web3.evm.increaseTime(hours(2 * 24))
+            await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT))
+            await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, 1))
+                .to.be.rejected
+            await expect(send(gate, MONEY_OPERATOR_2, mint, CUSTOMER, 1))
+                .to.be.rejected
         })
 
         it('Can not mint more than daily mint limit in same day', async () => {
             const moreThanADay = hours((1 + 2) * 24)
             web3.evm.increaseTime(moreThanADay)
-            await expectNoAsyncThrow(async () =>
-                send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT - 1))
+            await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT - 1)
         })
 
         it('Can never burn more than the daily burn limit at once', async () => {
@@ -234,17 +281,17 @@ describe("Limits:", function () {
         })
         it('Ethereum wallets could have customised limits different from default. Ethereum wallets without customised limits shall respect default limits.', async () => {
             //set wallet two's customised limits 2x default
-            let mintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER)
-            let burnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER)
+            let mintLimit = await call(limitSetting, "getMintDailyLimit", MONEY_OPERATOR)
+            let burnLimit = await call(limitSetting, "getBurnDailyLimit", MONEY_OPERATOR)
             //This is only because the default mint/burn limit is different
             expect(mintLimit).to.not.eq(burnLimit)
 
             //DO limit change
-            await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER_TWO, DEFAULT_DAILY_MINT_LIMIT * 3)
-            await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", CUSTOMER_TWO, DEFAULT_DAILY_BURN_LIMIT * 3)
+            await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR_2, DEFAULT_DAILY_MINT_LIMIT/3)
+            await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", MONEY_OPERATOR_2, DEFAULT_DAILY_BURN_LIMIT/3)
 
-            let vipMintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER_TWO)
-            let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER_TWO)
+            let vipMintLimit = await call(limitSetting, "getMintDailyLimit", MONEY_OPERATOR_2)
+            let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", MONEY_OPERATOR_2)
             
             expect(mintLimit).to.not.eq(vipMintLimit)
             expect(burnLimit).to.not.eq(vipBurnLimit)
@@ -279,15 +326,15 @@ describe("Limits:", function () {
             let randomLimit = wad(1000)
 
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER_TWO, randomLimit)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR_2, randomLimit)
             })
-            let vipMintLimit = await call(limitSetting, "getMintDailyLimit", CUSTOMER_TWO)
+            let vipMintLimit = await call(limitSetting, "getMintDailyLimit", MONEY_OPERATOR_2)
             expect(vipMintLimit).to.eq(randomLimit)
 
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", CUSTOMER_TWO, randomLimit * 2)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", MONEY_OPERATOR_2, randomLimit * 2)
             })
-            let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", CUSTOMER_TWO)
+            let vipBurnLimit = await call(limitSetting, "getBurnDailyLimit", MONEY_OPERATOR_2)
             expect(vipBurnLimit).to.eq(randomLimit * 2)
         })
         it('Unauthorised ethereum addresses can NEVER configure customised limits for any ethereum address.', async () => {
@@ -394,19 +441,20 @@ describe("Limits:", function () {
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT+456)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, DEFAULT_DAILY_MINT_LIMIT+100)
             })
 
             //expect throw if minting beyond existing limit
             await expectThrow(async () => {
-                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456)
+                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+100)
             })
 
             //expect no throw if minting beyond existing limit after {24} hours
             await web3.evm.increaseTime(24*60*60) // Increase 24 hours
 
             await expectNoAsyncThrow(async () => {
-                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+456)
+                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT+100)
             })
 
         })
@@ -417,7 +465,7 @@ describe("Limits:", function () {
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER, DEFAULT_DAILY_MINT_LIMIT/3)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, DEFAULT_DAILY_MINT_LIMIT/3)
             })
 
             //expect no throw if minting beyond new_smaller_limit
@@ -425,7 +473,7 @@ describe("Limits:", function () {
                 await send(gate, MONEY_OPERATOR, mint, CUSTOMER, DEFAULT_DAILY_MINT_LIMIT)
             })
 
-            await web3.evm.increaseTime(24*60*60) // Increase 24 hours
+            await web3.evm.increaseTime(25*60*60) // Increase 24 hours
 
             //expect throw if minting beyond new_smaller_limit after {24} hours
             await expectThrow(async () => {
@@ -501,8 +549,10 @@ describe("Limits:", function () {
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER, randomLimit)
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", randomLimit)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultBurnDailyLimit", randomLimit)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, randomLimit)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", MONEY_OPERATOR, randomLimit)
             })
 
             //expect throw if minting beyond existing limit
@@ -531,8 +581,8 @@ describe("Limits:", function () {
             await expectNoAsyncThrow(async () => {
                 await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER, randomLimit/3)
-                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", CUSTOMER, randomLimit/3)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, randomLimit/3)
+                await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", MONEY_OPERATOR, randomLimit/3)
             })
 
             //expect throw if minting beyond existing limit
@@ -567,15 +617,16 @@ describe("Limits:", function () {
             let randomLimit = 148
             let events = await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", randomLimit))
             events = events.concat(await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", randomLimit)))
-            events = events.concat(await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", CUSTOMER ,randomLimit)))
-            events = events.concat(await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", CUSTOMER, randomLimit)))
+            events = events.concat(await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR ,randomLimit)))
+            events = events.concat(await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", MONEY_OPERATOR, randomLimit)))
 
             expect(events).containSubset([
                 {NAME: 'AdjustMintLimitRequested', wad: randomLimit.toString()},
-                {NAME: 'AdjustMintLimitRequested', guy: CUSTOMER, wad: randomLimit.toString()},
+                {NAME: 'AdjustMintLimitRequested', guy: MONEY_OPERATOR, wad: randomLimit.toString()},
                 {NAME: 'AdjustBurnLimitRequested', wad: randomLimit.toString()},
-                {NAME: 'AdjustBurnLimitRequested', guy: CUSTOMER, wad: randomLimit.toString()},
+                {NAME: 'AdjustBurnLimitRequested', guy: MONEY_OPERATOR, wad: randomLimit.toString()},
             ])
         })
+
     })
 })

@@ -108,6 +108,10 @@ contract LimitSetting is DSAuth, DSStop {
             limit > 0,
             "Custom daily mint limit must be positive"
         );
+        require(
+            limit <= defaultMintDailyLimitBuffer,
+            "Custom daily mint limit must be less than or equal to global mint limit buffer"
+        );
         mintCustomDailyLimitBuffer[guy] = limit;
         emit AdjustMintLimitRequested(guy, mintCustomDailyLimitBuffer[guy]);
         resetSettingDelayBuffer();
@@ -117,6 +121,10 @@ contract LimitSetting is DSAuth, DSStop {
         require(
             limit > 0,
             "Custom daily burn limit must be positive"
+        );
+        require(
+            limit <= defaultBurnDailyLimitBuffer,
+            "Custom daily burn limit must be less than or equal to global burn limit buffer"
         );
         burnCustomDailyLimitBuffer[guy] = limit;
         emit AdjustBurnLimitRequested(guy, burnCustomDailyLimitBuffer[guy]);
