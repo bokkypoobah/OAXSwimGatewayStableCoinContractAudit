@@ -28,7 +28,7 @@ describe("Upgrade Gate Regarding Fee", function () {
             let {gateWithFee} = await deployer.deployGateWithFee(web3, contractRegistry,
                 DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, DEPLOYER)
             //switch step 2, pause old gate
-            await send(gate, SYSTEM_ADMIN, "stop")
+            await send(gate, MONEY_OPERATOR, "stop")
 
             //check no-fee gate has no control over token any more
             await expectThrow(async () =>
@@ -47,7 +47,7 @@ describe("Upgrade Gate Regarding Fee", function () {
             //switch step 1, deploy gate with fee
             let {gateWithFee} = await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, DEPLOYER)
             //switch step 2, pause old gate
-            await send(gate, SYSTEM_ADMIN, "stop")
+            await send(gate, MONEY_OPERATOR, "stop")
 
             //check no-fee gate has no control over token any more
             await expectThrow(async () =>

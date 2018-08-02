@@ -96,45 +96,46 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
     })
 
     context("Transfer with dynamic fee", async () => {
-        it("When absolute_fee=0, basis_point_fee=25, fee for amount ( = 10000) is 25", async () => {
-            await expect(send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25)
-            ).to.be.rejected
-
-            await expect(send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 25)
-            ).to.be.rejected
-
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25)
+        it("When absolute_fee=0, basis_point_fee=10, fee for amount ( = 10000) is 10", async () => {
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10)
 
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
-            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(25 * (1))
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(10)
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(10 * (1))
         })
 
-        it("When absolute_fee=1, basis_point_fee=25, fee for amount ( = 10000) is 26", async () => {
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 1, 25);
+        it("When absolute_fee=1, basis_point_fee=10, fee for amount ( = 10000) is 11", async () => {
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 1, 10);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(1)
-            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(26 * (1));
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(10)
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 10000)).eq(11 * (1));
         })
 
-        it("When absolute_fee=1, basis_point_fee=25, fee for amount ( = 9116) is 24", async () => {
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 1, 25);
+        it("When absolute_fee=1, basis_point_fee=25, fee for amount ( = 9116) is 10", async () => {
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 1, 10);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(1)
-            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9999)).eq(26 * (1));
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9998)).eq(26 * (1));
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9997)).eq(26 * (1));
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9996)).eq(26 * (1));
-            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9116)).eq(24 * (1));
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(10)
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9999)).eq(11 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9998)).eq(11 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9997)).eq(11 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9996)).eq(11 * (1));
+            expect(await call(transferFeeController, "calculateTransferFee", null, null, 9116)).eq(10 * (1));
+        })
+
+        it("Should throw if exceed 10 bps", async () => {
+            await expect(send(transferFeeController, DEPLOYER, "setDefaultTransferFee", 0, 10)
+            ).to.be.rejected
+            await expect(send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 11)
+            ).to.be.rejected
         })
 
         it("When a customer transfers 10000 tokens to customer_two and the fee is 25 (0+25bps), " +
             "10000 tokens come off from the customer's wallet, " +
             "9975 tokens goes to customer_two, " +
             "and 25 tokens goes to the fee collector's wallet.", async () => {
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
-            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(10)
 
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
@@ -142,8 +143,8 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
             await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", TRANSFER_FEE_COLLECTOR)
             await send(token, CUSTOMER1, "transfer", CUSTOMER2, 10000)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
-            expect(await call(token, "balanceOf", CUSTOMER2)).eq(9975)
-            expect(await call(token, "balanceOf", TRANSFER_FEE_COLLECTOR)).eq(25)
+            expect(await call(token, "balanceOf", CUSTOMER2)).eq(9990)
+            expect(await call(token, "balanceOf", TRANSFER_FEE_COLLECTOR)).eq(10)
         })
 
         it("Gate can change transfer fee collector.", async () => {
@@ -166,9 +167,9 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
             expect(await call(token, "transferFeeController")).eq(address(mockTransferFeeController))
             expect(await call(mockTransferFeeController, "calculateTransferFee", null, null, 9116)).eq(10);
 
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
-            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(10)
 
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
@@ -191,17 +192,17 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
         })
 
         it("Mint, Burn and Transfer fees don't duplicate.", async () => {
-            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 25);
+            await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10);
             await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", TRANSFER_FEE_COLLECTOR);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
-            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(25)
+            expect(await call(transferFeeController, "defaultTransferFeeBps")).eq(10)
 
             await send(gateWithFee, MONEY_OPERATOR, "mintWithFee", CUSTOMER1, 10000, 25)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(10000)
             expect(await call(token, "balanceOf", MINT_FEE_COLLECTOR)).eq(25)
 
             await send(token, CUSTOMER1, "transfer", CUSTOMER2, 5000)
-            expect(await call(token, "balanceOf", TRANSFER_FEE_COLLECTOR)).eq(13)
+            expect(await call(token, "balanceOf", TRANSFER_FEE_COLLECTOR)).eq(5)
 
             await send(token, CUSTOMER1, "approve", address(gateWithFee), 5000)
             await send(gateWithFee, MONEY_OPERATOR, "burnWithFee", CUSTOMER1, 5000, 25)

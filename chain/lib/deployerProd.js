@@ -149,11 +149,6 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         ['stop()'],
         ['setTransferFeeCollector(address)'],
         ['setTransferFeeController(address)'],
-        ['confiscate(address,uint256)'],
-        ['unConfiscate(address,uint256)'],
-        ['setConfiscateCollector(address)'],
-        ['enableConfiscate()'],
-        ['disableConfiscate()']
     ]
 
     const defaultGateOperatorMethods = [
@@ -161,18 +156,13 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         [MONEY_OPERATOR_ROLE, 'mint(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(address,uint256)'],
-        [SYSTEM_ADMIN_ROLE, 'start()'],
-        [SYSTEM_ADMIN_ROLE, 'stop()'],
-        [SYSTEM_ADMIN_ROLE, 'startToken()'],
-        [SYSTEM_ADMIN_ROLE, 'stopToken()'],
+        [MONEY_OPERATOR_ROLE, 'start()'],
+        [MONEY_OPERATOR_ROLE, 'stop()'],
+        [MONEY_OPERATOR_ROLE, 'startToken()'],
+        [MONEY_OPERATOR_ROLE, 'stopToken()'],
         [SYSTEM_ADMIN_ROLE, 'setERC20Authority(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTokenAuthority(address)'],
         [SYSTEM_ADMIN_ROLE, 'setLimitController(address)'],
-        [MONEY_OPERATOR_ROLE, 'confiscate(address,uint256)'],
-        [MONEY_OPERATOR_ROLE, 'unConfiscate(address,uint256)'],
-        [SYSTEM_ADMIN_ROLE, 'setConfiscateCollector(address)'],
-        [SYSTEM_ADMIN_ROLE, 'enableConfiscate()'],
-        [SYSTEM_ADMIN_ROLE, 'disableConfiscate()']
     ]
 
     const gateWithFeeOperatorMethodsRoleRules = [
