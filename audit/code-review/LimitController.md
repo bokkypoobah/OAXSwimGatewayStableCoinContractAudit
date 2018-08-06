@@ -40,7 +40,9 @@ contract LimitController is DSMath, DSStop {
             resetLimit();
         }
 
-        return (add(mintLimitCounter, wad) <= limitSetting.getMintDailyLimit(guy));
+        // check if it is within global accumulated limit && custom limit per transaction
+        return (add(mintLimitCounter, wad) <= limitSetting.getMintDailyLimit(0x0)) &&
+            (wad <= limitSetting.getMintDailyLimit(guy));
     }
 
     function isWithinBurnLimit(address guy, uint256 wad) public returns (bool) {
@@ -48,7 +50,9 @@ contract LimitController is DSMath, DSStop {
             resetLimit();
         }
 
-        return (add(burnLimitCounter, wad) <= limitSetting.getBurnDailyLimit(guy));
+        // check if it is within global accumulated limit && custom limit per transaction
+        return (add(burnLimitCounter, wad) <= limitSetting.getBurnDailyLimit(0x0)) &&
+            (wad <= limitSetting.getBurnDailyLimit(guy));
     }
 
     function bumpMintLimitCounter(uint256 wad) public auth {
