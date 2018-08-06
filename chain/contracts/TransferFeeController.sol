@@ -32,6 +32,10 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
     public
     auth
     {
+        require(
+            defaultTransferFeeBps_ <= 10,
+            "Default Transfer Fee Bps must be less than or equal to 10"
+        );
         defaultTransferFeeAbs = defaultTransferFeeAbs_;
         defaultTransferFeeBps = defaultTransferFeeBps_;
     }
