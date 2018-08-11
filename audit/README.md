@@ -4,6 +4,19 @@ Status: Work in progress
 
 Commits from [swim-gateway/stable-coin master-gitlab branch](https://github.com/swim-gateway/stable-coin/tree/master-gitlab) in commits [75cc80c](https://github.com/swim-gateway/stable-coin/commit/75cc80c5d494625d3e7262756973ec0394dfcf11) and [a53dce5](https://github.com/swim-gateway/stable-coin/commit/a53dce5fb53f2ff4461d15c2e3450faf0a9b61ac). Additionally, the pull request #1 [https://github.com/swim-gateway/stable-coin/pull/1/commits/daa965ad77e41629d6389879e120e68eb34c3593](https://github.com/swim-gateway/stable-coin/pull/1/commits/daa965ad77e41629d6389879e120e68eb34c3593) was merged into this branch.
 
+
+
+<br />
+
+<hr />
+
+## Recommendations
+
+* [ ] **MEDIUM IMPORTANCE** Add something like `event SetUserRole(address indexed who, bytes32 indexed userRoles);` to *DSRoles* and log this event using `emit SetUserRole(who, _user_roles[who]);` in `DARoles.setUserRole(...)`. This is so any changes to the user roles can be detected. See [test/modifiedContracts/dappsys.sol#L284-L285](test/modifiedContracts/dappsys.sol#L284-L285) and [test/modifiedContracts/dappsys.sol#L365-L366](test/modifiedContracts/dappsys.sol#L365-L366). Any changes can be detected like [https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/test1results.txt#L175-L177](https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/test1results.txt#L175-L177) using code like [https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/functions.js#L483-L488](https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/functions.js#L483-L488)
+* [ ] **MEDIUM IMPORTANCE** Add similar code to *DSRoles* to track changes to the 4 mapping data structures
+* [ ] **MEDIUM IMPORTANCE** Add `emit Transfer(address(0), guy, wad)` to `FiatToken.mint(...)`
+* [ ] **MEDIUM IMPORTANCE** Add `emit Transfer(guy, address(0), wad)` to `FiatToken.burn(...)`
+
 <br />
 
 <hr />

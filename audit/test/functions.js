@@ -9,26 +9,26 @@ var accounts = [];
 var accountNames = {};
 
 addAccount(eth.accounts[0], "Account #0 - Miner");
-addAccount(eth.accounts[1], "Account #1 - Contract Owner");
+addAccount(eth.accounts[1], "Account #1 - Deployer");
 addAccount(eth.accounts[2], "Account #2 - SysAdmin");
 addAccount(eth.accounts[3], "Account #3 - KycOperator");
 addAccount(eth.accounts[4], "Account #4 - MoneyOperator");
-addAccount(eth.accounts[5], "Account #5 - Customer3");
-addAccount(eth.accounts[6], "Account #6");
-addAccount(eth.accounts[7], "Account #7");
+addAccount(eth.accounts[5], "Account #5 - TransferFeeCollector");
+addAccount(eth.accounts[6], "Account #6 - MintFeeCollector");
+addAccount(eth.accounts[7], "Account #7 - BurnFeeCollector");
 addAccount(eth.accounts[8], "Account #8");
 addAccount(eth.accounts[9], "Account #9");
 addAccount(eth.accounts[10], "Account #10");
 addAccount(eth.accounts[11], "Account #11");
 
 var minerAccount = eth.accounts[0];
-var contractOwnerAccount = eth.accounts[1];
-var operator = eth.accounts[2];
-var customer1 = eth.accounts[3];
-var customer2 = eth.accounts[4];
-var customer3 = eth.accounts[5];
-var account6 = eth.accounts[6];
-var account7 = eth.accounts[7];
+var deployer = eth.accounts[1];
+var sysAdmin = eth.accounts[2];
+var kycOperator = eth.accounts[3];
+var moneyOperator = eth.accounts[4];
+var transferFeeCollector = eth.accounts[5];
+var mintFeeCollector = eth.accounts[6];
+var burnFeeCollector = eth.accounts[7];
 var account8 = eth.accounts[8];
 var account9 = eth.accounts[9];
 var account10 = eth.accounts[10];
@@ -51,6 +51,7 @@ function unlockAccounts(password) {
 function addAccount(account, accountName) {
   accounts.push(account);
   accountNames[account] = accountName;
+  addAddressNames(account, accountName);
 }
 
 
@@ -454,71 +455,142 @@ function displayTxRequestDetails(msg, address, abi) {
 }
 
 
-// -----------------------------------------------------------------------------
-// RequestFactory Contract
-// -----------------------------------------------------------------------------
-var requestFactoryContractAddress = null;
-var requestFactoryContractAbi = null;
-
-function addRequestFactoryContractAddressAndAbi(address, requestFactoryAbi) {
-  requestFactoryContractAddress = address;
-  requestFactoryContractAbi = requestFactoryAbi;
+function roleNames(role) {
+  if (role == 1) {
+    return "SYSTEM_ADMIN:1";
+  } else if (role == 2) {
+    return "KYC_OPERATOR:2";
+  } else if (role == 3) {
+    return "MONEY_OPERATOR:3";
+  } else {
+    return "UNKNOWN:" + role;
+  }
 }
 
-var requestFactoryFromBlock = 0;
+// -----------------------------------------------------------------------------
+// GateRoles Contract
+// -----------------------------------------------------------------------------
+var gateRolesContractAddress = null;
+var gateRolesContractAbi = null;
 
-function getRequestFactoryListing() {
-  if (requestFactoryFromBlock == 0) {
-    requestFactoryFromBlock = baseBlock;
+function addGateRolesContractAddressAndAbi(address, gateRolesAbi) {
+  gateRolesContractAddress = address;
+  gateRolesContractAbi = gateRolesAbi;
+}
+
+var gateRolesFromBlock = 0;
+function printGateRolesContractDetails() {
+  if (gateRolesFromBlock == 0) {
+    gateRolesFromBlock = baseBlock;
   }
-  var newContractAddress;
-  console.log("RESULT: requestFactoryContractAddress=" + requestFactoryContractAddress);
-  if (requestFactoryContractAddress != null && requestFactoryContractAbi != null) {
-    var contract = eth.contract(requestFactoryContractAbi).at(requestFactoryContractAddress);
+  console.log("RESULT: gateRoles.address=" + getAddressName(gateRolesContractAddress));
+  if (gateRolesContractAddress != null && gateRolesContractAbi != null) {
+    var contract = eth.contract(gateRolesContractAbi).at(gateRolesContractAddress);
+    console.log("RESULT: gateRoles.authority()=" + getAddressName(contract.authority()));
+    console.log("RESULT: gateRoles.owner()=" + getAddressName(contract.owner()));
+    console.log("RESULT: gateRoles.SYSTEM_ADMIN()=" + roleNames(contract.SYSTEM_ADMIN()));
+    console.log("RESULT: gateRoles.KYC_OPERATOR()=" + roleNames(contract.KYC_OPERATOR()));
+    console.log("RESULT: gateRoles.MONEY_OPERATOR()=" + roleNames(contract.MONEY_OPERATOR()));
 
     var latestBlock = eth.blockNumber;
     var i;
 
-    var requestCreatedEvents = contract.RequestCreated({}, { fromBlock: requestFactoryFromBlock, toBlock: latestBlock });
+    var logSetRootUserEvents = contract.LogSetRootUser({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
     i = 0;
-    requestCreatedEvents.watch(function (error, result) {
-      console.log("RESULT: get RequestCreated " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-      newContractAddress = result.args.request;
+    logSetRootUserEvents.watch(function (error, result) {
+      console.log("RESULT: LogSetRootUser " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
-    requestCreatedEvents.stopWatching();
+    logSetRootUserEvents.stopWatching();
+
+    var logSetUserRoleEvents = contract.LogSetUserRole({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetUserRoleEvents.watch(function (error, result) {
+      console.log("RESULT: LogSetUserRole " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetUserRoleEvents.stopWatching();
+
+    var logSetPublicCapabilityEvents = contract.LogSetPublicCapability({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetPublicCapabilityEvents.watch(function (error, result) {
+      console.log("RESULT: LogSetPublicCapability " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetPublicCapabilityEvents.stopWatching();
+
+    // event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
+    // LogSetRoleCapability 0 #69101 {"capabilityRoles":"0x0000000000000000000000000000000000000000000000000000000000000008",
+    // "code":"0x2e265e894be492bbd5ee7caea0e2ee699aba4d60","enabled":true,"role":"3","sig":"0xa0712d68"}
+    var logSetRoleCapabilityEvents = contract.LogSetRoleCapability({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetRoleCapabilityEvents.watch(function (error, result) {
+      var sig = sigs[result.args.sig.substring(0, 10)];
+      if (sig !== undefined) {
+        console.log("RESULT: RoleCapability code " + getAddressName(result.args.code) + " capabilityRoles " + result.args.capabilityRoles +
+          " for " + sig + " role " + roleNames(result.args.role) + " " + result.args.enabled + " #" + result.blockNumber + " " + result.transactionHash);
+      } else {
+        console.log("RESULT: LogSetRoleCapability " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+      }
+    });
+    logSetRoleCapabilityEvents.stopWatching();
+
+    gateRolesFromBlock = latestBlock + 1;
   }
-  console.log("RESULT: got RequestCreated=" + newContractAddress);
-  return newContractAddress;
 }
 
-function printRequestFactoryContractDetails() {
-  if (requestFactoryFromBlock == 0) {
-    requestFactoryFromBlock = baseBlock;
+
+// -----------------------------------------------------------------------------
+// TokenGuard Contract
+// -----------------------------------------------------------------------------
+var tokenGuardContractAddress = null;
+var tokenGuardContractAbi = null;
+
+function addTokenGuardContractAddressAndAbi(address, tokenGuardAbi) {
+  tokenGuardContractAddress = address;
+  tokenGuardContractAbi = tokenGuardAbi;
+}
+
+var tokenGuardFromBlock = 0;
+function printTokenGuardContractDetails() {
+  if (tokenGuardFromBlock == 0) {
+    tokenGuardFromBlock = baseBlock;
   }
-  console.log("RESULT: requestFactory.Address=" + requestFactoryContractAddress);
-  if (requestFactoryContractAddress != null && requestFactoryContractAbi != null) {
-    var contract = eth.contract(requestFactoryContractAbi).at(requestFactoryContractAddress);
-    console.log("RESULT: requestFactory.transactionRequestCore=" + contract.transactionRequestCore());
-    console.log("RESULT: requestFactory.BLOCKS_BUCKET_SIZE=" + contract.BLOCKS_BUCKET_SIZE());
-    console.log("RESULT: requestFactory.TIMESTAMP_BUCKET_SIZE=" + contract.TIMESTAMP_BUCKET_SIZE());
+  console.log("RESULT: tokenGuard.address=" + getAddressName(tokenGuardContractAddress));
+  if (tokenGuardContractAddress != null && tokenGuardContractAbi != null) {
+    var contract = eth.contract(tokenGuardContractAbi).at(tokenGuardContractAddress);
+    console.log("RESULT: tokenGuard.authority()=" + getAddressName(contract.authority()));
+    console.log("RESULT: tokenGuard.owner()=" + getAddressName(contract.owner()));
 
     var latestBlock = eth.blockNumber;
     var i;
 
-    var validationErrorEvents = contract.ValidationError({}, { fromBlock: requestFactoryFromBlock, toBlock: latestBlock });
+    // event LogPermit(
+    //     bytes32 indexed src,
+    //     bytes32 indexed dst,
+    //     bytes32 indexed sig
+    // );
+    // LogPermit 0 #69104 {"dst":"0x000000000000000000000000c769f95e0e2db8587ae774b3049970b7f2135a3d",
+    // "sig":"0x5ac801fe00000000000000000000000000000000000000000000000000000000",
+    // "src":"0x0000000000000000000000002e265e894be492bbd5ee7caea0e2ee699aba4d60"}
+    var logPermitEvents = contract.LogPermit({}, { fromBlock: tokenGuardFromBlock, toBlock: latestBlock });
     i = 0;
-    validationErrorEvents.watch(function (error, result) {
-      console.log("RESULT: ValidationError " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    logPermitEvents.watch(function (error, result) {
+      var sig = sigs[result.args.sig.substring(0, 10)];
+      var src = "0x" + result.args.src.substring(26);
+      var dst = "0x" + result.args.dst.substring(26);
+      if (sig !== undefined) {
+        console.log("RESULT: Permit from " + getAddressName(src) + " to " + getAddressName(dst) + " for " + sig + " #" + result.blockNumber + " " + result.transactionHash);
+      } else {
+        console.log("RESULT: LogPermit " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+      }
     });
-    validationErrorEvents.stopWatching();
+    logPermitEvents.stopWatching();
 
-    var requestCreatedEvents = contract.RequestCreated({}, { fromBlock: requestFactoryFromBlock, toBlock: latestBlock });
+    var logForbidEvents = contract.LogForbid({}, { fromBlock: tokenGuardFromBlock, toBlock: latestBlock });
     i = 0;
-    requestCreatedEvents.watch(function (error, result) {
-      console.log("RESULT: RequestCreated " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    logForbidEvents.watch(function (error, result) {
+      console.log("RESULT: LogForbid " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
-    requestCreatedEvents.stopWatching();
+    logForbidEvents.stopWatching();
 
-    requestFactoryFromBlock = latestBlock + 1;
+    tokenGuardFromBlock = latestBlock + 1;
   }
 }
