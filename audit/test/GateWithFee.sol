@@ -18,7 +18,7 @@ contract GateWithFee is Gate {
     address public mintFeeCollector;
     address public burnFeeCollector;
 
-    TransferFeeController transferFeeController;
+    TransferFeeController public transferFeeController;
 
     constructor(
         DSAuthority _authority,

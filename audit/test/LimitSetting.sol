@@ -11,19 +11,19 @@ contract LimitSetting is DSAuth, DSStop {
     uint256 public lastSettingResetTime;
 
     // delay hours settings for apply daily limit
-    uint256 private defaultDelayHours;
-    uint256 private defaultDelayHoursBuffer;
-    uint256 private lastDefaultDelayHoursSettingResetTime;
+    uint256 public defaultDelayHours;
+    uint256 public defaultDelayHoursBuffer;
+    uint256 public lastDefaultDelayHoursSettingResetTime;
 
     // current limit setting
-    uint256 private defaultMintDailyLimit;
-    uint256 private defaultBurnDailyLimit;
+    uint256 public defaultMintDailyLimit;
+    uint256 public defaultBurnDailyLimit;
     mapping(address => uint256) private mintCustomDailyLimit;
     mapping(address => uint256) private burnCustomDailyLimit;
 
     // upcoming limit setting
-    uint256 private defaultMintDailyLimitBuffer;
-    uint256 private defaultBurnDailyLimitBuffer;
+    uint256 public defaultMintDailyLimitBuffer;
+    uint256 public defaultBurnDailyLimitBuffer;
     mapping(address => uint256) private mintCustomDailyLimitBuffer;
     mapping(address => uint256) private burnCustomDailyLimitBuffer;
 

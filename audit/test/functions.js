@@ -61,9 +61,9 @@ function addAccount(account, accountName) {
 var tokenAContractAddress = null;
 var tokenAContractAbi = null;
 
-function addTokenAContractAddressAndAbi(address, tokenAbi) {
+function addTokenAContractAddressAndAbi(address, abi) {
   tokenAContractAddress = address;
-  tokenAContractAbi = tokenAbi;
+  tokenAContractAbi = abi;
 }
 
 
@@ -73,9 +73,9 @@ function addTokenAContractAddressAndAbi(address, tokenAbi) {
 var tokenBContractAddress = null;
 var tokenBContractAbi = null;
 
-function addTokenBContractAddressAndAbi(address, tokenAbi) {
+function addTokenBContractAddressAndAbi(address, abi) {
   tokenBContractAddress = address;
-  tokenBContractAbi = tokenAbi;
+  tokenBContractAbi = abi;
 }
 
 
@@ -284,38 +284,74 @@ function waitUntilBlock(message, block, addBlocks) {
 
 
 //-----------------------------------------------------------------------------
-// Token Contract
+// Token Contract A
 //-----------------------------------------------------------------------------
 var tokenAFromBlock = 0;
 function printTokenAContractDetails() {
-  console.log("RESULT: tokenAContractAddress=" + tokenAContractAddress);
+  console.log("RESULT: tokenAContractAddress=" + getAddressName(tokenAContractAddress));
   if (tokenAContractAddress != null && tokenAContractAbi != null) {
     var contract = eth.contract(tokenAContractAbi).at(tokenAContractAddress);
     var decimals = contract.decimals();
-    console.log("RESULT: token.owner=" + contract.owner());
-    console.log("RESULT: token.newOwner=" + contract.newOwner());
-    console.log("RESULT: token.symbol=" + contract.symbol());
-    console.log("RESULT: token.name=" + contract.name());
+    console.log("RESULT: token.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: token.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: token.transferFeeController=" + getAddressName(contract.transferFeeController()));
+    console.log("RESULT: token.transferFeeCollector=" + getAddressName(contract.transferFeeCollector()));
+    console.log("RESULT: token.symbol=" + web3.toUtf8(contract.symbol()));
+    console.log("RESULT: token.name=" + web3.toUtf8(contract.name()));
     console.log("RESULT: token.decimals=" + decimals);
-    console.log("RESULT: token.totalSupply=" + contract.totalSupply().shift(-decimals));
-    console.log("RESULT: token.initialised=" + contract.initialised());
+    console.log("RESULT: token.totalSupply=" + contract.totalSupply() + " " + contract.totalSupply().shift(-decimals));
 
     var latestBlock = eth.blockNumber;
     var i;
 
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: token.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: token.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    var logNoteEvents = contract.LogNote({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
+    i = 0;
+    logNoteEvents.watch(function (error, result) {
+      console.log("RESULT: token.LogNote " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logNoteEvents.stopWatching();
+
+    var mintEvents = contract.Mint({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
+    i = 0;
+    mintEvents.watch(function (error, result) {
+      console.log("RESULT: token.Mint " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    mintEvents.stopWatching();
+
+    var burnEvents = contract.Burn({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
+    i = 0;
+    burnEvents.watch(function (error, result) {
+      console.log("RESULT: token.Burn " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    burnEvents.stopWatching();
+
     var approvalEvents = contract.Approval({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
     i = 0;
     approvalEvents.watch(function (error, result) {
-      console.log("RESULT: Approval " + i++ + " #" + result.blockNumber + " owner=" + result.args.owner +
-        " spender=" + result.args.spender + " tokens=" + result.args.tokens.shift(-decimals));
+      console.log("RESULT: token.Approval " + i++ + " #" + result.blockNumber + " src=" + result.args.src +
+        " guy=" + result.args.guy + " wad=" + result.args.wad.shift(-decimals));
     });
     approvalEvents.stopWatching();
 
     var transferEvents = contract.Transfer({}, { fromBlock: tokenAFromBlock, toBlock: latestBlock });
     i = 0;
     transferEvents.watch(function (error, result) {
-      console.log("RESULT: Transfer " + i++ + " #" + result.blockNumber + ": from=" + result.args.from + " to=" + result.args.to +
-        " tokens=" + result.args.tokens.shift(-decimals));
+      console.log("RESULT: token.Transfer " + i++ + " #" + result.blockNumber + ": src=" + result.args.src + " dst=" + result.args.dst +
+        " wad=" + result.args.wad.shift(-decimals));
     });
     transferEvents.stopWatching();
 
@@ -325,7 +361,7 @@ function printTokenAContractDetails() {
 
 
 //-----------------------------------------------------------------------------
-// Token Contract
+// Token Contract B
 //-----------------------------------------------------------------------------
 var tokenBFromBlock = 0;
 function printTokenBContractDetails() {
@@ -365,96 +401,6 @@ function printTokenBContractDetails() {
 }
 
 
-// -----------------------------------------------------------------------------
-// TransactionRequest
-// -----------------------------------------------------------------------------
-var txRequestFromBlock = {};
-function displayTxRequestDetails(msg, address, abi) {
-  var contract = eth.contract(abi).at(address);
-  if (txRequestFromBlock[address] == undefined) {
-    txRequestFromBlock[address] = baseBlock;
-  }
-  var data = contract.requestData();
-  var addressValues = data[0];
-  var boolValues = data[1];
-  var uintValues = data[2];
-  var uint8Values = data[3];
-  console.log("RESULT: ----- TxRequest '" + msg + "' -----");
-  console.log("RESULT: txRequest.address=" + address);
-  console.log("RESULT:   claimData.claimedBy=" + addressValues[0]);
-  console.log("RESULT:   meta.createdBy=" + addressValues[1]);
-  console.log("RESULT:   meta.owner=" + addressValues[2]);
-  console.log("RESULT:   paymentData.feeRecipient=" + addressValues[3]);
-  console.log("RESULT:   paymentData.bountyBenefactor=" + addressValues[4]);
-  console.log("RESULT:   txnData.toAddress=" + addressValues[5]);
-  console.log("RESULT:   meta.isCancelled=" + boolValues[0]);
-  console.log("RESULT:   meta.wasCalled=" + boolValues[1]);
-  console.log("RESULT:   meta.wasSuccessful=" + boolValues[2]);
-  console.log("RESULT:   claimData.claimDeposit=" + uintValues[0].shift(-18).toFixed(18) + " " + uintValues[0]);
-  console.log("RESULT:   paymentData.fee=" + uintValues[1].shift(-18).toFixed(18) + " " + uintValues[1]);
-  console.log("RESULT:   paymentData.feeOwed=" + uintValues[2].shift(-18).toFixed(18) + " " + uintValues[2]);
-  console.log("RESULT:   paymentData.bounty=" + uintValues[3].shift(-18).toFixed(18) + " " + uintValues[3]);
-  console.log("RESULT:   paymentData.bountyOwed=" + uintValues[4].shift(-18).toFixed(18) + " " + uintValues[4]);
-  console.log("RESULT:   schedule.claimWindowSize=" + uintValues[5]);
-  console.log("RESULT:   (schedule.firstClaimBlock=" + (uintValues[10] - uintValues[6] - uintValues[5]) + " = freezeStart-claimWindowSize)");
-  console.log("RESULT:   schedule.freezePeriod=" + uintValues[6]);
-  console.log("RESULT:   (schedule.freezeStart=" + (uintValues[10] - uintValues[6]) + ") = windowStart - freezePeriod");
-  console.log("RESULT:   schedule.reservedWindowSize=" + uintValues[7]);
-  console.log("RESULT:   (schedule.reservedWindowEnd=" + (parseInt(uintValues[10]) + parseInt(uintValues[7])) + ") = windowStart + reserveWindowSize");
-  console.log("RESULT:   schedule.temporalUnit=" + uintValues[8]);
-  console.log("RESULT:   schedule.windowSize=" + uintValues[9]);
-  console.log("RESULT:   schedule.windowStart=" + uintValues[10]);
-  console.log("RESULT:   (schedule.windowEnd=" + (parseInt(uintValues[10]) + parseInt(uintValues[9])) + ") = windowStart + windowSize");
-  console.log("RESULT:   txnData.callGas=" + uintValues[11]);
-  console.log("RESULT:   txnData.callValue=" + uintValues[12]);
-  console.log("RESULT:   txnData.gasPrice=" + uintValues[13].shift(-18).toFixed(18) + " " + uintValues[13]);
-  console.log("RESULT:   claimData.requiredDeposit=" + uintValues[14].shift(-18).toFixed(18) + " " + uintValues[14]);
-  console.log("RESULT:   claimData.paymentModifier=" + uint8Values[0]);
-  console.log("RESULT:   txnData.callData=" + contract.callData());
-
-  var i;
-  var latestBlock = eth.blockNumber;
-
-  var abortedEvents = contract.Aborted({}, { fromBlock: txRequestFromBlock[address], toBlock: latestBlock });
-  i = 0;
-  abortedEvents.watch(function (error, result) {
-    console.log("RESULT: txRequest.Aborted " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-  });
-  abortedEvents.stopWatching();
-
-  var cancelledEvents = contract.Cancelled({}, { fromBlock: txRequestFromBlock[address], toBlock: latestBlock });
-  i = 0;
-  cancelledEvents.watch(function (error, result) {
-    console.log("RESULT: txRequest.Cancelled " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-  });
-  cancelledEvents.stopWatching();
-
-  var claimedEvents = contract.Claimed({}, { fromBlock: txRequestFromBlock[address], toBlock: latestBlock });
-  i = 0;
-  claimedEvents.watch(function (error, result) {
-    console.log("RESULT: txRequest.Claimed " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-  });
-  claimedEvents.stopWatching();
-
-  var executedEvents = contract.Executed({}, { fromBlock: txRequestFromBlock[address], toBlock: latestBlock });
-  i = 0;
-  executedEvents.watch(function (error, result) {
-    console.log("RESULT: txRequest.Executed " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-  });
-  executedEvents.stopWatching();
-
-  var logUintEvents = contract.LogUint({}, { fromBlock: txRequestFromBlock[address], toBlock: latestBlock });
-  i = 0;
-  logUintEvents.watch(function (error, result) {
-    console.log("RESULT: txRequest.LogUint " + i++ + " #" + result.blockNumber + " source=" + result.args.source +
-      " text=" + result.args.text + " value=" + result.args.value + " " + result.args.value.shift(-18));
-  });
-  logUintEvents.stopWatching();
-
-  txRequestFromBlock[address] = latestBlock + 1;
-}
-
-
 function roleNames(role) {
   if (role == 1) {
     return "SYSTEM_ADMIN:1";
@@ -473,9 +419,9 @@ function roleNames(role) {
 var gateRolesContractAddress = null;
 var gateRolesContractAbi = null;
 
-function addGateRolesContractAddressAndAbi(address, gateRolesAbi) {
+function addGateRolesContractAddressAndAbi(address, abi) {
   gateRolesContractAddress = address;
-  gateRolesContractAbi = gateRolesAbi;
+  gateRolesContractAbi = abi;
 }
 
 var gateRolesFromBlock = 0;
@@ -486,48 +432,59 @@ function printGateRolesContractDetails() {
   console.log("RESULT: gateRoles.address=" + getAddressName(gateRolesContractAddress));
   if (gateRolesContractAddress != null && gateRolesContractAbi != null) {
     var contract = eth.contract(gateRolesContractAbi).at(gateRolesContractAddress);
-    console.log("RESULT: gateRoles.authority()=" + getAddressName(contract.authority()));
-    console.log("RESULT: gateRoles.owner()=" + getAddressName(contract.owner()));
-    console.log("RESULT: gateRoles.SYSTEM_ADMIN()=" + roleNames(contract.SYSTEM_ADMIN()));
-    console.log("RESULT: gateRoles.KYC_OPERATOR()=" + roleNames(contract.KYC_OPERATOR()));
-    console.log("RESULT: gateRoles.MONEY_OPERATOR()=" + roleNames(contract.MONEY_OPERATOR()));
+    console.log("RESULT: gateRoles.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: gateRoles.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: gateRoles.SYSTEM_ADMIN=" + roleNames(contract.SYSTEM_ADMIN()));
+    console.log("RESULT: gateRoles.KYC_OPERATOR=" + roleNames(contract.KYC_OPERATOR()));
+    console.log("RESULT: gateRoles.MONEY_OPERATOR=" + roleNames(contract.MONEY_OPERATOR()));
 
     var latestBlock = eth.blockNumber;
     var i;
 
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: gateRoles.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: gateRoles.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
     var logSetRootUserEvents = contract.LogSetRootUser({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
     i = 0;
     logSetRootUserEvents.watch(function (error, result) {
-      console.log("RESULT: LogSetRootUser " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+      console.log("RESULT: gateRoles.LogSetRootUser " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
     logSetRootUserEvents.stopWatching();
 
     var logSetUserRoleEvents = contract.LogSetUserRole({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
     i = 0;
     logSetUserRoleEvents.watch(function (error, result) {
-      console.log("RESULT: LogSetUserRole " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+      console.log("RESULT: gateRoles.LogSetUserRole " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
     logSetUserRoleEvents.stopWatching();
 
     var logSetPublicCapabilityEvents = contract.LogSetPublicCapability({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
     i = 0;
     logSetPublicCapabilityEvents.watch(function (error, result) {
-      console.log("RESULT: LogSetPublicCapability " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+      console.log("RESULT: gateRoles.LogSetPublicCapability " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
     logSetPublicCapabilityEvents.stopWatching();
 
-    // event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
-    // LogSetRoleCapability 0 #69101 {"capabilityRoles":"0x0000000000000000000000000000000000000000000000000000000000000008",
-    // "code":"0x2e265e894be492bbd5ee7caea0e2ee699aba4d60","enabled":true,"role":"3","sig":"0xa0712d68"}
     var logSetRoleCapabilityEvents = contract.LogSetRoleCapability({}, { fromBlock: gateRolesFromBlock, toBlock: latestBlock });
     i = 0;
     logSetRoleCapabilityEvents.watch(function (error, result) {
       var sig = sigs[result.args.sig.substring(0, 10)];
       if (sig !== undefined) {
-        console.log("RESULT: RoleCapability code " + getAddressName(result.args.code) + " capabilityRoles " + result.args.capabilityRoles +
+        console.log("RESULT: gateRoles.RoleCapability code " + getAddressName(result.args.code) + " capabilityRoles " + result.args.capabilityRoles +
           " for " + sig + " role " + roleNames(result.args.role) + " " + result.args.enabled + " #" + result.blockNumber + " " + result.transactionHash);
       } else {
-        console.log("RESULT: LogSetRoleCapability " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+        console.log("RESULT: gateRoles.LogSetRoleCapability " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
       }
     });
     logSetRoleCapabilityEvents.stopWatching();
@@ -543,9 +500,9 @@ function printGateRolesContractDetails() {
 var tokenGuardContractAddress = null;
 var tokenGuardContractAbi = null;
 
-function addTokenGuardContractAddressAndAbi(address, tokenGuardAbi) {
+function addTokenGuardContractAddressAndAbi(address, abi) {
   tokenGuardContractAddress = address;
-  tokenGuardContractAbi = tokenGuardAbi;
+  tokenGuardContractAbi = abi;
 }
 
 var tokenGuardFromBlock = 0;
@@ -556,20 +513,26 @@ function printTokenGuardContractDetails() {
   console.log("RESULT: tokenGuard.address=" + getAddressName(tokenGuardContractAddress));
   if (tokenGuardContractAddress != null && tokenGuardContractAbi != null) {
     var contract = eth.contract(tokenGuardContractAbi).at(tokenGuardContractAddress);
-    console.log("RESULT: tokenGuard.authority()=" + getAddressName(contract.authority()));
-    console.log("RESULT: tokenGuard.owner()=" + getAddressName(contract.owner()));
+    console.log("RESULT: tokenGuard.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: tokenGuard.owner=" + getAddressName(contract.owner()));
 
     var latestBlock = eth.blockNumber;
     var i;
 
-    // event LogPermit(
-    //     bytes32 indexed src,
-    //     bytes32 indexed dst,
-    //     bytes32 indexed sig
-    // );
-    // LogPermit 0 #69104 {"dst":"0x000000000000000000000000c769f95e0e2db8587ae774b3049970b7f2135a3d",
-    // "sig":"0x5ac801fe00000000000000000000000000000000000000000000000000000000",
-    // "src":"0x0000000000000000000000002e265e894be492bbd5ee7caea0e2ee699aba4d60"}
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: tokenGuardFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: tokenGuard.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: tokenGuardFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: tokenGuard.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
     var logPermitEvents = contract.LogPermit({}, { fromBlock: tokenGuardFromBlock, toBlock: latestBlock });
     i = 0;
     logPermitEvents.watch(function (error, result) {
@@ -577,9 +540,9 @@ function printTokenGuardContractDetails() {
       var src = "0x" + result.args.src.substring(26);
       var dst = "0x" + result.args.dst.substring(26);
       if (sig !== undefined) {
-        console.log("RESULT: Permit from " + getAddressName(src) + " to " + getAddressName(dst) + " for " + sig + " #" + result.blockNumber + " " + result.transactionHash);
+        console.log("RESULT: tokenGuard.Permit from " + getAddressName(src) + " to " + getAddressName(dst) + " for " + sig + " #" + result.blockNumber + " " + result.transactionHash);
       } else {
-        console.log("RESULT: LogPermit " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+        console.log("RESULT: tokenGuard.LogPermit " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
       }
     });
     logPermitEvents.stopWatching();
@@ -587,10 +550,497 @@ function printTokenGuardContractDetails() {
     var logForbidEvents = contract.LogForbid({}, { fromBlock: tokenGuardFromBlock, toBlock: latestBlock });
     i = 0;
     logForbidEvents.watch(function (error, result) {
-      console.log("RESULT: LogForbid " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+      console.log("RESULT: tokenGuard.LogForbid " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
     logForbidEvents.stopWatching();
 
     tokenGuardFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// KycAmlStatus Contract
+// -----------------------------------------------------------------------------
+var kycAmlStatusContractAddress = null;
+var kycAmlStatusContractAbi = null;
+
+function addKycAmlStatusContractAddressAndAbi(address, abi) {
+  kycAmlStatusContractAddress = address;
+  kycAmlStatusContractAbi = abi;
+}
+
+var kycAmlStatusFromBlock = 0;
+function printKycAmlStatusContractDetails() {
+  if (kycAmlStatusFromBlock == 0) {
+    kycAmlStatusFromBlock = baseBlock;
+  }
+  console.log("RESULT: kycAmlStatus.address=" + getAddressName(kycAmlStatusContractAddress));
+  if (kycAmlStatusContractAddress != null && kycAmlStatusContractAbi != null) {
+    var contract = eth.contract(kycAmlStatusContractAbi).at(kycAmlStatusContractAddress);
+    console.log("RESULT: kycAmlStatus.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: kycAmlStatus.owner=" + getAddressName(contract.owner()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var kycVerifyEvents = contract.KYCVerify({}, { fromBlock: kycAmlStatusFromBlock, toBlock: latestBlock });
+    i = 0;
+    kycVerifyEvents.watch(function (error, result) {
+      console.log("RESULT: kycAmlStatus.KYCVerify " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    kycVerifyEvents.stopWatching();
+
+    kycAmlStatusFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// AddressControlStatus Contract
+// -----------------------------------------------------------------------------
+var addressControlStatusContractAddress = null;
+var addressControlStatusContractAbi = null;
+
+function addAddressControlStatusContractAddressAndAbi(address, abi) {
+  addressControlStatusContractAddress = address;
+  addressControlStatusContractAbi = abi;
+}
+
+var addressControlStatusFromBlock = 0;
+function printAddressControlStatusContractDetails() {
+  if (addressControlStatusFromBlock == 0) {
+    addressControlStatusFromBlock = baseBlock;
+  }
+  console.log("RESULT: addressControlStatus.address=" + getAddressName(addressControlStatusContractAddress));
+  if (addressControlStatusContractAddress != null && addressControlStatusContractAbi != null) {
+    var contract = eth.contract(addressControlStatusContractAbi).at(addressControlStatusContractAddress);
+    console.log("RESULT: addressControlStatus.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: addressControlStatus.owner=" + getAddressName(contract.owner()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var freezeAddressEvents = contract.FreezeAddress({}, { fromBlock: addressControlStatusFromBlock, toBlock: latestBlock });
+    i = 0;
+    freezeAddressEvents.watch(function (error, result) {
+      console.log("RESULT: addressControlStatus.FreezeAddress " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    freezeAddressEvents.stopWatching();
+
+    var unfreezeAddressEvents = contract.UnfreezeAddress({}, { fromBlock: addressControlStatusFromBlock, toBlock: latestBlock });
+    i = 0;
+    unfreezeAddressEvents.watch(function (error, result) {
+      console.log("RESULT: addressControlStatus.UnfreezeAddress " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    unfreezeAddressEvents.stopWatching();
+
+    addressControlStatusFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// TransferFeeController Contract
+// -----------------------------------------------------------------------------
+var transferFeeControllerContractAddress = null;
+var transferFeeControllerContractAbi = null;
+
+function addTransferFeeControllerContractAddressAndAbi(address, abi) {
+  transferFeeControllerContractAddress = address;
+  transferFeeControllerContractAbi = abi;
+}
+
+var transferFeeControllerFromBlock = 0;
+function printTransferFeeControllerContractDetails() {
+  if (transferFeeControllerFromBlock == 0) {
+    transferFeeControllerFromBlock = baseBlock;
+  }
+  console.log("RESULT: transferFeeController.address=" + getAddressName(transferFeeControllerContractAddress));
+  if (transferFeeControllerContractAddress != null && transferFeeControllerContractAbi != null) {
+    var contract = eth.contract(transferFeeControllerContractAbi).at(transferFeeControllerContractAddress);
+    console.log("RESULT: transferFeeController.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: transferFeeController.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: transferFeeController.defaultTransferFeeAbs=" + contract.defaultTransferFeeAbs());
+    console.log("RESULT: transferFeeController.defaultTransferFeeBps=" + contract.defaultTransferFeeBps());
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    // No events
+
+    transferFeeControllerFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// LimitSetting Contract
+// -----------------------------------------------------------------------------
+var limitSettingContractAddress = null;
+var limitSettingContractAbi = null;
+
+function addLimitSettingContractAddressAndAbi(address, abi) {
+  limitSettingContractAddress = address;
+  limitSettingContractAbi = abi;
+}
+
+var limitSettingFromBlock = 0;
+function printLimitSettingContractDetails() {
+  if (limitSettingFromBlock == 0) {
+    limitSettingFromBlock = baseBlock;
+  }
+  console.log("RESULT: limitSetting.address=" + getAddressName(limitSettingContractAddress));
+  if (limitSettingContractAddress != null && limitSettingContractAbi != null) {
+    var contract = eth.contract(limitSettingContractAbi).at(limitSettingContractAddress);
+    console.log("RESULT: limitSetting.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: limitSetting.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: limitSetting.stopped=" + contract.stopped());
+    console.log("RESULT: limitSetting.limitCounterResetTimeOffset=" + contract.limitCounterResetTimeOffset());
+    console.log("RESULT: limitSetting.lastSettingResetTime=" + contract.lastSettingResetTime() + " " + new Date(contract.lastSettingResetTime() * 1000).toUTCString());
+    console.log("RESULT: limitSetting.defaultDelayHours=" + contract.defaultDelayHours());
+    console.log("RESULT: limitSetting.defaultDelayHoursBuffer=" + contract.defaultDelayHoursBuffer());
+    console.log("RESULT: limitSetting.lastDefaultDelayHoursSettingResetTime=" + contract.lastDefaultDelayHoursSettingResetTime());
+    console.log("RESULT: limitSetting.defaultMintDailyLimit=" + contract.defaultMintDailyLimit() + " " + contract.defaultMintDailyLimit().shift(-18));
+    console.log("RESULT: limitSetting.defaultBurnDailyLimit=" + contract.defaultBurnDailyLimit() + " " + contract.defaultBurnDailyLimit().shift(-18));
+    console.log("RESULT: limitSetting.defaultMintDailyLimitBuffer=" + contract.defaultMintDailyLimitBuffer() + " " + contract.defaultMintDailyLimitBuffer().shift(-18));
+    console.log("RESULT: limitSetting.defaultBurnDailyLimitBuffer=" + contract.defaultBurnDailyLimitBuffer() + " " + contract.defaultBurnDailyLimitBuffer().shift(-18));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    // NOTE that there are 2 versions of AdjustMintLimitRequested and AdjustBurnLimitRequested
+
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: limitSettingFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: limitSetting.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: limitSettingFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: limitSetting.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    var logNoteEvents = contract.LogNote({}, { fromBlock: limitSettingFromBlock, toBlock: latestBlock });
+    i = 0;
+    logNoteEvents.watch(function (error, result) {
+      console.log("RESULT: limitSetting.LogNote " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logNoteEvents.stopWatching();
+
+    var adjustMintLimitRequestedEvents = contract.AdjustMintLimitRequested({}, { fromBlock: limitSettingFromBlock, toBlock: latestBlock });
+    i = 0;
+    adjustMintLimitRequestedEvents.watch(function (error, result) {
+      console.log("RESULT: limitSetting.AdjustMintLimitRequested " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    adjustMintLimitRequestedEvents.stopWatching();
+
+    var adjustBurnLimitRequestedEvents = contract.AdjustBurnLimitRequested({}, { fromBlock: limitSettingFromBlock, toBlock: latestBlock });
+    i = 0;
+    adjustBurnLimitRequestedEvents.watch(function (error, result) {
+      console.log("RESULT: limitSetting.AdjustBurnLimitRequested " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    adjustBurnLimitRequestedEvents.stopWatching();
+
+    limitSettingFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// NoKycAmlRule Contract
+// -----------------------------------------------------------------------------
+var noKycAmlRuleContractAddress = null;
+var noKycAmlRuleContractAbi = null;
+
+function addNoKycAmlRuleContractAddressAndAbi(address, abi) {
+  noKycAmlRuleContractAddress = address;
+  noKycAmlRuleContractAbi = abi;
+}
+
+var noKycAmlRuleFromBlock = 0;
+function printNoKycAmlRuleContractDetails() {
+  if (noKycAmlRuleFromBlock == 0) {
+    noKycAmlRuleFromBlock = baseBlock;
+  }
+  console.log("RESULT: noKycAmlRule.address=" + getAddressName(noKycAmlRuleContractAddress));
+  if (noKycAmlRuleContractAddress != null && noKycAmlRuleContractAbi != null) {
+    var contract = eth.contract(noKycAmlRuleContractAbi).at(noKycAmlRuleContractAddress);
+    console.log("RESULT: noKycAmlRule.addressControlStatus=" + getAddressName(contract.addressControlStatus()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    // No events
+
+    noKycAmlRuleFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// BoundaryKycAmlRule Contract
+// -----------------------------------------------------------------------------
+var boundaryKycAmlRuleContractAddress = null;
+var boundaryKycAmlRuleContractAbi = null;
+
+function addBoundaryKycAmlRuleContractAddressAndAbi(address, abi) {
+  boundaryKycAmlRuleContractAddress = address;
+  boundaryKycAmlRuleContractAbi = abi;
+}
+
+var boundaryKycAmlRuleFromBlock = 0;
+function printBoundaryKycAmlRuleContractDetails() {
+  if (boundaryKycAmlRuleFromBlock == 0) {
+    boundaryKycAmlRuleFromBlock = baseBlock;
+  }
+  console.log("RESULT: boundaryKycAmlRule.address=" + getAddressName(boundaryKycAmlRuleContractAddress));
+  if (boundaryKycAmlRuleContractAddress != null && boundaryKycAmlRuleContractAbi != null) {
+    var contract = eth.contract(boundaryKycAmlRuleContractAbi).at(boundaryKycAmlRuleContractAddress);
+    console.log("RESULT: boundaryKycAmlRule.addressControlStatus=" + getAddressName(contract.addressControlStatus()));
+    console.log("RESULT: boundaryKycAmlRule.kycAmlStatus=" + getAddressName(contract.kycAmlStatus()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    // No events
+
+    boundaryKycAmlRuleFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// FullKycAmlRule Contract
+// -----------------------------------------------------------------------------
+var fullKycAmlRuleContractAddress = null;
+var fullKycAmlRuleContractAbi = null;
+
+function addFullKycAmlRuleContractAddressAndAbi(address, abi) {
+  fullKycAmlRuleContractAddress = address;
+  fullKycAmlRuleContractAbi = abi;
+}
+
+var fullKycAmlRuleFromBlock = 0;
+function printFullKycAmlRuleContractDetails() {
+  if (fullKycAmlRuleFromBlock == 0) {
+    fullKycAmlRuleFromBlock = baseBlock;
+  }
+  console.log("RESULT: fullKycAmlRule.address=" + getAddressName(fullKycAmlRuleContractAddress));
+  if (fullKycAmlRuleContractAddress != null && fullKycAmlRuleContractAbi != null) {
+    var contract = eth.contract(fullKycAmlRuleContractAbi).at(fullKycAmlRuleContractAddress);
+    console.log("RESULT: fullKycAmlRule.addressControlStatus=" + getAddressName(contract.addressControlStatus()));
+    console.log("RESULT: fullKycAmlRule.kycAmlStatus=" + getAddressName(contract.kycAmlStatus()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    fullKycAmlRuleFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// MembershipWithBoundaryKycAmlRule Contract
+// -----------------------------------------------------------------------------
+var membershipWithBoundaryKycAmlRuleContractAddress = null;
+var membershipWithBoundaryKycAmlRuleContractAbi = null;
+
+function addMembershipWithBoundaryKycAmlRuleContractAddressAndAbi(address, abi) {
+  membershipWithBoundaryKycAmlRuleContractAddress = address;
+  membershipWithBoundaryKycAmlRuleContractAbi = abi;
+}
+
+var membershipWithBoundaryKycAmlRuleFromBlock = 0;
+function printMembershipWithBoundaryKycAmlRuleContractDetails() {
+  if (membershipWithBoundaryKycAmlRuleFromBlock == 0) {
+    membershipWithBoundaryKycAmlRuleFromBlock = baseBlock;
+  }
+  console.log("RESULT: membershipWithBoundaryKycAmlRule.address=" + getAddressName(membershipWithBoundaryKycAmlRuleContractAddress));
+  if (membershipWithBoundaryKycAmlRuleContractAddress != null && membershipWithBoundaryKycAmlRuleContractAbi != null) {
+    var contract = eth.contract(membershipWithBoundaryKycAmlRuleContractAbi).at(membershipWithBoundaryKycAmlRuleContractAddress);
+    console.log("RESULT: membershipWithBoundaryKycAmlRule.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: membershipWithBoundaryKycAmlRule.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: membershipWithBoundaryKycAmlRule.membershipAuthority=" + getAddressName(contract.membershipAuthority()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: membershipWithBoundaryKycAmlRuleFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: membershipWithBoundaryKycAmlRule.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: membershipWithBoundaryKycAmlRuleFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: membershipWithBoundaryKycAmlRule.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    membershipWithBoundaryKycAmlRuleFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// LimitController Contract
+// -----------------------------------------------------------------------------
+var limitControllerContractAddress = null;
+var limitControllerContractAbi = null;
+
+function addLimitControllerContractAddressAndAbi(address, abi) {
+  limitControllerContractAddress = address;
+  limitControllerContractAbi = abi;
+}
+
+var limitControllerFromBlock = 0;
+function printLimitControllerContractDetails() {
+  if (limitControllerFromBlock == 0) {
+    limitControllerFromBlock = baseBlock;
+  }
+  console.log("RESULT: limitController.address=" + getAddressName(limitControllerContractAddress));
+  if (limitControllerContractAddress != null && limitControllerContractAbi != null) {
+    var contract = eth.contract(limitControllerContractAbi).at(limitControllerContractAddress);
+    console.log("RESULT: limitController.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: limitController.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: limitController.stopped=" + contract.stopped());
+    console.log("RESULT: limitController.mintLimitCounter=" + contract.mintLimitCounter());
+    console.log("RESULT: limitController.burnLimitCounter=" + contract.burnLimitCounter());
+    console.log("RESULT: limitController.lastLimitResetTime=" + contract.lastLimitResetTime() + " " + new Date(contract.lastLimitResetTime() * 1000).toUTCString());
+    console.log("RESULT: limitController.limitSetting=" + getAddressName(contract.limitSetting()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: limitControllerFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: limitController.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: limitControllerFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: limitController.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    var logNoteEvents = contract.LogNote({}, { fromBlock: limitControllerFromBlock, toBlock: latestBlock });
+    i = 0;
+    logNoteEvents.watch(function (error, result) {
+      console.log("RESULT: limitController.LogNote " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logNoteEvents.stopWatching();
+
+    limitControllerFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// GateWithFee Contract
+// -----------------------------------------------------------------------------
+var gateWithFeeContractAddress = null;
+var gateWithFeeContractAbi = null;
+
+function addGateWithFeeContractAddressAndAbi(address, abi) {
+  gateWithFeeContractAddress = address;
+  gateWithFeeContractAbi = abi;
+}
+
+var gateWithFeeFromBlock = 0;
+function printGateWithFeeContractDetails() {
+  if (gateWithFeeFromBlock == 0) {
+    gateWithFeeFromBlock = baseBlock;
+  }
+  console.log("RESULT: gateWithFee.address=" + getAddressName(gateWithFeeContractAddress));
+  if (gateWithFeeContractAddress != null && gateWithFeeContractAbi != null) {
+    var contract = eth.contract(gateWithFeeContractAbi).at(gateWithFeeContractAddress);
+    console.log("RESULT: gateWithFee.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: gateWithFee.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: gateWithFee.limitController=" + getAddressName(contract.limitController()));
+    console.log("RESULT: gateWithFee.mintFeeCollector=" + getAddressName(contract.mintFeeCollector()));
+    console.log("RESULT: gateWithFee.burnFeeCollector=" + getAddressName(contract.burnFeeCollector()));
+    console.log("RESULT: gateWithFee.transferFeeController=" + getAddressName(contract.transferFeeController()));
+    console.log("RESULT: gateWithFee.stopped=" + contract.stopped());
+    console.log("RESULT: gateWithFee.token=" + getAddressName(contract.token()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    var logNoteEvents = contract.LogNote({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    logNoteEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.LogNote " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logNoteEvents.stopWatching();
+
+    var depositRequestedEvents = contract.DepositRequested({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    depositRequestedEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.DepositRequested " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    depositRequestedEvents.stopWatching();
+
+    var withdrawalRequestedEvents = contract.WithdrawalRequested({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    withdrawalRequestedEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.WithdrawalRequested " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    withdrawalRequestedEvents.stopWatching();
+
+    var withdrawnEvents = contract.Withdrawn({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    withdrawnEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.Withdrawn " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    withdrawnEvents.stopWatching();
+
+    var logSetLimitControllerEvents = contract.LogSetLimitController({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetLimitControllerEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.LogSetLimitController " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetLimitControllerEvents.stopWatching();
+
+    var approvalEvents = contract.Approval({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    approvalEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.Approval " + i++ + " #" + result.blockNumber + " src=" + result.args.src +
+        " guy=" + result.args.guy + " wad=" + result.args.wad.shift(-decimals));
+    });
+    approvalEvents.stopWatching();
+
+    var transferEvents = contract.Transfer({}, { fromBlock: gateWithFeeFromBlock, toBlock: latestBlock });
+    i = 0;
+    transferEvents.watch(function (error, result) {
+      console.log("RESULT: gateWithFee.Transfer " + i++ + " #" + result.blockNumber + ": src=" + result.args.src + " dst=" + result.args.dst +
+        " wad=" + result.args.wad.shift(-decimals));
+    });
+    transferEvents.stopWatching();
+
+    gateWithFeeFromBlock = latestBlock + 1;
   }
 }

@@ -28,13 +28,23 @@ rsync -rp $SOURCEDIR/* . --exclude=Multisig.sol
 find ./modifiedContracts -type f -name \* -exec cp {} . \;
 
 # --- Modify parameters ---
-# `perl -pi -e "s/START_DATE \= 1525132800.*$/START_DATE \= $START_DATE; \/\/ $START_DATE_S/" $CROWDSALESOL`
-# `perl -pi -e "s/endDate \= 1527811200;.*$/endDate \= $END_DATE; \/\/ $END_DATE_S/" $CROWDSALESOL`
-# `perl -pi -e "s/contracts\///" *.sol`
+`perl -pi -e "s/AddressControlStatus addressControlStatus;/AddressControlStatus public addressControlStatus;/" Kyc.sol`
+`perl -pi -e "s/KycAmlStatus kycAmlStatus;/KycAmlStatus public kycAmlStatus;/" Kyc.sol`
+`perl -pi -e "s/MembershipAuthorityInterface membershipAuthority;/MembershipAuthorityInterface public membershipAuthority;/" Kyc.sol`
+`perl -pi -e "s/uint256 private defaultDelayHours;/uint256 public defaultDelayHours;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultDelayHoursBuffer;/uint256 public defaultDelayHoursBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private lastDefaultDelayHoursSettingResetTime;/uint256 public lastDefaultDelayHoursSettingResetTime;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultMintDailyLimit;/uint256 public defaultMintDailyLimit;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultBurnDailyLimit;/uint256 public defaultBurnDailyLimit;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultMintDailyLimitBuffer;/uint256 public defaultMintDailyLimitBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultBurnDailyLimitBuffer;/uint256 public defaultBurnDailyLimitBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/LimitSetting limitSetting;/LimitSetting public limitSetting;/" LimitController.sol`
+`perl -pi -e "s/TransferFeeController transferFeeController;/TransferFeeController public transferFeeController;/" GateWithFee.sol`
 
-# DIFFS1=`diff -r -x '*.js' -x '*.json' -x '*.txt' -x 'testchain' -x '*.md' $SOURCEDIR .`
-# echo "--- Differences $SOURCEDIR/$REQUESTFACTORYSOL $REQUESTFACTORYSOL ---" | tee -a $TEST1OUTPUT
-# echo "$DIFFS1" | tee -a $TEST1OUTPUT
+DIFFS1=`diff -r -x '*.js' -x '*.json' -x '*.txt' -x 'testchain' -x '*.md -x' -x '*.sh' -x 'settings' -x 'modifiedContracts' $SOURCEDIR .`
+echo "--- Differences $SOURCEDIR/*.sol *.sol ---" | tee -a $TEST1OUTPUT
+echo "$DIFFS1" | tee -a $TEST1OUTPUT
+
 
 solc_0.4.23 --version | tee -a $TEST1OUTPUT
 
@@ -194,6 +204,7 @@ var kycAmlStatus = kycAmlStatusContract.new(gateRolesAddress, {from: deployer, d
       } else {
         kycAmlStatusAddress = contract.address;
         addAccount(kycAmlStatusAddress, "KycAmlStatus");
+        addKycAmlStatusContractAddressAndAbi(kycAmlStatusAddress, kycAmlStatusAbi);
         console.log("DATA: var kycAmlStatusAddress=\"" + kycAmlStatusAddress + "\";");
         console.log("DATA: var kycAmlStatusAbi=" + JSON.stringify(kycAmlStatusAbi) + ";");
         console.log("DATA: var kycAmlStatus=eth.contract(kycAmlStatusAbi).at(kycAmlStatusAddress);");
@@ -212,6 +223,7 @@ var addressControlStatus = addressControlStatusContract.new(gateRolesAddress, {f
       } else {
         addressControlStatusAddress = contract.address;
         addAccount(addressControlStatusAddress, "AddressControlStatus");
+        addAddressControlStatusContractAddressAndAbi(addressControlStatusAddress, addressControlStatusAbi);
         console.log("DATA: var addressControlStatusAddress=\"" + addressControlStatusAddress + "\";");
         console.log("DATA: var addressControlStatusAbi=" + JSON.stringify(addressControlStatusAbi) + ";");
         console.log("DATA: var addressControlStatus=eth.contract(addressControlStatusAbi).at(addressControlStatusAddress);");
@@ -230,6 +242,7 @@ var transferFeeController = transferFeeControllerContract.new(gateRolesAddress, 
       } else {
         transferFeeControllerAddress = contract.address;
         addAccount(transferFeeControllerAddress, "TransferFeeController");
+        addTransferFeeControllerContractAddressAndAbi(transferFeeControllerAddress, transferFeeControllerAbi);
         console.log("DATA: var transferFeeControllerAddress=\"" + transferFeeControllerAddress + "\";");
         console.log("DATA: var transferFeeControllerAbi=" + JSON.stringify(transferFeeControllerAbi) + ";");
         console.log("DATA: var transferFeeController=eth.contract(transferFeeControllerAbi).at(transferFeeControllerAddress);");
@@ -248,9 +261,10 @@ var limitSetting = limitSettingContract.new(gateRolesAddress, $MINT_LIMIT, $BURN
       } else {
         limitSettingAddress = contract.address;
         addAccount(limitSettingAddress, "LimitSetting");
-        console.log("DATA: var deployerlimitSettingAddress=\"" + deployerlimitSettingAddress + "\";");
-        console.log("DATA: var deployerlimitSettingAbi=" + JSON.stringify(deployerlimitSettingAbi) + ";");
-        console.log("DATA: var deployerlimitSetting=eth.contract(deployerlimitSettingAbi).at(deployerlimitSettingAddress);");
+        addLimitSettingContractAddressAndAbi(limitSettingAddress, limitSettingAbi);
+        console.log("DATA: var limitSettingAddress=\"" + limitSettingAddress + "\";");
+        console.log("DATA: var limitSettingAbi=" + JSON.stringify(limitSettingAbi) + ";");
+        console.log("DATA: var limitSetting=eth.contract(limitSettingAbi).at(limitSettingAddress);");
       }
     }
   }
@@ -266,6 +280,10 @@ printTxData("kycAmlStatusTx", kycAmlStatusTx);
 printTxData("addressControlStatusTx", addressControlStatusTx);
 printTxData("transferFeeControllerTx", transferFeeControllerTx);
 printTxData("limitSettingTx", limitSettingTx);
+printKycAmlStatusContractDetails();
+printAddressControlStatusContractDetails();
+printTransferFeeControllerContractDetails();
+printLimitSettingContractDetails();
 console.log("RESULT: ");
 
 
@@ -284,6 +302,7 @@ var noKycAmlRule = noKycAmlRuleContract.new(addressControlStatusAddress, {from: 
       } else {
         noKycAmlRuleAddress = contract.address;
         addAccount(noKycAmlRuleAddress, "NoKycAmlRule");
+        addNoKycAmlRuleContractAddressAndAbi(noKycAmlRuleAddress, noKycAmlRuleAbi);
         console.log("DATA: var noKycAmlRuleAddress=\"" + noKycAmlRuleAddress + "\";");
         console.log("DATA: var noKycAmlRuleAbi=" + JSON.stringify(noKycAmlRuleAbi) + ";");
         console.log("DATA: var noKycAmlRule=eth.contract(noKycAmlRuleAbi).at(noKycAmlRuleAddress);");
@@ -302,6 +321,7 @@ var boundaryKycAmlRule = boundaryKycAmlRuleContract.new(addressControlStatusAddr
       } else {
         boundaryKycAmlRuleAddress = contract.address;
         addAccount(boundaryKycAmlRuleAddress, "BoundaryKycAmlRule");
+        addBoundaryKycAmlRuleContractAddressAndAbi(boundaryKycAmlRuleAddress, boundaryKycAmlRuleAbi);
         console.log("DATA: var boundaryKycAmlRuleAddress=\"" + boundaryKycAmlRuleAddress + "\";");
         console.log("DATA: var boundaryKycAmlRuleAbi=" + JSON.stringify(boundaryKycAmlRuleAbi) + ";");
         console.log("DATA: var boundaryKycAmlRule=eth.contract(boundaryKycAmlRuleAbi).at(boundaryKycAmlRuleAddress);");
@@ -320,6 +340,7 @@ var fullKycAmlRule = fullKycAmlRuleContract.new(addressControlStatusAddress, kyc
       } else {
         fullKycAmlRuleAddress = contract.address;
         addAccount(fullKycAmlRuleAddress, "FullKycAmlRule");
+        addFullKycAmlRuleContractAddressAndAbi(fullKycAmlRuleAddress, fullKycAmlRuleAbi);
         console.log("DATA: var fullKycAmlRuleAddress=\"" + fullKycAmlRuleAddress + "\";");
         console.log("DATA: var fullKycAmlRuleAbi=" + JSON.stringify(fullKycAmlRuleAbi) + ";");
         console.log("DATA: var fullKycAmlRule=eth.contract(fullKycAmlRuleAbi).at(fullKycAmlRuleAddress);");
@@ -337,6 +358,8 @@ var mockMembershipAuthority = mockMembershipAuthorityContract.new({from: deploye
         mockMembershipAuthorityTx = contract.transactionHash;
       } else {
         mockMembershipAuthorityAddress = contract.address;
+        addAccount(mockMembershipAuthorityAddress, "MockMembershipAuthority");
+        // BK TODO
         console.log("DATA: mockMembershipAuthorityAddress=\"" + mockMembershipAuthorityAddress + "\";");
         console.log("DATA: var mockMembershipAuthorityAddress=\"" + mockMembershipAuthorityAddress + "\";");
         console.log("DATA: var mockMembershipAuthorityAbi=" + JSON.stringify(mockMembershipAuthorityAbi) + ";");
@@ -358,6 +381,7 @@ var membershipWithBoundaryKycAmlRule = membershipWithBoundaryKycAmlRuleContract.
       } else {
         membershipWithBoundaryKycAmlRuleAddress = contract.address;
         addAccount(membershipWithBoundaryKycAmlRuleAddress, "MembershipWithBoundaryKycAmlRule");
+        addMembershipWithBoundaryKycAmlRuleContractAddressAndAbi(membershipWithBoundaryKycAmlRuleAddress, membershipWithBoundaryKycAmlRuleAbi);
         console.log("DATA: var membershipWithBoundaryKycAmlRuleAddress=\"" + membershipWithBoundaryKycAmlRuleAddress + "\";");
         console.log("DATA: var membershipWithBoundaryKycAmlRuleAbi=" + JSON.stringify(membershipWithBoundaryKycAmlRuleAbi) + ";");
         console.log("DATA: var membershipWithBoundaryKycAmlRule=eth.contract(membershipWithBoundaryKycAmlRuleAbi).at(membershipWithBoundaryKycAmlRuleAddress);");
@@ -376,6 +400,7 @@ var limitController = limitControllerContract.new(fiatTokenGuardAddress, limitSe
       } else {
         limitControllerAddress = contract.address;
         addAccount(limitControllerAddress, "LimitController");
+        addLimitControllerContractAddressAndAbi(limitControllerAddress, limitControllerAbi);
         console.log("DATA: var limitControllerAddress=\"" + limitControllerAddress + "\";");
         console.log("DATA: var limitControllerAbi=" + JSON.stringify(limitControllerAbi) + ";");
         console.log("DATA: var limitController=eth.contract(limitControllerAbi).at(limitControllerAddress);");
@@ -394,6 +419,7 @@ var fiatToken = fiatTokenContract.new(fiatTokenGuardAddress, "USD", "USDToken", 
       } else {
         fiatTokenAddress = contract.address;
         addAccount(fiatTokenAddress, "FiatToken '" + web3.toUtf8(fiatToken.symbol()) + "' '" + web3.toUtf8(fiatToken.name()) + "'");
+        addTokenAContractAddressAndAbi(fiatTokenAddress, fiatTokenAbi);
         console.log("DATA: var fiatTokenAddress=\"" + fiatTokenAddress + "\";");
         console.log("DATA: var fiatTokenAbi=" + JSON.stringify(fiatTokenAbi) + ";");
         console.log("DATA: var fiatToken=eth.contract(fiatTokenAbi).at(fiatTokenAddress);");
@@ -418,6 +444,12 @@ printTxData("mockMembershipAuthorityTx", mockMembershipAuthorityTx);
 printTxData("membershipWithBoundaryKycAmlRuleTx", membershipWithBoundaryKycAmlRuleTx);
 printTxData("limitControllerTx", limitControllerTx);
 printTxData("fiatTokenTx", fiatTokenTx);
+printNoKycAmlRuleContractDetails();
+printBoundaryKycAmlRuleContractDetails();
+printFullKycAmlRuleContractDetails();
+printMembershipWithBoundaryKycAmlRuleContractDetails();
+printLimitControllerContractDetails();
+printTokenAContractDetails();
 console.log("RESULT: ");
 
 
@@ -503,6 +535,7 @@ var gateWithFee = gateWithFeeContract.new(gateRolesAddress, fiatTokenAddress, li
       } else {
         gateWithFeeAddress = contract.address;
         addAccount(gateWithFeeAddress, "GateWithFee");
+        addGateWithFeeContractAddressAndAbi(gateWithFeeAddress, gateWithFeeAbi);
         console.log("DATA: var gateWithFeeAddress=\"" + gateWithFeeAddress + "\";");
         console.log("DATA: var gateWithFeeAbi=" + JSON.stringify(gateWithFeeAbi) + ";");
         console.log("DATA: var gateWithFee=eth.contract(gateWithFeeAbi).at(gateWithFeeAddress);");
@@ -515,6 +548,7 @@ while (txpool.status.pending > 0) {
 printBalances();
 failIfTxStatusError(gateWithFeeTx, deployGroup4Message + " - GateWithFee");
 printTxData("gateWithFeeTx", gateWithFeeTx);
+printGateWithFeeContractDetails();
 console.log("RESULT: ");
 
 
@@ -645,14 +679,6 @@ failIfTxStatusError(transferOwnership11_1Tx, transferOwnership11Message + " - ga
 printTxData("transferOwnership11_1Tx", transferOwnership11_1Tx);
 printGateRolesContractDetails();
 console.log("RESULT: ");
-
-
-exit;
-
-
-const transferOwnership = async(DEPLOYER, SYSTEM_ADMIN)=>{
-    await send(gateRoles, DEPLOYER, 'setOwner', SYSTEM_ADMIN)
-}
 
 
 EOF

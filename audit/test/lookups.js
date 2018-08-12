@@ -122,13 +122,14 @@ function addAddressNames(address, name) {
 }
 
 function getAddressName(address) {
-  var a = address.toLowerCase();
-  var n = addressNames[a];
-  if (n !== undefined) {
-    return n + ":" + address;
-  } else {
-    return address;
+  if (address != null) {
+    var a = address.toLowerCase();
+    var n = addressNames[a];
+    if (n !== undefined) {
+      return n + ":" + address;
+    }
   }
+  return address;
 }
 
 function getNameFromAddress(address) {

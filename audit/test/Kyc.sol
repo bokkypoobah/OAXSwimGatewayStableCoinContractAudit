@@ -65,7 +65,7 @@ contract KycAmlStatus is DSAuth {
 
 
 contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
-    AddressControlStatus addressControlStatus;
+    AddressControlStatus public addressControlStatus;
 
     constructor(AddressControlStatus addressControlStatus_) public {
         require(
@@ -135,7 +135,7 @@ contract NoKycAmlRule is ControllableKycAmlRule {
 
 contract BoundaryKycAmlRule is NoKycAmlRule {
 
-    KycAmlStatus kycAmlStatus;
+    KycAmlStatus public kycAmlStatus;
 
     constructor(
         AddressControlStatus addressControlStatus_,
@@ -187,7 +187,7 @@ contract MembershipAuthorityInterface {
 
 contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
 
-    MembershipAuthorityInterface membershipAuthority;
+    MembershipAuthorityInterface public membershipAuthority;
 
     constructor(
         DSAuthority _authority,
@@ -225,7 +225,7 @@ contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
 
 contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
 
-    MembershipAuthorityInterface membershipAuthority;
+    MembershipAuthorityInterface public membershipAuthority;
 
     constructor(
         DSAuthority _authority,
@@ -263,7 +263,7 @@ contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
 
 contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule {
 
-    MembershipAuthorityInterface membershipAuthority;
+    MembershipAuthorityInterface public membershipAuthority;
 
     constructor(
         DSAuthority _authority,
