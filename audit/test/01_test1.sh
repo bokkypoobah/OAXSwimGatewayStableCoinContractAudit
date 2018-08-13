@@ -40,6 +40,7 @@ find ./modifiedContracts -type f -name \* -exec cp {} . \;
 `perl -pi -e "s/uint256 private defaultBurnDailyLimitBuffer;/uint256 public defaultBurnDailyLimitBuffer;/" LimitSetting.sol`
 `perl -pi -e "s/LimitSetting limitSetting;/LimitSetting public limitSetting;/" LimitController.sol`
 `perl -pi -e "s/TransferFeeController transferFeeController;/TransferFeeController public transferFeeController;/" GateWithFee.sol`
+`perl -pi -e "s/TokenAuthority tokenAuthority;/TokenAuthority public tokenAuthority;/" TokenAuth.sol`
 
 DIFFS1=`diff -r -x '*.js' -x '*.json' -x '*.txt' -x 'testchain' -x '*.md -x' -x '*.sh' -x 'settings' -x 'modifiedContracts' $SOURCEDIR .`
 echo "--- Differences $SOURCEDIR/*.sol *.sol ---" | tee -a $TEST1OUTPUT

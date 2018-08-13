@@ -32,14 +32,32 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ## Recommendations
 
-* [ ] **MEDIUM IMPORTANCE** Add something like `event SetUserRole(address indexed who, bytes32 indexed userRoles);` to *DSRoles* and log this event using `emit SetUserRole(who, _user_roles[who]);` in `DARoles.setUserRole(...)`. This is so any changes to the user roles can be detected. See [test/modifiedContracts/dappsys.sol#L284-L285](test/modifiedContracts/dappsys.sol#L284-L285) and [test/modifiedContracts/dappsys.sol#L365-L366](test/modifiedContracts/dappsys.sol#L365-L366). Any changes can be detected like [https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/test1results.txt#L175-L177](https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/test1results.txt#L175-L177) using code like [https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/functions.js#L483-L488](https://github.com/bokkypoobah/OAXSwimGatewayStableCoinContractAudit/blob/e80189b42bd24f83fae73b90c635d48d0fbd9f71/audit/test/functions.js#L483-L488)
-* [ ] **MEDIUM IMPORTANCE** Add similar code to *DSRoles* to track changes to the 4 mapping data structures
-* [ ] **MEDIUM IMPORTANCE** Add `emit Transfer(address(0), guy, wad)` to `FiatToken.mint(...)`
-* [ ] **MEDIUM IMPORTANCE** Add `emit Transfer(guy, address(0), wad)` to `FiatToken.burn(...)`
-* [ ] **MEDIUM IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
+* [ ] **MEDIUM IMPORTANCE** See [Notes - DSRoles Event Logging](#dsroles-event-logging) below
+* [ ] **MEDIUM IMPORTANCE** See [Notes - Token Mint And Burn Event Logging](#token-mint-and-burn-event-logging) below
+* [ ] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
 * [ ] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
 * [ ] **LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*
 * [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
+* [ ] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
+* [ ] **LOW IMPORTANCE** Should add event logging to `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+
+<br />
+
+<hr />
+
+## Notes
+
+### DSRoles Event Logging
+
+*DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning.
+
+<br />
+
+### Token Mint And Burn Event Logging
+
+For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`.
+
+`Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract.
 
 <br />
 
@@ -153,16 +171,14 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 ## Code Review
 
-* [ ] [code-review/AddressStatus.md](code-review/AddressStatus.md)
-  * [ ] contract AddressStatus is DSAuth
 * [ ] [code-review/FiatToken.md](code-review/FiatToken.md)
   * [ ] contract FiatToken is DSToken, ERC20Auth, TokenAuth
 * [ ] [code-review/Gate.md](code-review/Gate.md)
   * [ ] contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop
-* [ ] [code-review/GateRoles.md](code-review/GateRoles.md)
-  * [ ] contract GateRoles is DSRoles
-* [ ] [code-review/GateWithFee.md](code-review/GateWithFee.md)
-  * [ ] contract GateWithFee is Gate
+* [x] [code-review/GateRoles.md](code-review/GateRoles.md)
+  * [x] contract GateRoles is DSRoles
+* [x] [code-review/GateWithFee.md](code-review/GateWithFee.md)
+  * [x] contract GateWithFee is Gate
 * [ ] [code-review/Kyc.md](code-review/Kyc.md)
   * [ ] contract AddressControlStatus is DSAuth
   * [ ] contract KycAmlStatus is DSAuth
@@ -178,22 +194,15 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [ ] contract LimitController is DSMath, DSStop
 * [ ] [code-review/LimitSetting.md](code-review/LimitSetting.md)
   * [ ] contract LimitSetting is DSAuth, DSStop
-* [ ] [code-review/Membership.md](code-review/Membership.md)
-  * [ ] interface MembershipInterface
-  * [ ] contract MockOAXMembership is AddressStatus, MembershipInterface
 * [ ] [code-review/TokenAuth.md](code-review/TokenAuth.md)
   * [ ] interface ERC20Authority
   * [ ] contract ERC20Auth is DSAuth
   * [ ] interface TokenAuthority
   * [ ] contract TokenAuth is DSAuth
-* [ ] [code-review/TokenRules.md](code-review/TokenRules.md)
-  * [ ] contract BaseRules is ERC20Authority, TokenAuthority
-  * [ ] contract BoundaryKycRules is BaseRules
-  * [ ] contract FullKycRules is BoundaryKycRules
-* [ ] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
-  * [ ] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
-* [ ] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
-  * [ ] contract TransferFeeControllerInterface
+* [x] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
+  * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
+* [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
+  * [x] contract TransferFeeControllerInterface
 * [ ] [code-review/dappsys.md](code-review/dappsys.md)
   * [x] contract DSMath
   * [x] contract ERC20Events
@@ -209,16 +218,30 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [ ] contract DSRoles is DSAuth, DSAuthority
   * [ ] contract DSTokenBase is ERC20, DSMath
   * [ ] contract DSToken is DSTokenBase(0), DSStop
-  * [ ] contract DSMultiVault is DSAuth
-  * [ ] contract DSVault is DSMultiVault
-  * [ ] contract DSExec
-  * [x] contract DSThing is DSAuth, DSNote, DSMath
+  * [ ] contract DSMultiVault is DSAuth **(Not used in these contracts)**
+  * [ ] contract DSVault is DSMultiVault **(Not used in these contracts)**
+  * [ ] contract DSExec (Not used)
+  * [x] contract DSThing is DSAuth, DSNote, DSMath **(Not used in these contracts)**
 * [ ] [code-review/solovault.md](code-review/solovault.md)
   * [ ] contract DSSoloVault is DSAuth
 
 <br />
 
 ### Outside Scope
+
+As documented in [../README.md#new-simpler-contracts](../README.md#new-simpler-contracts), the following contracts are still being developed:
+
+* [code-review/AddressStatus.md](code-review/AddressStatus.md)
+  * contract AddressStatus is DSAuth
+* [code-review/Membership.md](code-review/Membership.md)
+  * interface MembershipInterface
+  * contract MockOAXMembership is AddressStatus, MembershipInterface
+* [code-review/TokenRules.md](code-review/TokenRules.md) **(Not ready for review)**
+  * contract BaseRules is ERC20Authority, TokenAuthority
+  * contract BoundaryKycRules is BaseRules
+  * contract FullKycRules is BoundaryKycRules
+
+The Gnosis Multisig wallet smart contract is outside the scope of this audit, but there is a duplicated contract in the source code:
 
 * [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) - This is the Gnosis MultiSigWallet.sol and MultiSigWalletFactory.sol but the factory is included twice
 

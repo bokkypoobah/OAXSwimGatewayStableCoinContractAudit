@@ -40,7 +40,7 @@ interface TokenAuthority {
 
 
 contract TokenAuth is DSAuth {
-    TokenAuthority tokenAuthority;
+    TokenAuthority public tokenAuthority;
 
     modifier authMint(address guy, uint wad) {
         assert(tokenAuthority.canMint(msg.sender, this, guy, wad));

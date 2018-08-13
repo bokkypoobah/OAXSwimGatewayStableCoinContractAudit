@@ -34,6 +34,16 @@ var account9 = eth.accounts[9];
 var account10 = eth.accounts[10];
 var account11 = eth.accounts[11];
 
+console.log("DATA: var minerAccount=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var deployer=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var sysAdmin=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var kycOperator=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var moneyOperator=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var transferFeeCollector=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var mintFeeCollector=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var burnFeeCollector=\"" + eth.accounts[0] + "\";");
+
+
 var baseBlock = eth.blockNumber;
 
 function unlockAccounts(password) {
@@ -294,6 +304,8 @@ function printTokenAContractDetails() {
     var decimals = contract.decimals();
     console.log("RESULT: token.authority=" + getAddressName(contract.authority()));
     console.log("RESULT: token.owner=" + getAddressName(contract.owner()));
+    console.log("RESULT: token.erc20Authority=" + getAddressName(contract.erc20Authority()));
+    console.log("RESULT: token.tokenAuthority=" + getAddressName(contract.tokenAuthority()));
     console.log("RESULT: token.transferFeeController=" + getAddressName(contract.transferFeeController()));
     console.log("RESULT: token.transferFeeCollector=" + getAddressName(contract.transferFeeCollector()));
     console.log("RESULT: token.symbol=" + web3.toUtf8(contract.symbol()));
