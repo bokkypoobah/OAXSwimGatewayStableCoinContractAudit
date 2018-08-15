@@ -413,124 +413,163 @@ pragma solidity ^0.4.13;
 // BK Ok
 contract DSRoles is DSAuth, DSAuthority
 {
+    // BK Next 4 Ok
     mapping(address=>bool) _root_users;
     mapping(address=>bytes32) _user_roles;
     mapping(address=>mapping(bytes4=>bytes32)) _capability_roles;
     mapping(address=>mapping(bytes4=>bool)) _public_capabilities;
 
     // BK NOTE - The following 4 events should be added to log changes
-    event LogSetRootUser(address indexed who, bool enabled);
-    event LogSetUserRole(address indexed who, bytes32 indexed userRoles, uint8 role, bool enabled);
-    event LogSetPublicCapability(address code, bytes4 sig, bool enabled);
-    event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
+    // BK NOTE - event LogSetRootUser(address indexed who, bool enabled);
+    // BK NOTE - event LogSetUserRole(address indexed who, bytes32 indexed userRoles, uint8 role, bool enabled);
+    // BK NOTE - event LogSetPublicCapability(address code, bytes4 sig, bool enabled);
+    // BK NOTE - event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
 
+    // BK Ok - View function
     function getUserRoles(address who)
         public
         view
         returns (bytes32)
     {
+        // BK Ok
         return _user_roles[who];
     }
 
+    // BK Ok - View function
     function getCapabilityRoles(address code, bytes4 sig)
         public
         view
         returns (bytes32)
     {
+        // BK Ok
         return _capability_roles[code][sig];
     }
 
+    // BK Ok - View function
     function isUserRoot(address who)
         public
         view
         returns (bool)
     {
+        // BK Ok
         return _root_users[who];
     }
 
+    // BK Ok - View function
     function isCapabilityPublic(address code, bytes4 sig)
         public
         view
         returns (bool)
     {
+        // BK Ok
         return _public_capabilities[code][sig];
     }
 
+    // BK Ok - View function
     function hasUserRole(address who, uint8 role)
         public
         view
         returns (bool)
     {
+        // BK Ok
         bytes32 roles = getUserRoles(who);
+        // BK Ok
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
+        // BK Ok
         return bytes32(0) != roles & shifted;
     }
 
-    // BK Ok - Override DSAuth.canCall(...)
+    // BK Ok - View function, overrides DSAuth.canCall(...)
     function canCall(address caller, address code, bytes4 sig)
         public
         view
         returns (bool)
     {
+        // BK Ok
         if( isUserRoot(caller) || isCapabilityPublic(code, sig) ) {
+            // BK Ok
             return true;
+        // BK Ok
         } else {
+            // BK Ok
             bytes32 has_roles = getUserRoles(caller);
+            // BK Ok
             bytes32 needs_one_of = getCapabilityRoles(code, sig);
+            // BK Ok
             return bytes32(0) != has_roles & needs_one_of;
         }
     }
 
+    // BK Ok
     function BITNOT(bytes32 input) internal pure returns (bytes32 output) {
+        // BK Ok - xor input to 0xffff...ffff
         return (input ^ bytes32(uint(-1)));
     }
 
+    // BK Ok - Only authorised account can execute
     function setRootUser(address who, bool enabled)
         public
         auth
     {
+        // BK Ok
         _root_users[who] = enabled;
-        // BK NOTE - Added event to log changes
-        emit LogSetRootUser(who, enabled);
+        // BK NOTE - Add event to log changes
+        // BK NOTE - emit LogSetRootUser(who, enabled);
     }
 
+    // BK Ok - Only authorised account can execute
     function setUserRole(address who, uint8 role, bool enabled)
         public
         auth
     {
+        // BK Ok
         bytes32 last_roles = _user_roles[who];
+        // BK Ok
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
+        // BK Ok
         if( enabled ) {
+            // BK Ok - OR in new role bitmap
             _user_roles[who] = last_roles | shifted;
+        // BK Ok
         } else {
+            // BK Ok - AND in new NOT(new role)
             _user_roles[who] = last_roles & BITNOT(shifted);
         }
-        // BK NOTE - Added event to log changes
-        emit LogSetUserRole(who, _user_roles[who], role, enabled);
+        // BK NOTE - Add event to log changes
+        // BK NOTE - emit LogSetUserRole(who, _user_roles[who], role, enabled);
     }
 
+    // BK OK - Only authorised account can execute
     function setPublicCapability(address code, bytes4 sig, bool enabled)
         public
         auth
     {
+        // BK Ok
         _public_capabilities[code][sig] = enabled;
-        // BK NOTE - Added event to log changes
-        emit LogSetPublicCapability(code, sig, enabled);
+        // BK NOTE - Add event to log changes
+        // BK NOTE - emit LogSetPublicCapability(code, sig, enabled);
     }
 
+    // BK Ok - Only authorised account can execute
     function setRoleCapability(uint8 role, address code, bytes4 sig, bool enabled)
         public
         auth
     {
+        // BK Ok
         bytes32 last_roles = _capability_roles[code][sig];
+        // BK Ok
         bytes32 shifted = bytes32(uint256(uint256(2) ** uint256(role)));
+        // BK Ok
         if( enabled ) {
+            // BK Ok
             _capability_roles[code][sig] = last_roles | shifted;
+        // BK Ok
         } else {
+            // BK Ok
             _capability_roles[code][sig] = last_roles & BITNOT(shifted);
         }
-        // BK NOTE - Added event to log changes
-        emit LogSetRoleCapability(code, _capability_roles[code][sig], role, sig, enabled);
+        // BK NOTE - Add event to log changes
+        // BK NOTE - emit LogSetRoleCapability(code, _capability_roles[code][sig], role, sig, enabled);
     }
 
 }
@@ -540,54 +579,81 @@ contract DSRoles is DSAuth, DSAuthority
 
 
 
+// BK Ok
 pragma solidity ^0.4.23;
 
 
+// BK Ok
 contract DSTokenBase is ERC20, DSMath {
+    // BK Ok
     uint256                                            _supply;
+    // BK Ok
     mapping (address => uint256)                       _balances;
+    // BK Ok
     mapping (address => mapping (address => uint256))  _approvals;
 
+    // BK Ok - Constructor
     constructor(uint supply) public {
+        // BK Ok
         _balances[msg.sender] = supply;
+        // BK Ok
         _supply = supply;
     }
 
+    // BK Ok - View function
     function totalSupply() public view returns (uint) {
+        // BK Ok
         return _supply;
     }
+    // BK Ok - View function
     function balanceOf(address src) public view returns (uint) {
+        // BK Ok
         return _balances[src];
     }
+    // BK Ok - View function
     function allowance(address src, address guy) public view returns (uint) {
+        // BK Ok
         return _approvals[src][guy];
     }
 
+    // BK Ok - Only accounts with balances can execute successfully
     function transfer(address dst, uint wad) public returns (bool) {
+        // BK Ok
         return transferFrom(msg.sender, dst, wad);
     }
 
+    // BK Ok - Only accounts with the balances, or approved balances can execute successfully
     function transferFrom(address src, address dst, uint wad)
         public
         returns (bool)
     {
+        // BK Ok
         if (src != msg.sender) {
+            // BK Ok
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
+        // BK Ok
         _balances[src] = sub(_balances[src], wad);
+        // BK Ok
         _balances[dst] = add(_balances[dst], wad);
 
+        // BK Ok
         emit Transfer(src, dst, wad);
 
+        // BK Ok
         return true;
     }
 
+    // BK Ok - Any account can execute
     function approve(address guy, uint wad) public returns (bool) {
+        // BK Ok
         _approvals[msg.sender][guy] = wad;
 
+        // BK Ok
         emit Approval(msg.sender, guy, wad);
 
+        // BK Ok
         return true;
     }
 }

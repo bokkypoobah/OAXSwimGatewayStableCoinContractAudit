@@ -40,6 +40,9 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 * [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
 * [ ] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
 * [ ] **LOW IMPORTANCE** Should add event logging to `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+* [ ] **LOW IMPORTANCE** Should add event logging to `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
+* [ ] **LOW IMPORTANCE** Should make `TokenAuth:TokenAuth.tokenAuthority` public
+* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)*
 
 <br />
 
@@ -49,15 +52,59 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ### DSRoles Event Logging
 
+**MEDIUM IMPORTANCE**
+
 *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning.
 
 <br />
 
 ### Token Mint And Burn Event Logging
 
-For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`.
+**MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`.
 
-`Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract.
+**LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider removing it.
+
+<br />
+
+### GateWithFee Fee Accounting
+
+**NOTE** Reference `GateWithFee.mint(...)` - If there is a deposit of 1 dollar, with a 1 dollar fee, the token issuing entity will receive 2 dollars of which 1 dollar will go into a trust account and 1 dollar will go into a fee account. 2 tokens will be issued in the FiatToken contract, and backing this is the 1 dollar deposited into the trust account. The maths will not work out unless the entity's fee account balance is also reflected in the FiatToken contract balances. This also applies to the `GateWithFee.burn(...)` function.
+
+<br />
+
+### Name And Symbol Bytes32
+
+**NOTE** `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md).
+
+<br />
+
+### GateWithFee Approve And TransferFrom
+
+**MEDIUM IMPORTANCE**
+
+**NOTE** If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account, or burn the user's tokens.
+
+<br />
+
+### Events For Important Variable Changes
+
+### Public Variables
+
+`perl -pi -e "s/AddressControlStatus addressControlStatus;/AddressControlStatus public addressControlStatus;/" Kyc.sol`
+`perl -pi -e "s/KycAmlStatus kycAmlStatus;/KycAmlStatus public kycAmlStatus;/" Kyc.sol`
+`perl -pi -e "s/MembershipAuthorityInterface membershipAuthority;/MembershipAuthorityInterface public membershipAuthority;/" Kyc.sol`
+`perl -pi -e "s/uint256 private defaultDelayHours;/uint256 public defaultDelayHours;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultDelayHoursBuffer;/uint256 public defaultDelayHoursBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private lastDefaultDelayHoursSettingResetTime;/uint256 public lastDefaultDelayHoursSettingResetTime;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultMintDailyLimit;/uint256 public defaultMintDailyLimit;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultBurnDailyLimit;/uint256 public defaultBurnDailyLimit;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultMintDailyLimitBuffer;/uint256 public defaultMintDailyLimitBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultBurnDailyLimitBuffer;/uint256 public defaultBurnDailyLimitBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/LimitSetting limitSetting;/LimitSetting public limitSetting;/" LimitController.sol`
+`perl -pi -e "s/TransferFeeController transferFeeController;/TransferFeeController public transferFeeController;/" GateWithFee.sol`
+`perl -pi -e "s/TokenAuthority tokenAuthority;/TokenAuthority public tokenAuthority;/" TokenAuth.sol`
+
+
 
 <br />
 
@@ -194,11 +241,11 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [ ] contract LimitController is DSMath, DSStop
 * [ ] [code-review/LimitSetting.md](code-review/LimitSetting.md)
   * [ ] contract LimitSetting is DSAuth, DSStop
-* [ ] [code-review/TokenAuth.md](code-review/TokenAuth.md)
-  * [ ] interface ERC20Authority
-  * [ ] contract ERC20Auth is DSAuth
-  * [ ] interface TokenAuthority
-  * [ ] contract TokenAuth is DSAuth
+* [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
+  * [x] interface ERC20Authority
+  * [x] contract ERC20Auth is DSAuth
+  * [x] interface TokenAuthority
+  * [x] contract TokenAuth is DSAuth
 * [x] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
   * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 * [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
@@ -215,15 +262,15 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract DSGuardEvents
   * [x] contract DSGuard is DSAuth, DSAuthority, DSGuardEvents
   * [x] contract DSGuardFactory
-  * [ ] contract DSRoles is DSAuth, DSAuthority
-  * [ ] contract DSTokenBase is ERC20, DSMath
+  * [x] contract DSRoles is DSAuth, DSAuthority
+  * [x] contract DSTokenBase is ERC20, DSMath
   * [ ] contract DSToken is DSTokenBase(0), DSStop
   * [ ] contract DSMultiVault is DSAuth **(Not used in these contracts)**
   * [ ] contract DSVault is DSMultiVault **(Not used in these contracts)**
   * [ ] contract DSExec (Not used)
   * [x] contract DSThing is DSAuth, DSNote, DSMath **(Not used in these contracts)**
-* [ ] [code-review/solovault.md](code-review/solovault.md)
-  * [ ] contract DSSoloVault is DSAuth
+* [x] [code-review/solovault.md](code-review/solovault.md)
+  * [x] contract DSSoloVault is DSAuth
 
 <br />
 
