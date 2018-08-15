@@ -32,17 +32,25 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ## Recommendations
 
-* [ ] **MEDIUM IMPORTANCE** See [Notes - DSRoles Event Logging](#dsroles-event-logging) below
-* [ ] **MEDIUM IMPORTANCE** See [Notes - Token Mint And Burn Event Logging](#token-mint-and-burn-event-logging) below
+* [ ] **MEDIUM IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below
+* [ ] **MEDIUM IMPORTANCE** *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning
+* [ ] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
+* [ ] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
+* [ ] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
 * [ ] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
 * [ ] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
 * [ ] **LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*
 * [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
 * [ ] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
-* [ ] **LOW IMPORTANCE** Should add event logging to `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
-* [ ] **LOW IMPORTANCE** Should add event logging to `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
-* [ ] **LOW IMPORTANCE** Should make `TokenAuth:TokenAuth.tokenAuthority` public for traceability
-* [ ] **LOW IMPORTANCE** Should make `LimitController.limitSetting` public for traceability
+* [ ] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+* [ ] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
+* [ ] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
+* [ ] **LOW IMPORTANCE** Consider logging events for `Kyc:MembershipWithNoKycAmlRule.setMembershipAuthority(...)`, `Kyc:MembershipWithBoundaryKycAmlRule.setMembershipAuthority(...)` and `Kyc:MembershipWithFullKycAmlRule.setMembershipAuthority(...)`
+* [ ] **LOW IMPORTANCE** Consider making `TokenAuth:TokenAuth.tokenAuthority` public for traceability
+* [ ] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
+* [ ] **LOW IMPORTANCE** Consider making `Kyc:ControllableKycAmlRule.addressControlStatus` public for traceability
+* [ ] **LOW IMPORTANCE** Consider making `Kyc:BoundaryKycAmlRule.kycAmlStatus` public for traceability
+* [ ] **LOW IMPORTANCE** Consider making `Kyc:MembershipWithNoKycAmlRule.membershipAuthority`, `Kyc:MembershipWithBoundaryKycAmlRule.membershipAuthority` and `Kyc:MembershipWithFullKycAmlRule.membershipAuthority` public for traceability
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)* to save on gas when errored
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
@@ -51,6 +59,7 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 * [ ] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
 * [ ] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
 * [ ] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
+* [ ] **LOW IMPORTANCE** In *Kyc:NoKycAmlRule*, the `& true` statement is redundant
 
 <br />
 
@@ -58,61 +67,15 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ## Notes
 
-### DSRoles Event Logging
+### GateWithFee Approve And TransferFrom
 
-**MEDIUM IMPORTANCE**
-
-*DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning.
-
-<br />
-
-### Token Mint And Burn Event Logging
-
-**MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`.
-
-**LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider removing it.
+**MEDIUM IMPORTANCE** If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account, or burn the user's tokens.
 
 <br />
 
 ### GateWithFee Fee Accounting
 
 **NOTE** Reference `GateWithFee.mint(...)` - If there is a deposit of 1 dollar, with a 1 dollar fee, the token issuing entity will receive 2 dollars of which 1 dollar will go into a trust account and 1 dollar will go into a fee account. 2 tokens will be issued in the FiatToken contract, and backing this is the 1 dollar deposited into the trust account. The maths will not work out unless the entity's fee account balance is also reflected in the FiatToken contract balances. This also applies to the `GateWithFee.burn(...)` function.
-
-<br />
-
-### Name And Symbol Bytes32
-
-**NOTE** `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md).
-
-<br />
-
-### GateWithFee Approve And TransferFrom
-
-**MEDIUM IMPORTANCE**
-
-**NOTE** If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account, or burn the user's tokens.
-
-<br />
-
-### Events For Important Variable Changes
-
-### Public Variables
-
-`perl -pi -e "s/AddressControlStatus addressControlStatus;/AddressControlStatus public addressControlStatus;/" Kyc.sol`
-`perl -pi -e "s/KycAmlStatus kycAmlStatus;/KycAmlStatus public kycAmlStatus;/" Kyc.sol`
-`perl -pi -e "s/MembershipAuthorityInterface membershipAuthority;/MembershipAuthorityInterface public membershipAuthority;/" Kyc.sol`
-`perl -pi -e "s/uint256 private defaultDelayHours;/uint256 public defaultDelayHours;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private defaultDelayHoursBuffer;/uint256 public defaultDelayHoursBuffer;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private lastDefaultDelayHoursSettingResetTime;/uint256 public lastDefaultDelayHoursSettingResetTime;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private defaultMintDailyLimit;/uint256 public defaultMintDailyLimit;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private defaultBurnDailyLimit;/uint256 public defaultBurnDailyLimit;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private defaultMintDailyLimitBuffer;/uint256 public defaultMintDailyLimitBuffer;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private defaultBurnDailyLimitBuffer;/uint256 public defaultBurnDailyLimitBuffer;/" LimitSetting.sol`
-`perl -pi -e "s/LimitSetting limitSetting;/LimitSetting public limitSetting;/" LimitController.sol`
-`perl -pi -e "s/TransferFeeController transferFeeController;/TransferFeeController public transferFeeController;/" GateWithFee.sol`
-`perl -pi -e "s/TokenAuthority tokenAuthority;/TokenAuthority public tokenAuthority;/" TokenAuth.sol`
-
-
 
 <br />
 
@@ -228,23 +191,23 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 * [x] [code-review/FiatToken.md](code-review/FiatToken.md)
   * [x] contract FiatToken is DSToken, ERC20Auth, TokenAuth
-* [ ] [code-review/Gate.md](code-review/Gate.md)
-  * [ ] contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop
+* [x] [code-review/Gate.md](code-review/Gate.md)
+  * [x] contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop
 * [x] [code-review/GateRoles.md](code-review/GateRoles.md)
   * [x] contract GateRoles is DSRoles
 * [x] [code-review/GateWithFee.md](code-review/GateWithFee.md)
   * [x] contract GateWithFee is Gate
-* [ ] [code-review/Kyc.md](code-review/Kyc.md)
-  * [ ] contract AddressControlStatus is DSAuth
-  * [ ] contract KycAmlStatus is DSAuth
-  * [ ] contract ControllableKycAmlRule is ERC20Authority, TokenAuthority
-  * [ ] contract NoKycAmlRule is ControllableKycAmlRule
-  * [ ] contract BoundaryKycAmlRule is NoKycAmlRule
-  * [ ] contract FullKycAmlRule is BoundaryKycAmlRule
-  * [ ] contract MembershipAuthorityInterface
-  * [ ] contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule
-  * [ ] contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule
-  * [ ] contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule
+* [x] [code-review/Kyc.md](code-review/Kyc.md)
+  * [x] contract AddressControlStatus is DSAuth
+  * [x] contract KycAmlStatus is DSAuth
+  * [x] contract ControllableKycAmlRule is ERC20Authority, TokenAuthority
+  * [x] contract NoKycAmlRule is ControllableKycAmlRule
+  * [x] contract BoundaryKycAmlRule is NoKycAmlRule
+  * [x] contract FullKycAmlRule is BoundaryKycAmlRule
+  * [x] contract MembershipAuthorityInterface
+  * [x] contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule
+  * [x] contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule
+  * [x] contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule
 * [x] [code-review/LimitController.md](code-review/LimitController.md)
   * [x] contract LimitController is DSMath, DSStop
 * [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
@@ -401,4 +364,4 @@ The Gnosis Multisig wallet smart contract is outside the scope of this audit, bu
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Aug 16 2018. The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Aug 16 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.

@@ -682,6 +682,24 @@ printGateRolesContractDetails();
 console.log("RESULT: ");
 
 
+// -----------------------------------------------------------------------------
+var setGateWithFeeTokenAuth1Message = "Set GateWithFee TokenAuth";
+// -----------------------------------------------------------------------------
+console.log("RESULT: ---------- " + transferOwnership11Message + " ----------");
+var setGateWithFeeTokenAuth1_1Tx = gateWithFee.setERC20Authority(fullKycAmlRuleAddress, {from: sysAdmin, gas: 400000, gasPrice: defaultGasPrice});
+var setGateWithFeeTokenAuth1_2Tx = gateWithFee.setTokenAuthority(fullKycAmlRuleAddress, {from: sysAdmin, gas: 400000, gasPrice: defaultGasPrice});
+while (txpool.status.pending > 0) {
+}
+printBalances();
+failIfTxStatusError(setGateWithFeeTokenAuth1_1Tx, setGateWithFeeTokenAuth1Message + " - gateWithFee.setERC20Authority(fullKycAmlRule)");
+failIfTxStatusError(setGateWithFeeTokenAuth1_2Tx, setGateWithFeeTokenAuth1Message + " - gateWithFee.setTokenAuthority(fullKycAmlRule)");
+printTxData("setGateWithFeeTokenAuth1_1Tx", setGateWithFeeTokenAuth1_1Tx);
+printTxData("setGateWithFeeTokenAuth1_2Tx", setGateWithFeeTokenAuth1_2Tx);
+printGateWithFeeContractDetails();
+printTokenAContractDetails();
+console.log("RESULT: ");
+
+
 EOF
 grep "DATA: " $TEST1OUTPUT | sed "s/DATA: //" > $DEPLOYMENTDATA
 cat $DEPLOYMENTDATA
