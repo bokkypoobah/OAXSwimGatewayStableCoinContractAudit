@@ -41,8 +41,16 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 * [ ] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
 * [ ] **LOW IMPORTANCE** Should add event logging to `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
 * [ ] **LOW IMPORTANCE** Should add event logging to `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
-* [ ] **LOW IMPORTANCE** Should make `TokenAuth:TokenAuth.tokenAuthority` public
-* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)*
+* [ ] **LOW IMPORTANCE** Should make `TokenAuth:TokenAuth.tokenAuthority` public for traceability
+* [ ] **LOW IMPORTANCE** Should make `LimitController.limitSetting` public for traceability
+* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)* to save on gas when errored
+* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
+* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
+* [ ] **LOW IMPORTANCE** Overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
+* [ ] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant
+* [ ] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
+* [ ] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
+* [ ] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
 
 <br />
 
@@ -218,8 +226,8 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 ## Code Review
 
-* [ ] [code-review/FiatToken.md](code-review/FiatToken.md)
-  * [ ] contract FiatToken is DSToken, ERC20Auth, TokenAuth
+* [x] [code-review/FiatToken.md](code-review/FiatToken.md)
+  * [x] contract FiatToken is DSToken, ERC20Auth, TokenAuth
 * [ ] [code-review/Gate.md](code-review/Gate.md)
   * [ ] contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop
 * [x] [code-review/GateRoles.md](code-review/GateRoles.md)
@@ -237,10 +245,10 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [ ] contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule
   * [ ] contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule
   * [ ] contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule
-* [ ] [code-review/LimitController.md](code-review/LimitController.md)
-  * [ ] contract LimitController is DSMath, DSStop
-* [ ] [code-review/LimitSetting.md](code-review/LimitSetting.md)
-  * [ ] contract LimitSetting is DSAuth, DSStop
+* [x] [code-review/LimitController.md](code-review/LimitController.md)
+  * [x] contract LimitController is DSMath, DSStop
+* [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
+  * [x] contract LimitSetting is DSAuth, DSStop
 * [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
   * [x] interface ERC20Authority
   * [x] contract ERC20Auth is DSAuth
@@ -283,7 +291,7 @@ As documented in [../README.md#new-simpler-contracts](../README.md#new-simpler-c
 * [code-review/Membership.md](code-review/Membership.md)
   * interface MembershipInterface
   * contract MockOAXMembership is AddressStatus, MembershipInterface
-* [code-review/TokenRules.md](code-review/TokenRules.md) **(Not ready for review)**
+* [code-review/TokenRules.md](code-review/TokenRules.md)
   * contract BaseRules is ERC20Authority, TokenAuthority
   * contract BoundaryKycRules is BaseRules
   * contract FullKycRules is BoundaryKycRules
@@ -393,4 +401,4 @@ The Gnosis Multisig wallet smart contract is outside the scope of this audit, bu
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Aug 13 2018. The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Aug 16 2018. The MIT Licence.
