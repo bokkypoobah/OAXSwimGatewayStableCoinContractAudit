@@ -250,7 +250,7 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 * [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
   * [x] contract TransferFeeControllerInterface
-* [ ] [code-review/dappsys.md](code-review/dappsys.md)
+* [x] [code-review/dappsys.md](code-review/dappsys.md)
   * [x] contract DSMath
   * [x] contract ERC20Events
   * [x] contract ERC20 is ERC20Events
@@ -264,10 +264,10 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract DSGuardFactory
   * [x] contract DSRoles is DSAuth, DSAuthority
   * [x] contract DSTokenBase is ERC20, DSMath
-  * [ ] contract DSToken is DSTokenBase(0), DSStop
-  * [ ] contract DSMultiVault is DSAuth **(Not used in these contracts)**
-  * [ ] contract DSVault is DSMultiVault **(Not used in these contracts)**
-  * [ ] contract DSExec (Not used)
+  * [x] contract DSToken is DSTokenBase(0), DSStop
+  * contract DSMultiVault is DSAuth **(Not used in these contracts)**
+  * contract DSVault is DSMultiVault **(Not used in these contracts)**
+  * contract DSExec **(Not used in these contracts)**
   * [x] contract DSThing is DSAuth, DSNote, DSMath **(Not used in these contracts)**
 * [x] [code-review/solovault.md](code-review/solovault.md)
   * [x] contract DSSoloVault is DSAuth

@@ -663,80 +663,121 @@ contract DSTokenBase is ERC20, DSMath {
 
 
 
+// BK Ok
 pragma solidity ^0.4.23;
 
 
 
+// BK Ok
 contract DSToken is DSTokenBase(0), DSStop {
 
+    // BK NOTE - Following should be a string under ERC20 standards, but bytes32 works and has been used for other live tokens
     bytes32  public  symbol;
 
+    // BK Ok - Constructor
     constructor(bytes32 symbol_) public {
+        // BK Ok
         symbol = symbol_;
     }
 
+    // BK Next 2 Ok - Events
     event Mint(address indexed guy, uint wad);
     event Burn(address indexed guy, uint wad);
 
+    // BK Ok
     function approve(address guy) public stoppable returns (bool) {
+        // BK Ok
         return super.approve(guy, uint(-1));
     }
 
+    // BK Ok
     function approve(address guy, uint wad) public stoppable returns (bool) {
+        // BK Ok
         return super.approve(guy, wad);
     }
 
+    // BK Ok
     function transferFrom(address src, address dst, uint wad)
         public
         stoppable
         returns (bool)
     {
+        // BK Ok
         if (src != msg.sender && _approvals[src][msg.sender] != uint(-1)) {
+            // BK Ok
             _approvals[src][msg.sender] = sub(_approvals[src][msg.sender], wad);
         }
 
+        // BK Next 2 Ok
         _balances[src] = sub(_balances[src], wad);
         _balances[dst] = add(_balances[dst], wad);
 
+        // BK Ok
         emit Transfer(src, dst, wad);
 
+        // BK Ok
         return true;
     }
 
+    // BK Ok
     function push(address dst, uint wad) public {
+        // BK Ok
         transferFrom(msg.sender, dst, wad);
     }
+    // BK Ok
     function pull(address src, uint wad) public {
+        // BK Ok
         transferFrom(src, msg.sender, wad);
     }
+    // BK Ok
     function move(address src, address dst, uint wad) public {
+        // BK Ok
         transferFrom(src, dst, wad);
     }
 
+    // BK Ok - Permissioned by `mint(address, uint)`
     function mint(uint wad) public {
+        // BK Ok
         mint(msg.sender, wad);
     }
+    // BK Ok - Permissioned by `burn(address, uint)`
     function burn(uint wad) public {
+        // BK Ok
         burn(msg.sender, wad);
     }
+    // BK Ok - Overridden by FiatToken.mint(address, uint), and called by that function
     function mint(address guy, uint wad) public auth stoppable {
         _balances[guy] = add(_balances[guy], wad);
         _supply = add(_supply, wad);
+        // BK NOTE - Should also log event `Transfer(address(0), guy, wad)`, or add to FiatToken.mint(...)
+        // BK Ok
         emit Mint(guy, wad);
     }
+    // BK NOTE - Burns need to be `approve(...)`-d by the account, if the account is not the tx sending account
+    // BK Ok - Overridden by FiatToken.burn(address, uint), and called by that function
     function burn(address guy, uint wad) public auth stoppable {
+        // BK Ok
         if (guy != msg.sender && _approvals[guy][msg.sender] != uint(-1)) {
+            // BK Ok
             _approvals[guy][msg.sender] = sub(_approvals[guy][msg.sender], wad);
         }
 
+        // BK Ok
         _balances[guy] = sub(_balances[guy], wad);
+        // BK Ok
         _supply = sub(_supply, wad);
+        // BK NOTE - Should also log event `Transfer(guy, address(0), wad)`, or add to FiatToken.burn(...)
         emit Burn(guy, wad);
     }
 
+    // BK NOTE - Following should be a string under ERC20 standards, but bytes32 works and has been used for other live tokens
+    // BK Ok
     bytes32   public  name = "";
 
+    // BK NOTE - tokenGuard.Permit from GateWithFee:0x7f3caaa41b649ae4a478bc2f29b2e81ed6484fe7 to FiatToken 'USD' 'USDToken':0xb45408db6a4c5977d6fa0acc5581023882c89268 for setName(bytes32) #7015 0x67ef1a5d012d0a2772cba4f9edcbe8d09acc9fad841ac4b5c2338fd21fce11eb
+    // BK Ok - Only authorised account can execute
     function setName(bytes32 name_) public auth {
+        // BK Ok
         name = name_;
     }
 }
