@@ -69,7 +69,7 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ### GateWithFee Approve And TransferFrom
 
-**MEDIUM IMPORTANCE** If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account, or burn the user's tokens.
+**MEDIUM IMPORTANCE** If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account.
 
 <br />
 
