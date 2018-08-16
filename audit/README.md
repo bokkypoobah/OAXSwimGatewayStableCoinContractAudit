@@ -1,7 +1,5 @@
 # OAX Swim Gateway Stable Coin Contract Audit
 
-Status: Work in progress
-
 ## Summary
 
 [OAX](http://oax.org/) has developed a set of smart contracts for their swim gateway stable coins.
@@ -10,7 +8,7 @@ Bok Consulting Pty Ltd was commissioned to perform an audit on these Ethereum sm
 
 This audit has been conducted on the source code from [swim-gateway/stable-coin master-gitlab branch](https://github.com/swim-gateway/stable-coin/tree/master-gitlab) in commits [75cc80c](https://github.com/swim-gateway/stable-coin/commit/75cc80c5d494625d3e7262756973ec0394dfcf11), [a53dce5](https://github.com/swim-gateway/stable-coin/commit/a53dce5fb53f2ff4461d15c2e3450faf0a9b61ac) and [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593).
 
-**TODO** Check that no potential vulnerabilities have been identified in the smart contracts.
+No potential vulnerabilities have been identified in the smart contracts.
 
 <br />
 
@@ -32,12 +30,15 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ## Recommendations
 
-* [ ] **MEDIUM IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below
+* [x] ~~**MEDIUM IMPORTANCE**~~ See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below
+  * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance
+* [ ] **MEDIUM IMPORTANCE** See [Notes - GateWithFee Fee Accounting](#gatewithfee-fee-accounting) below
 * [ ] **MEDIUM IMPORTANCE** *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning
 * [ ] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
 * [ ] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
 * [ ] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
 * [ ] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
+* [ ] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
 * [ ] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
 * [ ] **LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*
 * [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
@@ -69,7 +70,9 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ### GateWithFee Approve And TransferFrom
 
-**MEDIUM IMPORTANCE** If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account.
+~~**MEDIUM IMPORTANCE**~~ If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account.
+
+* [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance
 
 <br />
 
@@ -83,7 +86,7 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 ## Potential Vulnerabilities
 
-**TODO** Check that no potential vulnerabilities have been identified in the smart contracts.
+No potential vulnerabilities have been identified in the smart contracts.
 
 <br />
 
