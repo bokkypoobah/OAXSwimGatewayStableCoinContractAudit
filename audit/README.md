@@ -31,8 +31,9 @@ No potential vulnerabilities have been identified in the smart contracts.
 ## Recommendations
 
 * [x] ~~**MEDIUM IMPORTANCE**~~ See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below
-  * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance
-* [ ] **MEDIUM IMPORTANCE** See [Notes - GateWithFee Fee Accounting](#gatewithfee-fee-accounting) below
+  * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance. I have added a new recommendation to add `auth` for both `approve(...)` functions
+* [x] ~~**MEDIUM IMPORTANCE**~~ See [Notes - GateWithFee Fee Accounting](#gatewithfee-fee-accounting) below
+  * [x] Kirsten has responded that the fee account flows will be accounted for in OAX's accounting reconciliation
 * [ ] **MEDIUM IMPORTANCE** *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning
 * [ ] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
 * [ ] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
@@ -61,6 +62,7 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [ ] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
 * [ ] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
 * [ ] **LOW IMPORTANCE** In *Kyc:NoKycAmlRule*, the `& true` statement is redundant
+* [ ] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
 
 <br />
 
@@ -72,13 +74,15 @@ No potential vulnerabilities have been identified in the smart contracts.
 
 ~~**MEDIUM IMPORTANCE**~~ If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account.
 
-* [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance
+* [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance. I have added a new recommendation to add `auth` for both `approve(...)` functions
 
 <br />
 
 ### GateWithFee Fee Accounting
 
 **NOTE** Reference `GateWithFee.mint(...)` - If there is a deposit of 1 dollar, with a 1 dollar fee, the token issuing entity will receive 2 dollars of which 1 dollar will go into a trust account and 1 dollar will go into a fee account. 2 tokens will be issued in the FiatToken contract, and backing this is the 1 dollar deposited into the trust account. The maths will not work out unless the entity's fee account balance is also reflected in the FiatToken contract balances. This also applies to the `GateWithFee.burn(...)` function.
+
+* [x] Kirsten has responded that the fee account flows will be accounted for in OAX's accounting reconciliation
 
 <br />
 
