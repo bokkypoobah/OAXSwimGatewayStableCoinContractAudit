@@ -47,7 +47,7 @@ contract LimitSetting is DSAuth, DSStop {
             "Daily burn limit must be positive"
         );
 
-        setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeffset);
+        setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeOffset);
         resetSettingDelayBuffer();
         defaultDelayTime = _defaultSettingDelayTime;
         defaultMintDailyLimit = _defaultMintDailyLimit;
