@@ -25,7 +25,7 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
     public
     view
     returns (uint) {
-        return defaultTransferFeeAbs + divRoundUp(mul(wad, defaultTransferFeeBps), 10000);
+        return add(defaultTransferFeeAbs, divRoundUp(mul(wad, defaultTransferFeeBps), 10000));
     }
 
     function setDefaultTransferFee(uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_)
