@@ -6,8 +6,9 @@ import "dappsys.sol";
 contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth {
     //transfer fee is calculated by transferFeeAbs+amt*transferFeeBps
     uint public defaultTransferFeeAbs;
-
     uint public defaultTransferFeeBps;
+
+    event LogSetDefaultTransferFee(uint defaultTransferFeeAbs, uint defaultTransferFeeBps);
 
     constructor(DSAuthority _authority, uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_)
     public {
@@ -38,5 +39,6 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
         );
         defaultTransferFeeAbs = defaultTransferFeeAbs_;
         defaultTransferFeeBps = defaultTransferFeeBps_;
+        emit LogSetDefaultTransferFee(defaultTransferFeeAbs, defaultTransferFeeBps);
     }
 }

@@ -102,6 +102,19 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
     })
 
     context("Transfer with dynamic fee", async () => {
+        it("Should have event logs", async ()=> {
+            let result = await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10)
+
+            let events = await txEvents(result)
+            expect(events).containSubset([
+                {
+                    "defaultTransferFeeAbs": "0",
+                    "defaultTransferFeeBps": "10",
+                    "NAME": "LogSetDefaultTransferFee"
+                }
+            ])
+        })
+
         it("When absolute_fee=0, basis_point_fee=10, fee for amount ( = 10000) is 10", async () => {
             await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10)
 
