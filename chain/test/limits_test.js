@@ -347,6 +347,12 @@ describe("Limits:", function () {
             })
         })
 
+        it('Maximum number of limit setting is 1 week', async ()=> {
+            // 169 = Hours of 1 week + 1 hour
+            await expect(send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 169))
+                .to.be.rejected
+        })
+
         it('Default Mint Limits increase takes effect after {0} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
@@ -609,7 +615,8 @@ describe("Limits:", function () {
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 10)
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 25)
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 0)
-                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", -1)
+                await expect(send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", -1))
+                    .to.be.rejected
             })
         })
 

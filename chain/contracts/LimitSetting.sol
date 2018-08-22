@@ -73,6 +73,10 @@ contract LimitSetting is DSAuth, DSStop {
     }
 
     function setDefaultDelayHours(uint256 _hours) public auth {
+        require(
+            _hours * 1 hours <= 1 weeks,
+            "Maximum number of delay time is 1 week"
+        );
         defaultDelayTimeBuffer = _hours * 1 hours;
         lastDefaultDelaySettingResetTime = now;
         resetSettingDelayBuffer();
