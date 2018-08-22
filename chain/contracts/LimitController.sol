@@ -8,7 +8,7 @@ contract LimitController is DSMath, DSStop {
     uint256 public mintLimitCounter;
     uint256 public burnLimitCounter;
     uint256 public lastLimitResetTime;
-    LimitSetting limitSetting;
+    LimitSetting public limitSetting;
 
     constructor(DSAuthority _authority, LimitSetting limitSetting_) public {
         require(
