@@ -17,13 +17,13 @@ contract BaseRules is ERC20Authority, TokenAuthority {
         AddressStatus _whitelist,
         MembershipInterface _membership
     ) {
-        require(_blacklist != 0x0, "Blacklist contract is mandatory");
+        require(_blacklist != address(0), "Blacklist contract is mandatory");
         blacklist = _blacklist;
 
-        require(_whitelist != 0x0, "Whitelist contract is mandatory");
+        require(_whitelist != address(0), "Whitelist contract is mandatory");
         whitelist = _whitelist;
 
-        require(_membership != 0x0, "Membership contract is mandatory");
+        require(_membership != address(0), "Membership contract is mandatory");
         membership = _membership;
     }
 
@@ -67,14 +67,14 @@ contract BoundaryKycRules is BaseRules {
     )
     BaseRules(_blacklist, _whitelist, _membership)
     {
-        require(_kyc != 0x0, "KYC database is mandatory");
+        require(_kyc != address(0), "KYC database is mandatory");
         kyc = _kyc;
     }
 
     /* TokenAuthority */
     function canMint(address src, address dst, address guy, uint wad) public returns (bool)
     {
-        return super(src, dst, guy, wad) && kyc.status(guy);
+        return super.canMint(src, dst, guy, wad) && kyc.status(guy);
     }
 
 }
