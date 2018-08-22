@@ -91,7 +91,6 @@ describe('Gate', function () {
         })
 
         it("can list her deposits, but not others'", async () => {
-            // FIXME On the chain anyone can see deposits
             const AMT_C1_1 = toBN(10)
             const AMT_C1_2 = toBN(20)
             const AMT_C2_1 = toBN(30)
