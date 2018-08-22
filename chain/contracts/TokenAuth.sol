@@ -13,17 +13,26 @@ contract ERC20Auth is DSAuth {
     ERC20Authority public erc20Authority;
 
     modifier authApprove(address guy, uint wad) {
-        assert(erc20Authority.canApprove(msg.sender, this, guy, wad));
+        require(
+            erc20Authority.canApprove(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use approve function"
+        );
         _;
     }
 
     modifier authTransfer(address to, uint wad) {
-        assert(erc20Authority.canTransfer(msg.sender, this, to, wad));
+        require(
+            erc20Authority.canTransfer(msg.sender, this, to, wad),
+            "Message sender is not authorized to use transfer function"
+        );
         _;
     }
 
     modifier authTransferFrom(address from, address to, uint wad) {
-        assert(erc20Authority.canTransferFrom(msg.sender, this, from, to, wad));
+        require(
+            erc20Authority.canTransferFrom(msg.sender, this, from, to, wad),
+            "Message sender is not authorized to use transferFrom function"
+        );
         _;
     }
 
