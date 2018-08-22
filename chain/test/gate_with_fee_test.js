@@ -161,7 +161,7 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
             expect(await call(token, "transferFeeCollector")).eq(CUSTOMER2)
         })
 
-        it.only("Gate can change transfer fee controller.", async () => {
+        it("Gate can change transfer fee controller.", async () => {
             const deploy = (...args) => create(web3, DEPLOYER, ...args)
             const {MockTransferFeeController} = contractRegistry
             const mockTransferFeeController = await deploy(MockTransferFeeController)
