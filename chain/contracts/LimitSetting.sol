@@ -11,9 +11,9 @@ contract LimitSetting is DSAuth, DSStop {
     uint256 public lastSettingResetTime;
 
     // delay hours settings for apply daily limit
-    uint256 private defaultDelayHours;
-    uint256 private defaultDelayHoursBuffer;
-    uint256 private lastDefaultDelayHoursSettingResetTime;
+    uint256 private defaultDelayTime;
+    uint256 private defaultDelayTimeBuffer;
+    uint256 private lastDefaultDelaySettingResetTime;
 
     // current limit setting
     uint256 private defaultMintDailyLimit;
@@ -31,8 +31,8 @@ contract LimitSetting is DSAuth, DSStop {
         DSAuthority _authority,
         uint256 _defaultMintDailyLimit,
         uint256 _defaultBurnDailyLimit,
-        int256 _defaultLimitCounterResetTimeffset,
-        uint256 _defaultSettingDelayHours
+        int256 _defaultLimitCounterResetTimeOffset,
+        uint256 _defaultSettingDelayTime
     ) public {
         require(
             address(_authority) != address(0),
@@ -49,7 +49,7 @@ contract LimitSetting is DSAuth, DSStop {
 
         setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeffset);
         resetSettingDelayBuffer();
-        defaultDelayHours = _defaultSettingDelayHours;
+        defaultDelayTime = _defaultSettingDelayTime;
         defaultMintDailyLimit = _defaultMintDailyLimit;
         defaultBurnDailyLimit = _defaultBurnDailyLimit;
         defaultMintDailyLimitBuffer = _defaultMintDailyLimit;
@@ -72,9 +72,9 @@ contract LimitSetting is DSAuth, DSStop {
         return limitCounterResetTimeOffset;
     }
 
-    function setSettingDefaultDelayHours(uint256 _hours) public auth {
-        defaultDelayHoursBuffer = _hours * 1 hours;
-        lastDefaultDelayHoursSettingResetTime = now;
+    function setDefaultDelayHours(uint256 _hours) public auth {
+        defaultDelayTimeBuffer = _hours * 1 hours;
+        lastDefaultDelaySettingResetTime = now;
         resetSettingDelayBuffer();
     }
 
@@ -140,8 +140,7 @@ contract LimitSetting is DSAuth, DSStop {
     }
 
     function getMintDailyLimit(address guy) public returns (uint256) {
-        assert(now >= lastSettingResetTime);
-        if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
+        if (now - lastSettingResetTime >= getDefaultDelayTime() || getDefaultDelayTime() == 0) {
             if (mintCustomDailyLimitBuffer[guy] > 0) {
                 mintCustomDailyLimit[guy] = mintCustomDailyLimitBuffer[guy];
                 return mintCustomDailyLimit[guy];
@@ -157,8 +156,7 @@ contract LimitSetting is DSAuth, DSStop {
     }
 
     function getBurnDailyLimit(address guy) public returns (uint256) {
-        assert(now >= lastSettingResetTime);
-        if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
+        if (now - lastSettingResetTime >= getDefaultDelayTime() || getDefaultDelayTime() == 0) {
             if (burnCustomDailyLimitBuffer[guy] > 0) {
                 burnCustomDailyLimit[guy] = burnCustomDailyLimitBuffer[guy];
                 return burnCustomDailyLimit[guy];
@@ -177,11 +175,11 @@ contract LimitSetting is DSAuth, DSStop {
         lastSettingResetTime = now;
     }
 
-    function getDefaultDelayHours() internal returns (uint256) {
-        if (now - lastDefaultDelayHoursSettingResetTime >= 2592000) {
-            defaultDelayHours = defaultDelayHoursBuffer;
+    function getDefaultDelayTime() internal returns (uint256) {
+        if (now - lastDefaultDelaySettingResetTime >= 30 days) {
+            defaultDelayTime = defaultDelayTimeBuffer;
         }
-        return defaultDelayHours;
+        return defaultDelayTime;
     }
 
 }
