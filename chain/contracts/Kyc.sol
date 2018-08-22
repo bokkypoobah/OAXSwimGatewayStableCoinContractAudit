@@ -112,23 +112,23 @@ contract NoKycAmlRule is ControllableKycAmlRule {
     }
 
     function canApprove(address src, address dst, address guy, uint wad) public returns (bool) {
-        return super.canApprove(src, dst, guy, wad) && true;
+        return super.canApprove(src, dst, guy, wad);
     }
 
     function canTransferFrom(address src, address dst, address from, address to, uint wad) public returns (bool) {
-        return super.canTransferFrom(src, dst, from, to, wad) && true;
+        return super.canTransferFrom(src, dst, from, to, wad);
     }
 
     function canTransfer(address src, address dst, address to, uint wad) public returns (bool) {
-        return super.canTransfer(src, dst, to, wad) && true;
+        return super.canTransfer(src, dst, to, wad);
     }
 
     function canMint(address src, address dst, address guy, uint wad) public returns (bool) {
-        return super.canMint(src, dst, guy, wad) && true;
+        return super.canMint(src, dst, guy, wad);
     }
 
     function canBurn(address src, address dst, address guy, uint wad) public returns (bool) {
-        return super.canBurn(src, dst, guy, wad) && true;
+        return super.canBurn(src, dst, guy, wad);
     }
 }
 
