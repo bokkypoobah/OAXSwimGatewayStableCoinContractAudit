@@ -247,7 +247,7 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         GateWithFee
     } = contractRegistry
 
-    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, address(transferFeeController))
+    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR)
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
