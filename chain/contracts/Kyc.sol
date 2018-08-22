@@ -65,7 +65,7 @@ contract KycAmlStatus is DSAuth {
 
 
 contract ControllableKycAmlRule is ERC20Authority, TokenAuthority {
-    AddressControlStatus addressControlStatus;
+    AddressControlStatus public addressControlStatus;
 
     constructor(AddressControlStatus addressControlStatus_) public {
         require(
@@ -135,7 +135,7 @@ contract NoKycAmlRule is ControllableKycAmlRule {
 
 contract BoundaryKycAmlRule is NoKycAmlRule {
 
-    KycAmlStatus kycAmlStatus;
+    KycAmlStatus public kycAmlStatus;
 
     constructor(
         AddressControlStatus addressControlStatus_,
@@ -187,7 +187,8 @@ contract MembershipAuthorityInterface {
 
 contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
 
-    MembershipAuthorityInterface membershipAuthority;
+    MembershipAuthorityInterface public membershipAuthority;
+    event LogSetMembershipAuthority(MembershipAuthorityInterface membershipAuthority);
 
     constructor(
         DSAuthority _authority,
@@ -211,6 +212,7 @@ contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
             "MembershipAuthority is mandatory"
         );
         membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
+        emit LogSetMembershipAuthority(membershipAuthority);
     }
 
     function canMint(address src, address dst, address guy, uint wad) public returns (bool) {
@@ -225,7 +227,8 @@ contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule {
 
 contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
 
-    MembershipAuthorityInterface membershipAuthority;
+    MembershipAuthorityInterface public membershipAuthority;
+    event LogSetMembershipAuthority(MembershipAuthorityInterface membershipAuthority);
 
     constructor(
         DSAuthority _authority,
@@ -250,6 +253,7 @@ contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
             "MembershipAuthority is mandatory"
         );
         membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
+        emit LogSetMembershipAuthority(membershipAuthority);
     }
 
     function canMint(address src, address dst, address guy, uint wad) public returns (bool) {
@@ -263,7 +267,8 @@ contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule {
 
 contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule {
 
-    MembershipAuthorityInterface membershipAuthority;
+    MembershipAuthorityInterface public membershipAuthority;
+    event LogSetMembershipAuthority(MembershipAuthorityInterface membershipAuthority);
 
     constructor(
         DSAuthority _authority,
@@ -287,6 +292,7 @@ contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule {
             "MembershipAuthority is mandatory"
         );
         membershipAuthority = MembershipAuthorityInterface(membershipAuthority_);
+        emit LogSetMembershipAuthority(membershipAuthority);
     }
 
     function canMint(address src, address dst, address guy, uint wad) public returns (bool) {
