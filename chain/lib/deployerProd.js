@@ -82,7 +82,7 @@ const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
         [DEPLOYER, KYC_OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
         [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
         [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)'],
-        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setSettingDefaultDelayHours(uint256)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultDelayHours(uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setLimitCounterResetTimeOffset(int256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultMintDailyLimit(uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultBurnDailyLimit(uint256)'],
