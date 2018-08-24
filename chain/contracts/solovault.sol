@@ -53,11 +53,11 @@ contract DSSoloVault is DSAuth {
         DSToken(token).burn(token.balanceOf(this));
     }
 
-    function approve(address guy, uint wad) public returns (bool) {
+    function approve(address guy, uint wad) public auth returns (bool) {
         return DSToken(token).approve(guy, wad);
     }
 
-    function approve(address guy) public returns (bool) {
+    function approve(address guy) public auth returns (bool) {
         return DSToken(token).approve(guy);
     }
 }

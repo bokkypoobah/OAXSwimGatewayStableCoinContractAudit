@@ -137,6 +137,8 @@ const defaultTokenGuardRules = [
     ['mint(address,uint256)'],
     ['burn(uint256)'],//need this because it calls burn(address,uint256)
     ['burn(address,uint256)'],
+    ['approve(address)'],
+    ['approve(address,uint256)'],
     ['setERC20Authority(address)'],
     ['setTokenAuthority(address)'],
     ['start()'],
@@ -180,6 +182,8 @@ const base = async (web3,
         [MONEY_OPERATOR_ROLE, 'mint(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(address,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'start()'],
         [MONEY_OPERATOR_ROLE, 'stop()'],
         [MONEY_OPERATOR_ROLE, 'startToken()'],
@@ -266,6 +270,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         [MONEY_OPERATOR_ROLE, 'mint(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(address,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [SYSTEM_ADMIN_ROLE, 'start()'],
         [SYSTEM_ADMIN_ROLE, 'stop()'],
         [SYSTEM_ADMIN_ROLE, 'startToken()'],
@@ -278,13 +284,13 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
     const gateWithFeeOperatorMethodsRoleRules = [
         [MONEY_OPERATOR_ROLE, 'mintWithFee(address,uint256,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burnWithFee(address,uint256,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [SYSTEM_ADMIN_ROLE, 'setFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeController(address)'],
         [SYSTEM_ADMIN_ROLE, 'setMintFeeCollector(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setBurnFeeCollector(address)'],
-
-        
+        [SYSTEM_ADMIN_ROLE, 'setBurnFeeCollector(address)']
     ]
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules).concat(gateWithFeeOperatorMethodsRoleRules.map(mapGateOperatorRules))
