@@ -5,28 +5,12 @@ const {
     sig,
     send,
     call,
-    create
+    create,
+    createMultiple
 } = require('chain-dsl')
 
-let gateRoles
-let fiatTokenGuard
-let kycAmlStatus
-let addressControlStatus
-let noKycAmlRule
-let boundaryKycAmlRule
-let fullKycAmlRule
-let mockMembershipAuthortiy
-let membershipWithBoundaryKycAmlRule
-let token
-let transferFeeController
-let limitController
-let limitSetting
-let dsGroupFactory
-
-const allowRoleForContract = ([sender, role, contract, method]) => {
-    send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
-}
-    
+let gateRoles, fiatTokenGuard, token, transferFeeController, limitController,
+    limitSetting, baseRule, boundaryKycRule, fullKycRule, membership, blacklist, kyc
 
 const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
                     FEE_COLLECTOR = null,
@@ -36,38 +20,36 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
                     DEFAULT_SETTING_DELAY_HOURS = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
+    const deployMultiple = (identifier, ...args) => createMultiple(identifier, web3, DEPLOYER, ...args)
 
     const {
-        KycAmlStatus,
-        NoKycAmlRule,
-        BoundaryKycAmlRule,
-        FullKycAmlRule,
-        MockMembershipAuthority,
-        MembershipWithBoundaryKycAmlRule,
         GateRoles,
         DSGuard,
         FiatToken,
         TransferFeeController,
-        AddressControlStatus,
         LimitController,
         LimitSetting,
-        DSGroupFactory
+        BaseRule,
+        BoundaryKycRule,
+        FullKycRule,
+        AddressStatus,
+        MockOAXMembership
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
     fiatTokenGuard = await deploy(DSGuard)
 
-    kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
-    addressControlStatus = await deploy(AddressControlStatus, address(gateRoles))
     transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
     limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
-
-    noKycAmlRule = await deploy(NoKycAmlRule, address(addressControlStatus))
-    boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
-    fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
-    mockMembershipAuthority = await deploy(MockMembershipAuthority)
-    membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
+
+    blacklist = await deployMultiple('blacklist',AddressStatus, address(gateRoles))
+    kyc = await deployMultiple('kyc',AddressStatus, address(gateRoles))
+    membership = await deploy(MockOAXMembership, address(gateRoles))
+
+    baseRule = await deploy(BaseRule, address(blacklist))
+    boundaryKycRule = await deploy(BoundaryKycRule, address(blacklist), address(kyc), address(membership))
+    fullKycRule = await deploy(FullKycRule, address(blacklist), address(kyc), address(membership))
 
     if (!FEE_COLLECTOR) {
         FEE_COLLECTOR = SYSTEM_ADMIN
@@ -87,9 +69,8 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
 
     const roleContractRules = [
-        [DEPLOYER, KYC_OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
-        [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
-        [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)'],
+        [DEPLOYER, KYC_OPERATOR_ROLE, kyc, 'set(address,bool)'],
+        [DEPLOYER, MONEY_OPERATOR_ROLE, blacklist, 'set(address,bool)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultDelayHours(uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setLimitCounterResetTimeOffset(int256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultMintDailyLimit(uint256)'],
@@ -97,7 +78,6 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
-        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRule, 'setMembershipAuthority(address)'],
     ]
 
     await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
@@ -107,27 +87,20 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     for (let [sender, role, contract, method] of roleContractRules) {
         await send(gateRoles, sender, 'setRoleCapability', role, address(contract), sig(method), true)
     }
-    // Development
-    // await Promise.all([
-    //     send(gateRoles, DEPLOYER, 'setUserRole', OPERATOR, OPERATOR_ROLE, true),
-    //     ...roleContractRules.map(allowRoleForContract),
-    // ])
 
     return {
-        kycAmlStatus,
-        addressControlStatus,
-        noKycAmlRule,
-        boundaryKycAmlRule,
-        fullKycAmlRule,
-        mockMembershipAuthority,
-        membershipWithBoundaryKycAmlRule,
+        kyc,
+        blacklist,
+        baseRule,
+        boundaryKycRule,
+        fullKycRule,
+        membership,
         fiatTokenGuard,
         gateRoles,
         token,
         transferFeeController,
         limitController,
-        limitSetting,
-        dsGroupFactory
+        limitSetting
     }
 }
 
@@ -224,24 +197,22 @@ const base = async (web3,
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
-    await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
+    await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(baseRule))
+    await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(baseRule))
 
     return {
-        kycAmlStatus,
-        addressControlStatus,
-        noKycAmlRule,
-        boundaryKycAmlRule,
-        fullKycAmlRule,
-        mockMembershipAuthortiy,
-        membershipWithBoundaryKycAmlRule,
+        kyc,
+        blacklist,
+        membership,
+        baseRule,
+        boundaryKycRule,
+        fullKycRule,
         fiatTokenGuard,
         gateRoles,
         token,
         gate,
         limitController,
-        limitSetting,
-        dsGroupFactory,
+        limitSetting
     }
 }
 
@@ -295,11 +266,6 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules).concat(gateWithFeeOperatorMethodsRoleRules.map(mapGateOperatorRules))
 
-
-    const permitFiatTokenGuard = ([src, dst, method]) =>
-        send(fiatTokenGuard, DEPLOYER, 'permit',
-            bytes32(address(src)), bytes32(address(dst)), sig(method))
-
     const mapTokenGuardRules = ([methodSig]) => {
         return [gateWithFee, token, methodSig]
     }
@@ -321,8 +287,8 @@ const deployGateWithFee = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN,
         await send(fiatTokenGuard, DEPLOYER, 'permit', bytes32(address(src)), bytes32(address(dst)), sig(method))
     }
 
-    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(noKycAmlRule))
-    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(noKycAmlRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setERC20Authority', address(baseRule))
+    await send(gateWithFee, SYSTEM_ADMIN, 'setTokenAuthority', address(baseRule))
 
     return {gateWithFee}
 }

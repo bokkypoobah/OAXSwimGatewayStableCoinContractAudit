@@ -12,15 +12,15 @@ describe("Upgrade Gate Regarding Kyc", function () {
 
     let gate,
         token,
-        kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule
+        kycAmlStatus, boundaryKycRule, fullKycRule
 
     before('deployment', async () => {
         ;({
             gate,
             token,
-            boundaryKycAmlRule,
-            fullKycAmlRule,
-            kycAmlStatus
+            boundaryKycRule,
+            fullKycRule,
+            kyc: kycAmlStatus,
         } = await deployer.base(web3, contractRegistry,
             DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
@@ -37,8 +37,8 @@ describe("Upgrade Gate Regarding Kyc", function () {
 
             //switch to has-fee gate
             //switch step 1, deploy gate with boundary kyc
-            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(boundaryKycAmlRule))
-            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(boundaryKycAmlRule))
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(boundaryKycRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(boundaryKycRule))
 
 
             await send(token, CUSTOMER, "transfer", CUSTOMER2, 10)
@@ -48,13 +48,13 @@ describe("Upgrade Gate Regarding Kyc", function () {
             await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, 1000))
                 .to.be.rejected
 
-            await send(kycAmlStatus, KYC_OPERATOR, "setKycVerified", CUSTOMER, true)
+            await send(kycAmlStatus, KYC_OPERATOR, "set", CUSTOMER, true)
             await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 1000)
             expect(await call(token, "balanceOf", CUSTOMER)).eq(1090)
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(10)
 
-            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(fullKycAmlRule))
-            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(fullKycAmlRule))
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(fullKycRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(fullKycRule))
 
             await expect(send(token, CUSTOMER, "transfer", CUSTOMER2, 10))
                 .to.be.rejected
@@ -68,7 +68,7 @@ describe("Upgrade Gate Regarding Kyc", function () {
                 .to.be.rejected
 
 
-            await send(kycAmlStatus, KYC_OPERATOR, "setKycVerified", CUSTOMER2, true)
+            await send(kycAmlStatus, KYC_OPERATOR, "set", CUSTOMER2, true)
             await send(token, CUSTOMER2, "transfer", CUSTOMER, 10)
             await send(token, CUSTOMER, "transfer", CUSTOMER2, 10)
             expect(await call(token, "balanceOf", CUSTOMER2)).eq(10)

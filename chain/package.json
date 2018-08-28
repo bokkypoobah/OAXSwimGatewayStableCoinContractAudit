@@ -16,7 +16,8 @@
   "scripts": {
     "start": "node index.js",
     "test": "solium --dir contracts/ && mocha",
-    "dev-test": "mocha"
+    "dev-test": "mocha",
+    "dev-test-full": "node index.js --init-contract;node index.js --init-setting;node index.js --gatewithfee-contract;node index.js --gatewithfee-setting;"
   },
   "devDependencies": {
     "solhint": "^1.2.1",

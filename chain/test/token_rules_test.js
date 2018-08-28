@@ -10,19 +10,20 @@ const deposit = 'deposit'
 const approve = 'approve'
 const transfer = 'transfer'
 const transferFrom = 'transferFrom'
-const setKycVerified = 'setKycVerified'
-const kycVerified = 'kycVerified'
+const setKycVerified = 'set'
+const kycVerified = 'status'
+const kycEventLog = 'LogSetAddressStatus'
 
 describe("Asset Gateway", function () {
     this.timeout(10000)
 
-    let gate, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule, token,
+    let gate, kycAmlStatus, boundaryKycRule, fullKycRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule, token,
         AMT
 
     before('deployment', async () => {
         AMT = 100
 
-        ;({gate, token, kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule} =
+        ;({gate, gateRoles, token, kyc: kycAmlStatus, blacklist, boundaryKycRule, fullKycRule, mockMembershipAuthority, membershipWithBoundaryKycAmlRule} =
             await deployer.base(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
 
@@ -31,18 +32,18 @@ describe("Asset Gateway", function () {
         expect(await call(kycAmlStatus, kycVerified, CUSTOMER)).eql(true)
 
         expect(events).containSubset([{
-            'NAME': 'KYCVerify',
+            'NAME': kycEventLog,
             'guy': CUSTOMER,
-            'isKycVerified': true
+            'status': true
         }])
 
         let events2 = await txEvents(send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER, false))
         expect(await call(kycAmlStatus, kycVerified, CUSTOMER)).eql(false)
 
         expect(events2).containSubset([{
-            'NAME': 'KYCVerify',
+            'NAME': kycEventLog,
             'guy': CUSTOMER,
-            'isKycVerified': null // To be fixed in https://github.com/ethereum/web3.js/pull/1627
+            'status': null // To be fixed in https://github.com/ethereum/web3.js/pull/1627
         }])
     })
 
@@ -92,8 +93,8 @@ describe("Asset Gateway", function () {
     describe("with boundary KYC", async () => {
 
         before(async () => {
-            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(boundaryKycAmlRule))
-            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(boundaryKycAmlRule))
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(boundaryKycRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(boundaryKycRule))
         })
 
         describe("CUSTOMER", async () => {
@@ -155,8 +156,8 @@ describe("Asset Gateway", function () {
 
     describe("with full KYC", async () => {
         before(async () => {
-            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(fullKycAmlRule))
-            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(fullKycAmlRule))
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(fullKycRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(fullKycRule))
         })
 
         describe("CUSTOMER", async () => {
@@ -243,34 +244,37 @@ describe("Asset Gateway", function () {
 
     describe("with full KYC and Membership Control", async () => {
         before(async () => {
-            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(membershipWithBoundaryKycAmlRule))
-            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(membershipWithBoundaryKycAmlRule))
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(boundaryKycRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(boundaryKycRule))
         })
 
-        describe("SystemAdmin", async () => {
 
-            it("Able to set the address of membership lookup contract " +
-                "and Throw when trying mint and burn if the address is not member", async () => {
-                const deploy = (...args) => create(web3, DEPLOYER, ...args)
-                const {MockMembershipAuthorityFalse} = contractRegistry
-                const mockMembershipAuthorityFalse = await deploy(MockMembershipAuthorityFalse)
+        it("Able to set the address of membership lookup contract " +
+            "and Throw when trying mint and burn if the address is not member", async () => {
+            const deploy = (...args) => create(web3, DEPLOYER, ...args)
+            const {MockMembershipAuthorityFalse, BoundaryKycRule} = contractRegistry
+            const mockMembershipAuthorityFalse = await deploy(MockMembershipAuthorityFalse, address(gateRoles))
+            let newBoundaryKycRule = await deploy(BoundaryKycRule, address(blacklist), address(kycAmlStatus), address(mockMembershipAuthorityFalse))
 
-                await send(membershipWithBoundaryKycAmlRule, SYSTEM_ADMIN, "setMembershipAuthority", address(mockMembershipAuthorityFalse))
-                await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
-                await send(gate, CUSTOMER1, deposit, AMT)
-                await expectThrow(async () => {
-                    await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT)
-                })
-            })
 
-            it("Able to mint and burn and transfer if the address is member", async () => {
-                await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
-                await send(gate, CUSTOMER1, deposit, AMT)
+            await send(gate, SYSTEM_ADMIN, 'setERC20Authority', address(newBoundaryKycRule))
+            await send(gate, SYSTEM_ADMIN, 'setTokenAuthority', address(newBoundaryKycRule))
+
+            await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
+            await send(gate, CUSTOMER1, deposit, AMT)
+            await expectThrow(async () => {
                 await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT)
-                await send(token, CUSTOMER1, transfer, CUSTOMER2, AMT)
             })
-
-
         })
+
+        it("Able to mint and burn and transfer if the address is member", async () => {
+            await send(kycAmlStatus, KYC_OPERATOR, setKycVerified, CUSTOMER1, true)
+            await send(gate, CUSTOMER1, deposit, AMT)
+            await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT)
+            await send(token, CUSTOMER1, transfer, CUSTOMER2, AMT)
+        })
+
+
+
     })
 })
