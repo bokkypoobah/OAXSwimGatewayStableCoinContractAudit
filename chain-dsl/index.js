@@ -88,11 +88,43 @@ const create = async (web3, DEPLOYER, Contract, ...arguments) => {
         .send()
         // FIXME https://github.com/ethereum/web3.js/issues/1253 workaround
     }, retryOptions)
-     
+
     console.debug(`Deployed Contract ${Contract.NAME} - ${contract._address}`)
     contract.setProvider(web3.currentProvider)
 
     db.set('deployedContract.'+Contract.NAME.toLowerCase(), {
+        'address': contract._address
+    }).write()
+
+    return contract
+}
+
+const createMultiple = async (identifier, web3, DEPLOYER, Contract, ...arguments) => {
+
+    const block = await web3.eth.getBlock("latest")
+
+    const contractDefaultOptions = {
+        from: DEPLOYER,
+        gas: Math.round(block.gasLimit*0.95),
+        gasPrice: 0x04a817c800,
+        name: Contract.NAME
+    }
+
+    if (Contract.evm.bytecode.object === '') {
+        throw new Error(`Constructor missing from ${Contract.NAME}; can't deploy.`)
+    }
+
+    let contract = await retry(async()=>{
+        return new web3.eth.Contract(Contract.abi, contractDefaultOptions)
+            .deploy({data: '0x' + Contract.evm.bytecode.object, arguments})
+            .send()
+        // FIXME https://github.com/ethereum/web3.js/issues/1253 workaround
+    }, retryOptions)
+
+    console.debug(`Deployed Contract ${Contract.NAME} - ${identifier} - ${contract._address}`)
+    contract.setProvider(web3.currentProvider)
+
+    db.set(`deployedContract.${identifier}`, {
         'address': contract._address
     }).write()
 
@@ -121,11 +153,10 @@ module.exports = {
     distillEvent,
     txEvents,
     send,
-    callAs,
     call,
     create,
     balance,
-    createInstance,
+    createMultiple,
     db
 }
 
