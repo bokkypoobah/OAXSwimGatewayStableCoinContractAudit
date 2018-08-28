@@ -84,8 +84,6 @@ contract LimitSetting is DSAuth, DSStop {
 
     event AdjustMintLimitRequested(address guy, uint wad);
     event AdjustBurnLimitRequested(address guy, uint wad);
-    event AdjustMintLimitRequested(uint wad);
-    event AdjustBurnLimitRequested(uint wad);
 
     function setDefaultMintDailyLimit(uint256 limit) public auth {
         require(
@@ -93,7 +91,7 @@ contract LimitSetting is DSAuth, DSStop {
             "Daily mint limit must be positive"
         );
         defaultMintDailyLimitBuffer = limit;
-        emit AdjustMintLimitRequested(defaultMintDailyLimitBuffer);
+        emit AdjustMintLimitRequested(address(0), defaultMintDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
@@ -103,7 +101,7 @@ contract LimitSetting is DSAuth, DSStop {
             "Daily burn limit must be positive"
         );
         defaultBurnDailyLimitBuffer = limit;
-        emit AdjustBurnLimitRequested(defaultBurnDailyLimitBuffer);
+        emit AdjustBurnLimitRequested(address(0), defaultBurnDailyLimitBuffer);
         resetSettingDelayBuffer();
     }
 
