@@ -143,6 +143,8 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         ['mint(address,uint256)'],
         ['burn(uint256)'],//need this because it calls burn(address,uint256)
         ['burn(address,uint256)'],
+        ['approve(address)'],
+        ['approve(address,uint256)'],
         ['setERC20Authority(address)'],
         ['setTokenAuthority(address)'],
         ['start()'],
@@ -156,6 +158,8 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         [MONEY_OPERATOR_ROLE, 'mint(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(address,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'start()'],
         [MONEY_OPERATOR_ROLE, 'stop()'],
         [MONEY_OPERATOR_ROLE, 'startToken()'],
@@ -168,6 +172,8 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
     const gateWithFeeOperatorMethodsRoleRules = [
         [MONEY_OPERATOR_ROLE, 'mintWithFee(address,uint256,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burnWithFee(address,uint256,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [SYSTEM_ADMIN_ROLE, 'setFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeController(address)'],
