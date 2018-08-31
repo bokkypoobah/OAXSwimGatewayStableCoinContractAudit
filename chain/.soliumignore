@@ -1,2 +1,2 @@
 contracts/dappsys.sol
-contracts/Multisig.sol
+contracts/vendors/MultiSigWallet.sol
