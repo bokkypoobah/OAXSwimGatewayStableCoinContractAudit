@@ -19,6 +19,10 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
     }
 
     function divRoundUp(uint x, uint y) internal pure returns (uint z) {
+        require(
+            y > 0,
+            "Second parameter must be positive"
+        );
         z = add(mul(x, 1), y / 2) / y;
     }
 
