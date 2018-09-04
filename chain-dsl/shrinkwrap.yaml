@@ -5783,7 +5783,7 @@ packages:
       tarball: 'https://codeload.github.com/frozeman/WebSocket-Node/tar.gz/7004c39c42ac98875ab61126e5b4a925430f592c'
     version: 1.0.24
 registry: 'https://registry.npmjs.org/'
-shrinkwrapMinorVersion: 9
+shrinkwrapMinorVersion: 8
 shrinkwrapVersion: 3
 specifiers:
   async-retry: ^1.2.1
