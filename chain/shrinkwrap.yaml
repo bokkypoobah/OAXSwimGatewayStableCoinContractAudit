@@ -1,6 +1,7 @@
 dependencies:
   chain-dsl: 'link:../chain-dsl'
   config: 1.30.0
+  ethereumjs-tx: 1.3.7
   truffle-hdwallet-provider: 0.0.5
 devDependencies:
   solhint: 1.2.1
@@ -1167,6 +1168,18 @@ packages:
     dev: false
     resolution:
       integrity: sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=
+  /elliptic/6.4.1:
+    dependencies:
+      bn.js: 4.11.8
+      brorand: 1.1.0
+      hash.js: 1.1.5
+      hmac-drbg: 1.0.1
+      inherits: 2.0.3
+      minimalistic-assert: 1.0.1
+      minimalistic-crypto-utils: 1.0.1
+    dev: false
+    resolution:
+      integrity: sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==
   /encoding/0.1.12:
     dependencies:
       iconv-lite: 0.4.23
@@ -1445,6 +1458,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-kOgUd5jC+0tgV7t52UDECMMz9Uf+Lro+6fSpCvzWemtXfMEcwI3EOxf5mVPMRbTFkMMhuERokNNVF3jItAjidg==
+  /ethereumjs-tx/1.3.7:
+    dependencies:
+      ethereum-common: 0.0.18
+      ethereumjs-util: 5.2.0
+    dev: false
+    resolution:
+      integrity: sha512-wvLMxzt1RPhAQ9Yi3/HKZTn0FZYpnsmQdbKYfUUpi4j1SEIcbkd9tndVjcPrufY3V7j2IebOpC00Zp2P/Ay2kA==
   /ethereumjs-util/4.5.0:
     dependencies:
       bn.js: 4.11.8
@@ -1461,9 +1481,9 @@ packages:
       create-hash: 1.2.0
       ethjs-util: 0.1.6
       keccak: 1.4.0
-      rlp: 2.0.0
+      rlp: 2.1.0
       safe-buffer: 5.1.2
-      secp256k1: 3.5.0
+      secp256k1: 3.5.2
     dev: false
     resolution:
       integrity: sha512-CJAKdI0wgMbQFLlLRtZKGcy/L6pzVRgelIZqRqNbuVFM3K9VEnyfbcvz0ncWMRNCe4kaHWjwRYQcYMucmwsnWA==
@@ -1895,6 +1915,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-A6RlQvvZEtFS5fLU43IDu0QUmBy+fDO9VMdTXvufKwIkt/rFfvICAViCax5fbDO4zdNzaC3/27ZhKUok5bAJyw==
+  /hash.js/1.1.5:
+    dependencies:
+      inherits: 2.0.3
+      minimalistic-assert: 1.0.1
+    dev: false
+    resolution:
+      integrity: sha512-eWI5HG9Np+eHV1KQhisXWwM+4EPPYe5dFX1UZZH7k/E3JzDEazVH+VGlZi6R94ZqImq+A3D1mCEtrFIfg/E7sA==
   /hdkey/0.7.1:
     dependencies:
       coinstring: 2.3.0
@@ -1909,7 +1936,7 @@ packages:
       integrity: sha1-k0EP0hsAlzUVH4howvJx80J+I/0=
   /hmac-drbg/1.0.1:
     dependencies:
-      hash.js: 1.1.4
+      hash.js: 1.1.5
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
     dev: false
@@ -2328,7 +2355,7 @@ packages:
     dependencies:
       bindings: 1.3.0
       inherits: 2.0.3
-      nan: 2.10.0
+      nan: 2.11.0
       safe-buffer: 5.1.2
     dev: false
     engines:
@@ -2618,6 +2645,10 @@ packages:
   /nan/2.10.0:
     resolution:
       integrity: sha512-bAdJv7fBLhWC+/Bls0Oza+mvTaNQtP+1RyhhhvD95pgUJz6XM5IzgmxOkItJ9tkoCiplvAnXI1tNmmUD/eScyA==
+  /nan/2.11.0:
+    dev: false
+    resolution:
+      integrity: sha512-F4miItu2rGnV2ySkXOQoA8FKz/SR2Q2sWP0sbTxNxz/tuokeC8WxOhPMcwi0qIyGtVn/rrSeLbvVkznqCdwYnw==
   /natural-compare/1.4.0:
     dev: true
     resolution:
@@ -3204,6 +3235,13 @@ packages:
     hasBin: true
     resolution:
       integrity: sha1-nbOE/0uJqPYVY9kjldhiWxjzr7A=
+  /rlp/2.1.0:
+    dependencies:
+      safe-buffer: 5.1.2
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-93U7IKH5j7nmXFVg19MeNBGzQW5uXW1pmCuKY8veeKIhYTE32C2d0mOegfiIAfXcHOKJjjPlJisn8iHDF5AezA==
   /run-async/2.3.0:
     dependencies:
       is-promise: 2.1.0
@@ -3270,6 +3308,22 @@ packages:
     requiresBuild: true
     resolution:
       integrity: sha512-e5QIJl8W7Y4tT6LHffVcZAxJjvpgE5Owawv6/XCYPQljE9aP2NFFddQ8OYMKhdLshNu88FfL3qCN3/xYkXGRsA==
+  /secp256k1/3.5.2:
+    dependencies:
+      bindings: 1.3.0
+      bip66: 1.1.5
+      bn.js: 4.11.8
+      create-hash: 1.2.0
+      drbg.js: 1.0.1
+      elliptic: 6.4.1
+      nan: 2.11.0
+      safe-buffer: 5.1.2
+    dev: false
+    engines:
+      node: '>=4.0.0'
+    requiresBuild: true
+    resolution:
+      integrity: sha512-iin3kojdybY6NArd+UFsoTuapOF7bnJNf2UbcWXaY3z+E1sJDipl60vtzB5hbO/uquBu7z0fd4VC4Irp+xoFVQ==
   /semaphore/1.1.0:
     dev: false
     engines:
@@ -3952,6 +4006,7 @@ shrinkwrapVersion: 3
 specifiers:
   chain-dsl: 1.0.0
   config: ^1.30.0
+  ethereumjs-tx: ^1.3.7
   solhint: ^1.2.1
   solium: ^1.1.8
   truffle-hdwallet-provider: 0.0.5
