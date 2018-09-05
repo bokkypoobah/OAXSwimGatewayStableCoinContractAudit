@@ -45,9 +45,6 @@ const initContract = async (contractRegistry,
     gateRoles = await deploy(GateRoles)
     fiatTokenGuard = await deploy(DSGuard)
 
-    gateRoles = await deploy(GateRoles)
-    fiatTokenGuard = await deploy(DSGuard)
-
     transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
     limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
