@@ -48,6 +48,7 @@ contract LimitSetting is DSAuth, DSStop {
         );
 
         setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeOffset);
+        lastDefaultDelaySettingResetTime = now;
         resetSettingDelayBuffer();
         defaultDelayTime = _defaultSettingDelayTime;
         defaultMintDailyLimit = _defaultMintDailyLimit;

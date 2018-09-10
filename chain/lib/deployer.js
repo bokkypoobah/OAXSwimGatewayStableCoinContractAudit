@@ -127,6 +127,8 @@ const base = async (web3,
                     FEE_COLLECTOR = null,
                     MINT_LIMIT = wad(10000),
                     BURN_LIMIT = wad(10000),
+                    DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
+                    DEFAULT_SETTING_DELAY_HOURS = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
@@ -134,7 +136,7 @@ const base = async (web3,
         FEE_COLLECTOR = SYSTEM_ADMIN
     }
 
-    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT)
+    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
 
     const {
         Gate

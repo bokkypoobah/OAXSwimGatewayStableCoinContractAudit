@@ -39,7 +39,6 @@ describe("Limits:", function () {
         DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0
         DEFAULT_SETTING_DELAY_HOURS = 0
 
-
         ;({
             gate, gateRoles, token,
             limitController,
@@ -491,6 +490,31 @@ describe("Limits:", function () {
             })
         })
 
+        it('Should be equal to existing value instead of buffer', async () => {
+            ({
+                limitSetting: limitSetting2
+            } = await deployer.base(
+                web3,
+                contractRegistry,
+                DEPLOYER,
+                SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+                SYSTEM_ADMIN,
+                1e18,
+                1e18,
+                DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
+                3600
+            ))
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+              await send(limitSetting2, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, 100)
+              let mintLimit = await call(limitSetting2, "getMintDailyLimit", MONEY_OPERATOR)
+              expect(mintLimit).to.eq(1e18)
+            })
+
+
+        })
+
         it('Default Burn Limits increase takes effect after {24} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
@@ -643,6 +667,8 @@ describe("Limits:", function () {
                 await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", "0x0" , 100)
             })
         })
+
+
 
     })
 })
