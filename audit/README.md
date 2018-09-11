@@ -41,27 +41,34 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [x] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
-  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
   * [x] Developer and auditor agreed that no action is required
-* [ ] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
-* [ ] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
+* [x] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
+  * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
+  * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
 * [ ] **LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*
 * [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
-* [ ] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
+* [x] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
+  * [x] Removed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
-* [ ] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
+* [x] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** Consider logging events for `Kyc:MembershipWithNoKycAmlRule.setMembershipAuthority(...)`, `Kyc:MembershipWithBoundaryKycAmlRule.setMembershipAuthority(...)` and `Kyc:MembershipWithFullKycAmlRule.setMembershipAuthority(...)`
-* [ ] **LOW IMPORTANCE** Consider making `TokenAuth:TokenAuth.tokenAuthority` public for traceability
-* [ ] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
+* [x] **LOW IMPORTANCE** Consider making `TokenAuth:TokenAuth.tokenAuthority` public for traceability
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** Consider making `Kyc:ControllableKycAmlRule.addressControlStatus` public for traceability
 * [ ] **LOW IMPORTANCE** Consider making `Kyc:BoundaryKycAmlRule.kycAmlStatus` public for traceability
 * [ ] **LOW IMPORTANCE** Consider making `Kyc:MembershipWithNoKycAmlRule.membershipAuthority`, `Kyc:MembershipWithBoundaryKycAmlRule.membershipAuthority` and `Kyc:MembershipWithFullKycAmlRule.membershipAuthority` public for traceability
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)* to save on gas when errored
-* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
 * [ ] **LOW IMPORTANCE** Overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
 * [ ] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant

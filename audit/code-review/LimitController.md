@@ -6,7 +6,7 @@ Source file [../../chain/contracts/LimitController.sol](../../chain/contracts/Li
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
@@ -27,13 +27,11 @@ import "LimitSetting.sol";
 // BK NOTE - limitController.LogSetOwner 1 #6992 {"owner":"0x0000000000000000000000000000000000000000"}
 contract LimitController is DSMath, DSStop {
 
-    // BK Next 3 Ok
+    // BK Next 4 Ok
     uint256 public mintLimitCounter;
     uint256 public burnLimitCounter;
     uint256 public lastLimitResetTime;
-    // BK NOTE - Should make the following public for traceability
-    // BK Ok
-    LimitSetting limitSetting;
+    LimitSetting public limitSetting;
 
     // BK Ok - Constructor
     constructor(DSAuthority _authority, LimitSetting limitSetting_) public {
@@ -103,8 +101,11 @@ contract LimitController is DSMath, DSStop {
 
     // BK Ok - Internal function, stoppable
     function resetLimit() internal stoppable {
-        // BK NOTE - Replace `assert(...)` with `require(...)` to save on gas cost if errored
-        assert(now - lastLimitResetTime >= 1 days);
+        // BK Ok
+        require(
+            now - lastLimitResetTime >= 1 days,
+            "Last limit setting time should larger or equal than 1 day to reset the limit counter"
+        );
         // BK Ok
         uint256 today = now - (now % 1 days);
         // BK NOTE - `limitSetting.getLimitCounterResetTimeOffset()` returns an `int` and not a `uint`

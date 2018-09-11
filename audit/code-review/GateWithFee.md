@@ -6,7 +6,7 @@ Source file [../../chain/contracts/GateWithFee.sol](../../chain/contracts/GateWi
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
@@ -45,18 +45,13 @@ contract GateWithFee is Gate {
     address public mintFeeCollector;
     address public burnFeeCollector;
 
-    // BK NOTE - Should make this public
-    // BK Ok
-    TransferFeeController transferFeeController;
-
     // BK Ok - Constructor
     constructor(
         DSAuthority _authority,
         DSToken fiatToken, 
         LimitController _limitController, 
         address mintFeeCollector_, 
-        address burnFeeCollector_,
-        TransferFeeController transferFeeController_
+        address burnFeeCollector_
         )
     public
     Gate(_authority, fiatToken, _limitController)
@@ -64,9 +59,6 @@ contract GateWithFee is Gate {
         // BK Next 2 Ok
         mintFeeCollector = mintFeeCollector_;
         burnFeeCollector = burnFeeCollector_;
-
-        // BK Ok
-        transferFeeController = transferFeeController_;
     }
 
     // BK NOTE - gateRoles.RoleCapability code GateWithFee:0x7f3caaa41b649ae4a478bc2f29b2e81ed6484fe7 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setMintFeeCollector(address) role SYSTEM_ADMIN:1 true #40497 0x2f5c8cf5c8b99c8cd75127b6a40d0d49bc483989827f7db1e386f1d4264c50a6
