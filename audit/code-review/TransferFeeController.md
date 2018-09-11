@@ -6,7 +6,7 @@ Source file [../../chain/contracts/TransferFeeController.sol](../../chain/contra
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
@@ -22,11 +22,12 @@ import "dappsys.sol";
 // BK Ok
 contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth {
     //transfer fee is calculated by transferFeeAbs+amt*transferFeeBps
-    // BK Ok
+    // BK Next 2 Ok
     uint public defaultTransferFeeAbs;
-
-    // BK Ok
     uint public defaultTransferFeeBps;
+
+    // BK Ok - Event
+    event LogSetDefaultTransferFee(uint defaultTransferFeeAbs, uint defaultTransferFeeBps);
 
     // BK Ok - Constructor
     constructor(DSAuthority _authority, uint defaultTransferFeeAbs_, uint defaultTransferFeeBps_)
@@ -42,6 +43,11 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 
     // BK Ok - View function
     function divRoundUp(uint x, uint y) internal pure returns (uint z) {
+        // BK Ok
+        require(
+            y > 0,
+            "Second parameter must be positive"
+        );
         // BK NOTE - function mul(uint x, uint y) internal pure returns (uint z) {
         // BK NOTE -   require(y == 0 || (z = x * y) / y == x);
         // BK NOTE - }
@@ -61,7 +67,7 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
         // BK NOTE - divRoundUp(mul(wad, defaultTransferFeeBps), 10000)
         // BK NOTE -   = (([(wad * defaultTransferFeeBps) / defaultTransferFeeBps] * 1 / 1) + (10000 / 2)) / 10000
         // BK NOTE - result = defaultTransferFeeAbs + (([(wad * defaultTransferFeeBps) / defaultTransferFeeBps] * 1 / 1) + (10000 / 2)) / 10000
-        return defaultTransferFeeAbs + divRoundUp(mul(wad, defaultTransferFeeBps), 10000);
+        return add(defaultTransferFeeAbs, divRoundUp(mul(wad, defaultTransferFeeBps), 10000));
     }
 
     // BK Ok - Only sysAdmin can execute
@@ -79,6 +85,8 @@ contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
         // BK Next 2 Ok
         defaultTransferFeeAbs = defaultTransferFeeAbs_;
         defaultTransferFeeBps = defaultTransferFeeBps_;
+        // BK Ok - Log event
+        emit LogSetDefaultTransferFee(defaultTransferFeeAbs, defaultTransferFeeBps);
     }
 }
 
