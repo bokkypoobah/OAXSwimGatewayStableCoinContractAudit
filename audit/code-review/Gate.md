@@ -47,13 +47,10 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     // BK Ok
     LimitController public limitController;
 
-    // BK Ok - Event
+    // BK Next 4 Ok - Events
     event DepositRequested(address indexed by, uint256 amount);
-
-    // BK Ok - Event
+    event Deposited(address indexed guy, uint256 amount);
     event WithdrawalRequested(address indexed from, uint256 amount);
-
-    // BK Ok - Event
     event Withdrawn(address indexed from, uint256 amount);
 
     // BK Ok - Constructor
@@ -122,15 +119,10 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
         // BK NOTE - tokenGuard.Permit from GateWithFee:0x7f3caaa41b649ae4a478bc2f29b2e81ed6484fe7 to LimitController:0xb0eeb0a47f153af1da1807db53880e212cdf6c79 for bumpMintLimitCounter(uint256) #7016 0xaee164bd6016cc1fee48b748936c0eef152d307aca4f1fc873a97939879b3547
         // BK Ok
         limitController.bumpMintLimitCounter(wad);
-        /* Because the EIP20 standard says so, we emit a Transfer event:
-           A token contract which creates new tokens SHOULD trigger a
-           Transfer event with the _from address set to 0x0 when tokens are created.
-            (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md)
-        */
-        // BK NOTE - The `Transfer(...)` event should be emitted by the token contract, and not the token contract owner. Consider renaming to Deposited
-        // BK Ok
-        emit Transfer(0x0, guy, wad);
-    }
+
+        // BK Ok - Log event
+        emit Deposited(guy, wad);
+     }
 
     // BK Ok - Anyone can execute
     function withdraw(uint256 wad) public stoppable {

@@ -6,7 +6,7 @@ Source file [../../chain/contracts/dappsys.sol](../../chain/contracts/dappsys.so
 
 <hr />
 
-```javascript
+```solidity
 /// math.sol -- mixin for inline numerical wizardry
 
 
@@ -419,11 +419,11 @@ contract DSRoles is DSAuth, DSAuthority
     mapping(address=>mapping(bytes4=>bytes32)) _capability_roles;
     mapping(address=>mapping(bytes4=>bool)) _public_capabilities;
 
-    // BK NOTE - The following 4 events should be added to log changes
-    // BK NOTE - event LogSetRootUser(address indexed who, bool enabled);
-    // BK NOTE - event LogSetUserRole(address indexed who, bytes32 indexed userRoles, uint8 role, bool enabled);
-    // BK NOTE - event LogSetPublicCapability(address code, bytes4 sig, bool enabled);
-    // BK NOTE - event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
+    // BK Next 4 Ok - Events
+    event LogSetRootUser(address indexed who, bool enabled);
+    event LogSetUserRole(address indexed who, bytes32 indexed userRoles, uint8 role, bool enabled);
+    event LogSetPublicCapability(address code, bytes4 sig, bool enabled);
+    event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
 
     // BK Ok - View function
     function getUserRoles(address who)
@@ -513,8 +513,8 @@ contract DSRoles is DSAuth, DSAuthority
     {
         // BK Ok
         _root_users[who] = enabled;
-        // BK NOTE - Add event to log changes
-        // BK NOTE - emit LogSetRootUser(who, enabled);
+        // BK Ok
+        emit LogSetRootUser(who, enabled);
     }
 
     // BK Ok - Only authorised account can execute
@@ -535,8 +535,8 @@ contract DSRoles is DSAuth, DSAuthority
             // BK Ok - AND in new NOT(new role)
             _user_roles[who] = last_roles & BITNOT(shifted);
         }
-        // BK NOTE - Add event to log changes
-        // BK NOTE - emit LogSetUserRole(who, _user_roles[who], role, enabled);
+        // BK Ok
+        emit LogSetUserRole(who, _user_roles[who], role, enabled);
     }
 
     // BK OK - Only authorised account can execute
@@ -546,8 +546,8 @@ contract DSRoles is DSAuth, DSAuthority
     {
         // BK Ok
         _public_capabilities[code][sig] = enabled;
-        // BK NOTE - Add event to log changes
-        // BK NOTE - emit LogSetPublicCapability(code, sig, enabled);
+        // BK Ok
+        emit LogSetPublicCapability(code, sig, enabled);
     }
 
     // BK Ok - Only authorised account can execute
@@ -568,8 +568,8 @@ contract DSRoles is DSAuth, DSAuthority
             // BK Ok
             _capability_roles[code][sig] = last_roles & BITNOT(shifted);
         }
-        // BK NOTE - Add event to log changes
-        // BK NOTE - emit LogSetRoleCapability(code, _capability_roles[code][sig], role, sig, enabled);
+        // BK Ok
+        emit LogSetRoleCapability(code, _capability_roles[code][sig], role, sig, enabled);
     }
 
 }

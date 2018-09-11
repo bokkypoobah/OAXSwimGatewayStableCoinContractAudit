@@ -6,7 +6,7 @@ Source file [../../chain/contracts/FiatToken.sol](../../chain/contracts/FiatToke
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
@@ -46,6 +46,10 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
     // BK Ok
     address public transferFeeCollector;
+
+    // BK Ok
+    event LogSetTransferFeeCollector(address feeCollector);
+    event LogSetTransferFeeController(address transferFeeController);
 
     // BK Ok - Constructor
     constructor(
@@ -113,6 +117,8 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         // BK NOTE - DSToken.mint(...) does not emit a `Transfer(address(0), guy, wad)` event. Add here or to DSToken.mint(...)
         // BK Ok
         super.mint(guy, wad);
+        // BK Ok - Log event
+        emit Transfer(address(0), guy, wad);
     }
 
     // BK NOTE - tokenGuard.Permit from GateWithFee:0x7f3caaa41b649ae4a478bc2f29b2e81ed6484fe7 to FiatToken 'USD' 'USDToken':0xb45408db6a4c5977d6fa0acc5581023882c89268 for burn(address,uint256) #7016 0x67e7a88c77146ff732ad632be35c73b75c41f122d625804564928fb70e34336d
@@ -122,6 +128,8 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         // BK NOTE - DSToken.burn(...) does not emit a `Transfer(guy, address(0), wad)` event. Add here or to DSToken.burn(...)
         // BK Ok
         super.burn(guy, wad);
+        // BK Ok - Log event
+        emit Transfer(guy, address(0), wad);
     }
 
     // BK NOTE - tokenGuard.Permit from GateWithFee:0x7f3caaa41b649ae4a478bc2f29b2e81ed6484fe7 to FiatToken 'USD' 'USDToken':0xb45408db6a4c5977d6fa0acc5581023882c89268 for setTransferFeeCollector(address) #40503 0x290a5b6e1ad2858a30400fa99173f8e1decb15f6a74891ed9bafbb0646262387
@@ -133,6 +141,8 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         // BK NOTE - Should add event to log changes
         // BK Ok
         transferFeeCollector = feeCollector_;
+        // BK Ok - Log event
+        emit LogSetTransferFeeCollector(transferFeeCollector);
     }
 
     // BK NOTE - tokenGuard.Permit from GateWithFee:0x7f3caaa41b649ae4a478bc2f29b2e81ed6484fe7 to FiatToken 'USD' 'USDToken':0xb45408db6a4c5977d6fa0acc5581023882c89268 for setTransferFeeController(address) #40503 0x359297c01766e93709f406eebacd097ad5679e7f2da703031ebd2eda0d541dc6
@@ -144,6 +154,8 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
         // BK NOTE - Should add event to log changes
         // BK Ok
         transferFeeController = transferFeeController_;
+        // BK Ok - Log event
+        emit LogSetTransferFeeController(transferFeeController);
     }
 }
 

@@ -36,9 +36,12 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance. I have added a new recommendation to add `auth` for both `approve(...)` functions
 * [x] ~~**MEDIUM IMPORTANCE**~~ See [Notes - GateWithFee Fee Accounting](#gatewithfee-fee-accounting) below
   * [x] Kirsten has responded that the fee account flows will be accounted for in OAX's accounting reconciliation
-* [ ] **MEDIUM IMPORTANCE** *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning
-* [ ] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
-* [ ] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
+* [x] **MEDIUM IMPORTANCE** *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
 * [ ] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
 * [ ] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
@@ -46,7 +49,8 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [ ] **LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*
 * [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
 * [ ] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
-* [ ] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+* [x] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
 * [ ] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
 * [ ] **LOW IMPORTANCE** Consider logging events for `Kyc:MembershipWithNoKycAmlRule.setMembershipAuthority(...)`, `Kyc:MembershipWithBoundaryKycAmlRule.setMembershipAuthority(...)` and `Kyc:MembershipWithFullKycAmlRule.setMembershipAuthority(...)`

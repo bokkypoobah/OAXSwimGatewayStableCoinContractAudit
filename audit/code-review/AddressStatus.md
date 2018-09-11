@@ -6,7 +6,7 @@ Source file [../../chain/contracts/AddressStatus.sol](../../chain/contracts/Addr
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
@@ -18,7 +18,7 @@ contract AddressStatus is DSAuth {
     mapping(address => bool) public status;
 
     // BK Ok - Event
-    event AddressStatusSet(address indexed guy, bool status);
+    event LogSetAddressStatus(address indexed guy, bool status);
 
     // BK Ok - Constructor
     constructor(DSAuthority authority) public  {
@@ -38,7 +38,7 @@ contract AddressStatus is DSAuth {
         // BK Ok
         status[guy] = newStatus;
         // BK Ok - Log event
-        emit AddressStatusSet(guy, newStatus);
+        emit LogSetAddressStatus(guy, newStatus);
     }
 }
 
