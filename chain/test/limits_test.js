@@ -39,7 +39,6 @@ describe("Limits:", function () {
         DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0
         DEFAULT_SETTING_DELAY_HOURS = 0
 
-
         ;({
             gate, gateRoles, token,
             limitController,
@@ -347,11 +346,17 @@ describe("Limits:", function () {
             })
         })
 
+        it('Maximum number of limit setting is 1 week', async ()=> {
+            // 169 = Hours of 1 week + 1 hour
+            await expect(send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 169))
+                .to.be.rejected
+        })
+
         it('Default Mint Limits increase takes effect after {0} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
-            await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
-            await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 0)
+            await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
+            await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 0)
             await web3.evm.increaseTime(24*60*60*30) // Increase 30days
             await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
             
@@ -369,8 +374,8 @@ describe("Limits:", function () {
         it('Default Mint Limits decrease takes effect after {0} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
-            await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
-            await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 0)
+            await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
+            await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 0)
             await web3.evm.increaseTime(24*60*60*30) // Increase 30days
             await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
             
@@ -385,7 +390,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
             })
@@ -417,7 +422,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
             })
@@ -439,7 +444,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT+456)
                 await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, DEFAULT_DAILY_MINT_LIMIT+100)
@@ -463,7 +468,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, DEFAULT_DAILY_MINT_LIMIT/3)
             })
@@ -485,11 +490,36 @@ describe("Limits:", function () {
             })
         })
 
+        it('Should be equal to existing value instead of buffer', async () => {
+            ({
+                limitSetting: limitSetting2
+            } = await deployer.base(
+                web3,
+                contractRegistry,
+                DEPLOYER,
+                SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR,
+                SYSTEM_ADMIN,
+                1e18,
+                1e18,
+                DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
+                3600
+            ))
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+              await send(limitSetting2, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, 100)
+              let mintLimit = await call(limitSetting2, "getMintDailyLimit", MONEY_OPERATOR)
+              expect(mintLimit).to.eq(1e18)
+            })
+
+
+        })
+
         it('Default Burn Limits increase takes effect after {24} hours.', async () => {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT*2)
@@ -518,7 +548,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultBurnDailyLimit", DEFAULT_DAILY_MINT_LIMIT/3)
@@ -547,7 +577,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultMintDailyLimit", randomLimit)
                 await send(limitSetting, SYSTEM_ADMIN, "setDefaultBurnDailyLimit", randomLimit)
@@ -579,7 +609,7 @@ describe("Limits:", function () {
 
             //request default limit increase (new_larger_limit)
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
                 await web3.evm.increaseTime(24*60*60*30) // Increase 30days
                 await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, randomLimit/3)
                 await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", MONEY_OPERATOR, randomLimit/3)
@@ -605,11 +635,12 @@ describe("Limits:", function () {
 
         it('Limits configuration change delay time (e.g. 24 hours) is configurable in the unit of hours.', async () => {
             await expectNoAsyncThrow(async () => {
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 24)
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 10)
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 25)
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", 0)
-                await send(limitSetting, SYSTEM_ADMIN, "setSettingDefaultDelayHours", -1)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 10)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 25)
+                await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 0)
+                await expect(send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", -1))
+                    .to.be.rejected
             })
         })
 
@@ -636,6 +667,8 @@ describe("Limits:", function () {
                 await send(limitSetting, SYSTEM_ADMIN, "setCustomBurnDailyLimit", "0x0" , 100)
             })
         })
+
+
 
     })
 })

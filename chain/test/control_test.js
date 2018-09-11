@@ -8,19 +8,19 @@ describe("Control", function () {
 
     let gate,
         token,
-        kycAmlStatus, boundaryKycAmlRule, fullKycAmlRule,
-        addressControlStatus,
+        kyc, boundaryKycRule, fullKycRule,
+        blacklist,
         gateRoles
 
     before('deployment', async () => {
         ;({
             gate,
             token,
-            boundaryKycAmlRule,
-            fullKycAmlRule,
-            kycAmlStatus,
-            addressControlStatus,
-            gateRoles
+            boundaryKycRule,
+            fullKycRule,
+            kyc,
+            blacklist,
+            gateRoles,
         } = await deployer.base(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR))
     })
 
@@ -69,22 +69,28 @@ describe("Control", function () {
             expect(await call(token, "balanceOf", CUSTOMER)).eq(10)
             expect(await call(token, "balanceOf", CUSTOMER1)).eq(0)
 
-            let events = await txEvents(send(addressControlStatus, MONEY_OPERATOR, "freezeAddress", CUSTOMER))
+            expect(await call(blacklist, "status", CUSTOMER)).eql(false)
+
+            let events = await txEvents(send(blacklist, MONEY_OPERATOR, "set", CUSTOMER, true))
+
+            expect(await call(blacklist, "status", CUSTOMER)).eql(true)
 
             expect(events).containSubset([{
-                NAME: 'FreezeAddress',
-                guy: CUSTOMER
+                NAME: 'LogSetAddressStatus',
+                guy: CUSTOMER,
+                status: true
             }])
 
             await expect(send(gate, MONEY_OPERATOR, mint, CUSTOMER, 10))
                 .to.be.rejected
 
-            events = await txEvents(send(addressControlStatus, MONEY_OPERATOR, "unfreezeAddress", CUSTOMER))
-
+            events = await txEvents(send(blacklist, MONEY_OPERATOR, "set", CUSTOMER, false))
+            expect(await call(blacklist, "status", CUSTOMER)).eql(false)
 
             expect(events).containSubset([{
-                NAME: 'UnfreezeAddress',
-                guy: CUSTOMER
+                NAME: 'LogSetAddressStatus',
+                guy: CUSTOMER,
+                status: null // FIXME To be fixed in https://github.com/ethereum/web3.js/issues/1403
             }])
 
             await send(token, CUSTOMER, "transfer", CUSTOMER1, 1)

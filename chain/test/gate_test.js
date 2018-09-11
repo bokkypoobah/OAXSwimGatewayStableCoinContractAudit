@@ -91,7 +91,6 @@ describe('Gate', function () {
         })
 
         it("can list her deposits, but not others'", async () => {
-            // FIXME On the chain anyone can see deposits
             const AMT_C1_1 = toBN(10)
             const AMT_C1_2 = toBN(20)
             const AMT_C2_1 = toBN(30)
@@ -214,8 +213,31 @@ describe('Gate', function () {
             await send(gate, CUSTOMER1, deposit, AMT1)
             await send(gate, CUSTOMER2, deposit, AMT2)
 
-            await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT1)
+            let mintResult = await send(gate, MONEY_OPERATOR, mint, CUSTOMER1, AMT1)
             await send(gate, MONEY_OPERATOR, mint, CUSTOMER2, AMT2)
+
+            //test event
+            let events = await txEvents(mintResult)
+            expect(events).containSubset([
+                {
+                    "guy": CUSTOMER1,
+                    "wad": "10",
+                    "NAME": "Mint"
+                },
+                {
+                    "src": "0x0000000000000000000000000000000000000000",
+                    "dst": CUSTOMER1,
+                    "wad": "10",
+                    "NAME": "Transfer"
+                },
+                {
+                    "guy": CUSTOMER1,
+                    "amount": "10",
+                    "NAME": "Deposited"
+                }
+
+            ])
+
 
             await send(token, CUSTOMER1, push, address(gate), AMT1)
             await send(token, CUSTOMER2, push, address(gate), AMT2)
@@ -233,7 +255,25 @@ describe('Gate', function () {
             await send(gate, CUSTOMER, deposit, AMT)
             await send(gate, MONEY_OPERATOR, mint, CUSTOMER, AMT)
             await send(token, CUSTOMER, approve, address(gate), AMT)
-            await send(gate, MONEY_OPERATOR, burn, CUSTOMER, AMT)
+            let burnResult = await send(gate, MONEY_OPERATOR, burn, CUSTOMER, AMT)
+
+            //test event
+            let events = await txEvents(burnResult)
+            expect(events).containSubset([
+                {guy: CUSTOMER,
+                    wad: "10",
+                    NAME: "Burn"
+                },
+                {src: CUSTOMER,
+                    dst: "0x0000000000000000000000000000000000000000",
+                    wad: "10",
+                    NAME: "Transfer"
+                },
+                {from: CUSTOMER,
+                    amount: "10",
+                    NAME: "Withdrawn"
+                }
+            ])
 
             const withdrawals = await pendingWithdrawals()
 

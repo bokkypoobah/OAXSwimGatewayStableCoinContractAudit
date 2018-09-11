@@ -5,13 +5,13 @@ const {
     sig,
     send,
     call,
-    create
+    create,
+    createMultiple
 } = require('chain-dsl')
 
 let {
-    kycAmlStatus, addressControlStatus, noKycAmlRule, boundaryKycAmlRule, fullKycAmlRule, 
-    mockMembershipAuthority, membershipWithBoundaryKycAmlRule, fiatTokenGuard, gateRoles, token, transferFeeController, 
-    limitController, limitSetting, gateWithFee, web3
+    gateRoles, fiatTokenGuard, token, transferFeeController, limitController, gateWithFee,
+    limitSetting, baseRule, boundaryKycRule, fullKycRule, membership, blacklist, kyc, web3
 } = require('./contractInstances')
 
 
@@ -26,37 +26,36 @@ const initContract = async (contractRegistry,
         DEFAULT_SETTING_DELAY_HOURS = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
+    const deployMultiple = (identifier, ...args) => createMultiple(identifier, web3, DEPLOYER, ...args)
 
     const {
-        KycAmlStatus,
-        NoKycAmlRule,
-        BoundaryKycAmlRule,
-        FullKycAmlRule,
-        MockMembershipAuthority,
-        MembershipWithBoundaryKycAmlRule,
         GateRoles,
         DSGuard,
         FiatToken,
         TransferFeeController,
-        AddressControlStatus,
         LimitController,
-        LimitSetting
+        LimitSetting,
+        BaseRule,
+        BoundaryKycRule,
+        FullKycRule,
+        AddressStatus,
+        MockOAXMembership
     } = contractRegistry
 
     gateRoles = await deploy(GateRoles)
     fiatTokenGuard = await deploy(DSGuard)
 
-    kycAmlStatus = await deploy(KycAmlStatus, address(gateRoles))
-    addressControlStatus = await deploy(AddressControlStatus, address(gateRoles))
     transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
     limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
-
-    noKycAmlRule = await deploy(NoKycAmlRule, address(addressControlStatus))
-    boundaryKycAmlRule = await deploy(BoundaryKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
-    fullKycAmlRule = await deploy(FullKycAmlRule, address(addressControlStatus), address(kycAmlStatus))
-    mockMembershipAuthority = await deploy(MockMembershipAuthority)
-    membershipWithBoundaryKycAmlRule = await deploy(MembershipWithBoundaryKycAmlRule, address(gateRoles), address(addressControlStatus), address(kycAmlStatus), address(mockMembershipAuthority))
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
+
+    blacklist = await deployMultiple('blacklist',AddressStatus, address(gateRoles))
+    kyc = await deployMultiple('kyc',AddressStatus, address(gateRoles))
+    membership = await deploy(MockOAXMembership, address(gateRoles))
+
+    baseRule = await deploy(BaseRule, address(blacklist))
+    boundaryKycRule = await deploy(BoundaryKycRule, address(blacklist), address(kyc), address(membership))
+    fullKycRule = await deploy(FullKycRule, address(blacklist), address(kyc), address(membership))
 
     token = await deploy(
         FiatToken,
@@ -79,17 +78,15 @@ const initSettings = async(DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR)
     const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
     
     const roleContractRules = [
-        [DEPLOYER, KYC_OPERATOR_ROLE, kycAmlStatus, 'setKycVerified(address,bool)'],
-        [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'freezeAddress(address)'],
-        [DEPLOYER, MONEY_OPERATOR_ROLE, addressControlStatus, 'unfreezeAddress(address)'],
-        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setSettingDefaultDelayHours(uint256)'],
+        [DEPLOYER, KYC_OPERATOR_ROLE, kyc, 'set(address,bool)'],
+        [DEPLOYER, MONEY_OPERATOR_ROLE, blacklist, 'set(address,bool)'],
+        [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultDelayHours(uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setLimitCounterResetTimeOffset(int256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultMintDailyLimit(uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setDefaultBurnDailyLimit(uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomMintDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, limitSetting, 'setCustomBurnDailyLimit(address,uint256)'],
         [DEPLOYER, SYSTEM_ADMIN_ROLE, transferFeeController, 'setDefaultTransferFee(uint256,uint256)'],
-        [DEPLOYER, SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRule, 'setMembershipAuthority(address)'],
     ]
 
     await send(gateRoles, DEPLOYER, 'setUserRole', SYSTEM_ADMIN, SYSTEM_ADMIN_ROLE, true)
@@ -114,7 +111,7 @@ const gateWithFeeContract = async (
         GateWithFee
     } = contractRegistry
 
-    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, address(transferFeeController))
+    const gateWithFee = await deploy(GateWithFee, address(gateRoles), address(token), address(limitController), MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR)
 
     // Allow decoding events emitted by token methods when called from within gate methods
     const tokenEventABIs = token.options.jsonInterface.filter(el => el.type === 'event')
@@ -143,12 +140,14 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         ['mint(address,uint256)'],
         ['burn(uint256)'],//need this because it calls burn(address,uint256)
         ['burn(address,uint256)'],
+        ['approve(address)'],
+        ['approve(address,uint256)'],
         ['setERC20Authority(address)'],
         ['setTokenAuthority(address)'],
         ['start()'],
         ['stop()'],
         ['setTransferFeeCollector(address)'],
-        ['setTransferFeeController(address)'],
+        ['setTransferFeeController(address)']
     ]
 
     const defaultGateOperatorMethods = [
@@ -156,24 +155,27 @@ const gateWithFeeSetting = async(DEPLOYER, SYSTEM_ADMIN)=>{
         [MONEY_OPERATOR_ROLE, 'mint(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(uint256)'],
         [MONEY_OPERATOR_ROLE, 'burn(address,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [MONEY_OPERATOR_ROLE, 'start()'],
         [MONEY_OPERATOR_ROLE, 'stop()'],
         [MONEY_OPERATOR_ROLE, 'startToken()'],
         [MONEY_OPERATOR_ROLE, 'stopToken()'],
         [SYSTEM_ADMIN_ROLE, 'setERC20Authority(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTokenAuthority(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)'],
+        [SYSTEM_ADMIN_ROLE, 'setLimitController(address)']
     ]
 
     const gateWithFeeOperatorMethodsRoleRules = [
         [MONEY_OPERATOR_ROLE, 'mintWithFee(address,uint256,uint256)'],
         [MONEY_OPERATOR_ROLE, 'burnWithFee(address,uint256,uint256)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address)'],
+        [MONEY_OPERATOR_ROLE, 'approve(address,uint256)'],
         [SYSTEM_ADMIN_ROLE, 'setFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeCollector(address)'],
         [SYSTEM_ADMIN_ROLE, 'setTransferFeeController(address)'],
         [SYSTEM_ADMIN_ROLE, 'setMintFeeCollector(address)'],
-        [SYSTEM_ADMIN_ROLE, 'setBurnFeeCollector(address)'],
-        
+        [SYSTEM_ADMIN_ROLE, 'setBurnFeeCollector(address)']
     ]
 
     const roleContractRules = defaultGateOperatorMethods.map(mapGateOperatorRules).concat(gateWithFeeOperatorMethodsRoleRules.map(mapGateOperatorRules))

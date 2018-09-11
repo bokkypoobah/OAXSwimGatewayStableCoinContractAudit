@@ -13,10 +13,11 @@ import "TransferFeeControllerInterface.sol";
 contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
     uint8 public constant decimals = 18;
-
     TransferFeeControllerInterface public transferFeeController;
-
     address public transferFeeCollector;
+
+    event LogSetTransferFeeCollector(address feeCollector);
+    event LogSetTransferFeeController(address transferFeeController);
 
     constructor(
         DSAuthority _authority, 
@@ -61,10 +62,12 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
 
     function mint(address guy, uint wad) public authMint(guy, wad) {
         super.mint(guy, wad);
+        emit Transfer(address(0), guy, wad);
     }
 
     function burn(address guy, uint wad) public authBurn(guy, wad) {
         super.burn(guy, wad);
+        emit Transfer(guy, address(0), wad);
     }
 
     function setTransferFeeCollector(address feeCollector_)
@@ -72,6 +75,7 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
     auth
     {
         transferFeeCollector = feeCollector_;
+        emit LogSetTransferFeeCollector(transferFeeCollector);
     }
 
     function setTransferFeeController(TransferFeeControllerInterface transferFeeController_)
@@ -79,5 +83,6 @@ contract FiatToken is DSToken, ERC20Auth, TokenAuth {
     auth
     {
         transferFeeController = transferFeeController_;
+        emit LogSetTransferFeeController(transferFeeController);
     }
 }

@@ -16,9 +16,8 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     LimitController public limitController;
 
     event DepositRequested(address indexed by, uint256 amount);
-
+    event Deposited(address indexed guy, uint256 amount);
     event WithdrawalRequested(address indexed from, uint256 amount);
-
     event Withdrawn(address indexed from, uint256 amount);
 
     constructor(DSAuthority _authority, DSToken fiatToken, LimitController _limitController)
@@ -63,12 +62,8 @@ contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop {
     function mint(address guy, uint wad) public mintLimited(msg.sender, wad) stoppable {
         super.mint(guy, wad);
         limitController.bumpMintLimitCounter(wad);
-        /* Because the EIP20 standard says so, we emit a Transfer event:
-           A token contract which creates new tokens SHOULD trigger a
-           Transfer event with the _from address set to 0x0 when tokens are created.
-            (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md)
-        */
-        emit Transfer(0x0, guy, wad);
+ 
+        emit Deposited(guy, wad);
     }
 
     function withdraw(uint256 wad) public stoppable {

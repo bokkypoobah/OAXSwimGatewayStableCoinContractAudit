@@ -281,6 +281,11 @@ contract DSRoles is DSAuth, DSAuthority
     mapping(address=>mapping(bytes4=>bytes32)) _capability_roles;
     mapping(address=>mapping(bytes4=>bool)) _public_capabilities;
 
+    event LogSetRootUser(address indexed who, bool enabled);
+    event LogSetUserRole(address indexed who, bytes32 indexed userRoles, uint8 role, bool enabled);
+    event LogSetPublicCapability(address code, bytes4 sig, bool enabled);
+    event LogSetRoleCapability(address code, bytes32 capabilityRoles, uint8 role, bytes4 sig, bool enabled);
+
     function getUserRoles(address who)
         public
         view
@@ -346,6 +351,7 @@ contract DSRoles is DSAuth, DSAuthority
         auth
     {
         _root_users[who] = enabled;
+        emit LogSetRootUser(who, enabled);
     }
 
     function setUserRole(address who, uint8 role, bool enabled)
@@ -359,6 +365,7 @@ contract DSRoles is DSAuth, DSAuthority
         } else {
             _user_roles[who] = last_roles & BITNOT(shifted);
         }
+        emit LogSetUserRole(who, _user_roles[who], role, enabled);
     }
 
     function setPublicCapability(address code, bytes4 sig, bool enabled)
@@ -366,6 +373,7 @@ contract DSRoles is DSAuth, DSAuthority
         auth
     {
         _public_capabilities[code][sig] = enabled;
+        emit LogSetPublicCapability(code, sig, enabled);
     }
 
     function setRoleCapability(uint8 role, address code, bytes4 sig, bool enabled)
@@ -379,7 +387,7 @@ contract DSRoles is DSAuth, DSAuthority
         } else {
             _capability_roles[code][sig] = last_roles & BITNOT(shifted);
         }
-
+        emit LogSetRoleCapability(code, _capability_roles[code][sig], role, sig, enabled);
     }
 
 }

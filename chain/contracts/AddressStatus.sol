@@ -5,7 +5,7 @@ import "dappsys.sol";
 contract AddressStatus is DSAuth {
     mapping(address => bool) public status;
 
-    event AddressStatusSet(address indexed guy, bool status);
+    event LogSetAddressStatus(address indexed guy, bool status);
 
     constructor(DSAuthority authority) public  {
         require(
@@ -19,6 +19,6 @@ contract AddressStatus is DSAuth {
 
     function set(address guy, bool newStatus) public auth {
         status[guy] = newStatus;
-        emit AddressStatusSet(guy, newStatus);
+        emit LogSetAddressStatus(guy, newStatus);
     }
 }

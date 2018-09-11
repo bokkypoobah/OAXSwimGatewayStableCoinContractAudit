@@ -8,7 +8,7 @@ contract LimitController is DSMath, DSStop {
     uint256 public mintLimitCounter;
     uint256 public burnLimitCounter;
     uint256 public lastLimitResetTime;
-    LimitSetting limitSetting;
+    LimitSetting public limitSetting;
 
     constructor(DSAuthority _authority, LimitSetting limitSetting_) public {
         require(
@@ -55,7 +55,10 @@ contract LimitController is DSMath, DSStop {
     }
 
     function resetLimit() internal stoppable {
-        assert(now - lastLimitResetTime >= 1 days);
+        require(
+            now - lastLimitResetTime >= 1 days,
+            "Last limit setting time should larger or equal than 1 day to reset the limit counter"
+        );
         uint256 today = now - (now % 1 days);
         lastLimitResetTime = uint256(int256(today) + limitSetting.getLimitCounterResetTimeOffset());
         mintLimitCounter = 0;

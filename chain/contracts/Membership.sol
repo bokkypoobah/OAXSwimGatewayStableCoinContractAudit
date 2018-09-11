@@ -1,9 +1,9 @@
-pragma solidity ^0.4.0;
+pragma solidity 0.4.23;
 
 import "AddressStatus.sol";
 
 interface MembershipInterface {
-    function isMember(address guy) public returns (bool);
+    function isMember(address guy) external returns (bool);
 }
 
 contract MockOAXMembership is AddressStatus, MembershipInterface {
@@ -11,6 +11,6 @@ contract MockOAXMembership is AddressStatus, MembershipInterface {
     }
 
     function isMember(address guy) public returns (bool) {
-        return status(guy);
+        return !status[guy];
     }
 }

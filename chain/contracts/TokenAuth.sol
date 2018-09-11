@@ -12,23 +12,35 @@ interface ERC20Authority {
 contract ERC20Auth is DSAuth {
     ERC20Authority public erc20Authority;
 
+    event LogSetERC20Authority(ERC20Authority erc20Authority);
+
     modifier authApprove(address guy, uint wad) {
-        assert(erc20Authority.canApprove(msg.sender, this, guy, wad));
+        require(
+            erc20Authority.canApprove(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use approve function"
+        );
         _;
     }
 
     modifier authTransfer(address to, uint wad) {
-        assert(erc20Authority.canTransfer(msg.sender, this, to, wad));
+        require(
+            erc20Authority.canTransfer(msg.sender, this, to, wad),
+            "Message sender is not authorized to use transfer function"
+        );
         _;
     }
 
     modifier authTransferFrom(address from, address to, uint wad) {
-        assert(erc20Authority.canTransferFrom(msg.sender, this, from, to, wad));
+        require(
+            erc20Authority.canTransferFrom(msg.sender, this, from, to, wad),
+            "Message sender is not authorized to use transferFrom function"
+        );
         _;
     }
 
     function setERC20Authority(ERC20Authority _erc20Authority) public auth {
         erc20Authority = _erc20Authority;
+        emit LogSetERC20Authority(erc20Authority);
     }
 }
 
@@ -40,7 +52,9 @@ interface TokenAuthority {
 
 
 contract TokenAuth is DSAuth {
-    TokenAuthority tokenAuthority;
+    TokenAuthority public tokenAuthority;
+
+    event LogSetTokenAuthority(TokenAuthority tokenAuthority);
 
     modifier authMint(address guy, uint wad) {
         assert(tokenAuthority.canMint(msg.sender, this, guy, wad));
@@ -54,5 +68,6 @@ contract TokenAuth is DSAuth {
 
     function setTokenAuthority(TokenAuthority _tokenAuthority) public auth {
         tokenAuthority = _tokenAuthority;
+        emit LogSetTokenAuthority(tokenAuthority);
     }
 }

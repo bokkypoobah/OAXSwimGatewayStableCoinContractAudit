@@ -14,14 +14,6 @@
           "evm.sourceMap"
         ]
       },
-      "dsgroup.sol": {
-        "*": [
-          "metadata",
-          "abi",
-          "evm.bytecode",
-          "evm.sourceMap"
-        ]
-      },
       "solovault.sol": {
         "*": [
           "metadata",
@@ -46,22 +38,6 @@
           "evm.sourceMap"
         ]
       },
-      "AddressStatus.sol": {
-        "*": [
-          "metadata",
-          "abi",
-          "evm.bytecode",
-          "evm.sourceMap"
-        ]
-      },
-      "Kyc.sol": {
-        "*": [
-          "metadata",
-          "abi",
-          "evm.bytecode",
-          "evm.sourceMap"
-        ]
-      },
       "FiatToken.sol": {
         "*": [
           "metadata",
@@ -79,14 +55,6 @@
         ]
       },
       "GateWithFee.sol": {
-        "*": [
-          "metadata",
-          "abi",
-          "evm.bytecode",
-          "evm.sourceMap"
-        ]
-      },
-      "MockMembershipAuthority.sol": {
         "*": [
           "metadata",
           "abi",
@@ -141,6 +109,30 @@
           "evm.bytecode",
           "evm.sourceMap"
         ]
+      },
+      "TokenRules.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "Membership.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
+      },
+      "AddressStatus.sol": {
+        "*": [
+          "metadata",
+          "abi",
+          "evm.bytecode",
+          "evm.sourceMap"
+        ]
       }
     }
   },
@@ -172,16 +164,6 @@
         "contracts/TokenAuth.sol"
       ]
     },
-    "AddressStatus.sol": {
-      "urls": [
-        "contracts/AddressStatus.sol"
-      ]
-    },
-    "Kyc.sol": {
-      "urls": [
-        "contracts/Kyc.sol"
-      ]
-    },
     "FiatToken.sol": {
       "urls": [
         "contracts/FiatToken.sol"
@@ -195,11 +177,6 @@
     "GateWithFee.sol": {
       "urls": [
         "contracts/GateWithFee.sol"
-      ]
-    },
-    "MockMembershipAuthority.sol": {
-      "urls": [
-        "contracts/test/MockMembershipAuthority.sol"
       ]
     },
     "MockMembershipAuthorityFalse.sol": {
@@ -230,6 +207,21 @@
     "LimitSetting.sol": {
       "urls": [
         "contracts/LimitSetting.sol"
+      ]
+    },
+    "TokenRules.sol": {
+      "urls": [
+        "contracts/TokenRules.sol"
+      ]
+    },
+    "Membership.sol": {
+      "urls": [
+        "contracts/Membership.sol"
+      ]
+    },
+    "AddressStatus.sol": {
+      "urls": [
+        "contracts/AddressStatus.sol"
       ]
     }
   }

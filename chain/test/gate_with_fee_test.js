@@ -1,5 +1,5 @@
 const {expect} = require('chain-dsl/test/helpers')
-const {address, send, call, wad, create} = require('chain-dsl')
+const {address, send, call, wad, create, txEvents} = require('chain-dsl')
 const deployer = require('../lib/deployer')
 
 describe("Gate with Mint, Burn and Transfer Fee", function () {
@@ -21,14 +21,14 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
                 CUSTOMER2,
                 TRANSFER_FEE_COLLECTOR,
                 MINT_FEE_COLLECTOR,
-                BURN_FEE_COLLECTOR,
+                BURN_FEE_COLLECTOR
             ] = accounts
 
             ;({token, transferFeeController} =
                 await deployer.init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, null, wad(100000)))
 
             ;({gateWithFee} =
-                await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR, TRANSFER_FEE_COLLECTOR))
+                await deployer.deployGateWithFee(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, MINT_FEE_COLLECTOR, BURN_FEE_COLLECTOR))
         }
     )
 
@@ -40,8 +40,14 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
         await send(gateWithFee, SYSTEM_ADMIN, "setBurnFeeCollector", SYSTEM_ADMIN)
         expect(await call(gateWithFee, "burnFeeCollector")).eq(SYSTEM_ADMIN)
         //transfer
-        await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", SYSTEM_ADMIN);
+        let eventResult = await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeCollector", SYSTEM_ADMIN)
         expect(await call(token, "transferFeeCollector")).eq(SYSTEM_ADMIN)
+
+        //test event
+        let events = await txEvents(eventResult)
+        expect(events).containSubset([
+            {NAME: 'LogSetTransferFeeCollector', feeCollector: SYSTEM_ADMIN},
+        ])
 
     })
 
@@ -96,6 +102,19 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
     })
 
     context("Transfer with dynamic fee", async () => {
+        it("Should have event logs", async ()=> {
+            let result = await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10)
+
+            let events = await txEvents(result)
+            expect(events).containSubset([
+                {
+                    "defaultTransferFeeAbs": "0",
+                    "defaultTransferFeeBps": "10",
+                    "NAME": "LogSetDefaultTransferFee"
+                }
+            ])
+        })
+
         it("When absolute_fee=0, basis_point_fee=10, fee for amount ( = 10000) is 10", async () => {
             await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10)
 
@@ -163,9 +182,15 @@ describe("Gate with Mint, Burn and Transfer Fee", function () {
             await expect(send(gateWithFee, CUSTOMER1, "setTransferFeeController", address(mockTransferFeeController))
             ).to.be.rejected
 
-            await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeController", address(mockTransferFeeController));
+            let eventResult = await send(gateWithFee, SYSTEM_ADMIN, "setTransferFeeController", address(mockTransferFeeController));
             expect(await call(token, "transferFeeController")).eq(address(mockTransferFeeController))
             expect(await call(mockTransferFeeController, "calculateTransferFee", null, null, 9116)).eq(10);
+
+            //test event
+            let events = await txEvents(eventResult)
+            expect(events).containSubset([
+                {NAME: 'LogSetTransferFeeController', transferFeeController: address(mockTransferFeeController)},
+            ])
 
             await send(transferFeeController, SYSTEM_ADMIN, "setDefaultTransferFee", 0, 10);
             expect(await call(transferFeeController, "defaultTransferFeeAbs")).eq(0)
