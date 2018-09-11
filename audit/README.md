@@ -8,6 +8,8 @@ Bok Consulting Pty Ltd was commissioned to perform an audit on these Ethereum sm
 
 This audit has been conducted on the source code from [swim-gateway/stable-coin master-gitlab branch](https://github.com/swim-gateway/stable-coin/tree/master-gitlab) in commits [75cc80c](https://github.com/swim-gateway/stable-coin/commit/75cc80c5d494625d3e7262756973ec0394dfcf11), [a53dce5](https://github.com/swim-gateway/stable-coin/commit/a53dce5fb53f2ff4461d15c2e3450faf0a9b61ac) and [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593).
 
+Changes made after the first round of audits are in commit [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1).
+
 No potential vulnerabilities have been identified in the smart contracts.
 
 <br />
@@ -109,7 +111,7 @@ highlight any areas of weaknesses.
 
 ## Risks
 
-**TODO**
+The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*). 
 
 <br />
 
