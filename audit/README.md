@@ -50,8 +50,6 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*
-* [ ] **LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*
 * [x] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
   * [x] Removed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
@@ -63,9 +61,6 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** Consider making `Kyc:ControllableKycAmlRule.addressControlStatus` public for traceability
-* [ ] **LOW IMPORTANCE** Consider making `Kyc:BoundaryKycAmlRule.kycAmlStatus` public for traceability
-* [ ] **LOW IMPORTANCE** Consider making `Kyc:MembershipWithNoKycAmlRule.membershipAuthority`, `Kyc:MembershipWithBoundaryKycAmlRule.membershipAuthority` and `Kyc:MembershipWithFullKycAmlRule.membershipAuthority` public for traceability
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)* to save on gas when errored
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
@@ -76,8 +71,19 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [ ] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
 * [ ] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
 * [ ] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
-* [ ] **LOW IMPORTANCE** In *Kyc:NoKycAmlRule*, the `& true` statement is redundant
-* [ ] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
+* [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+
+<br />
+
+[code-review/Kyc.md](code-review/Kyc.md) is not longer used from [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+
+* [ ] ~~**LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*~~
+* [ ] ~~**LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*~~
+* [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:ControllableKycAmlRule.addressControlStatus` public for traceability~~
+* [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:BoundaryKycAmlRule.kycAmlStatus` public for traceability~~
+* [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:MembershipWithNoKycAmlRule.membershipAuthority`, `Kyc:MembershipWithBoundaryKycAmlRule.membershipAuthority` and `Kyc:MembershipWithFullKycAmlRule.membershipAuthority` public for traceability~~
+* [ ] ~~**LOW IMPORTANCE** In *Kyc:NoKycAmlRule*, the `& true` statement is redundant~~
 
 <br />
 
@@ -219,17 +225,17 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract GateRoles is DSRoles
 * [x] [code-review/GateWithFee.md](code-review/GateWithFee.md)
   * [x] contract GateWithFee is Gate
-* [x] [code-review/Kyc.md](code-review/Kyc.md)
-  * [x] contract AddressControlStatus is DSAuth
-  * [x] contract KycAmlStatus is DSAuth
-  * [x] contract ControllableKycAmlRule is ERC20Authority, TokenAuthority
-  * [x] contract NoKycAmlRule is ControllableKycAmlRule
-  * [x] contract BoundaryKycAmlRule is NoKycAmlRule
-  * [x] contract FullKycAmlRule is BoundaryKycAmlRule
-  * [x] contract MembershipAuthorityInterface
-  * [x] contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule
-  * [x] contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule
-  * [x] contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule
+* [x] ~~[code-review/Kyc.md](code-review/Kyc.md)~~ **NOT USED FROM [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)**
+  * [x] ~~contract AddressControlStatus is DSAuth~~
+  * [x] ~~contract KycAmlStatus is DSAuth~~
+  * [x] ~~contract ControllableKycAmlRule is ERC20Authority, TokenAuthority~~
+  * [x] ~~contract NoKycAmlRule is ControllableKycAmlRule~~
+  * [x] ~~contract BoundaryKycAmlRule is NoKycAmlRule~~
+  * [x] ~~contract FullKycAmlRule is BoundaryKycAmlRule~~
+  * [x] ~~contract MembershipAuthorityInterface~~
+  * [x] ~~contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule~~
+  * [x] ~~contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule~~
+  * [x] ~~contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule~~
 * [x] [code-review/LimitController.md](code-review/LimitController.md)
   * [x] contract LimitController is DSMath, DSStop
 * [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)

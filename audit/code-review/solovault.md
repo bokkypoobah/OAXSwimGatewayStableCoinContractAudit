@@ -6,7 +6,7 @@ Source file [../../chain/contracts/solovault.sol](../../chain/contracts/solovaul
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
@@ -102,16 +102,14 @@ contract DSSoloVault is DSAuth {
         DSToken(token).burn(token.balanceOf(this));
     }
 
-    // BK NOTE - If GateWithFee has a FiatToken token balance, any KYC-ed account can execute this function and then transfer out this balance
     // BK Ok
-    function approve(address guy, uint wad) public returns (bool) {
+    function approve(address guy, uint wad) public auth returns (bool) {
         // BK Ok
         return DSToken(token).approve(guy, wad);
     }
 
-    // BK NOTE - If GateWithFee has a FiatToken token balance, any KYC-ed account can execute this function and then transfer out this balance
     // BK Ok
-    function approve(address guy) public returns (bool) {
+    function approve(address guy) public auth returns (bool) {
         // BK Ok
         return DSToken(token).approve(guy);
     }

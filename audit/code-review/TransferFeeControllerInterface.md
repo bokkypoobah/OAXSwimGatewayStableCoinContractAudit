@@ -6,7 +6,7 @@ Source file [../../chain/contracts/TransferFeeControllerInterface.sol](../../cha
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
