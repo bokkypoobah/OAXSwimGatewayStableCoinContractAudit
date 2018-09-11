@@ -42,7 +42,8 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
+* [x] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
+  * [x] Developer and auditor agreed that no action is required
 * [ ] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
 * [ ] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
 * [ ] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
@@ -274,107 +275,11 @@ As documented in [../README.md#new-simpler-contracts](../README.md#new-simpler-c
 
 The Gnosis Multisig wallet smart contract is outside the scope of this audit, but there is a duplicated contract in the source code:
 
-* [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) - This is the Gnosis MultiSigWallet.sol and MultiSigWalletFactory.sol but the factory is included twice
-
-  [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) has been compared to [https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWallet.sol](https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWallet.sol) with the following results:
-
-      $ diff MultiSigWallet.sol ../../chain/contracts/Multisig.sol 
-      1,2c1
-      < pragma solidity ^0.4.15;
-      < 
-      ---
-      > pragma solidity 0.4.23;
-      393a393,431
-      > /// @title Multisignature wallet factory - Allows creation of multisig wallet.
-      > /// @author Stefan George - <stefan.george@consensys.net>
-      > contract MultiSigWalletFactory is Factory {
-      > 
-      >     /*
-      >      * Public functions
-      >      */
-      >     /// @dev Allows verified creation of multisignature wallet.
-      >     /// @param _owners List of initial owners.
-      >     /// @param _required Number of required confirmations.
-      >     /// @return Returns wallet address.
-      >     function create(address[] _owners, uint _required)
-      >         public
-      >         returns (address wallet)
-      >     {
-      >         wallet = new MultiSigWallet(_owners, _required);
-      >         register(wallet);
-      >     }
-      > }
-      > 
-      > /// @title Multisignature wallet factory - Allows creation of multisig wallet.
-      > /// @author Stefan George - <stefan.george@consensys.net>
-      > contract MultiSigWalletFactory is Factory {
-      > 
-      >     /*
-      >      * Public functions
-      >      */
-      >     /// @dev Allows verified creation of multisignature wallet.
-      >     /// @param _owners List of initial owners.
-      >     /// @param _required Number of required confirmations.
-      >     /// @return Returns wallet address.
-      >     function create(address[] _owners, uint _required)
-      >         public
-      >         returns (address wallet)
-      >     {
-      >         wallet = new MultiSigWallet(_owners, _required);
-      >         register(wallet);
-      >      }
-      > }
-
-  Here is the last section of the comparison of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) to [https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWalletFactory.sol](https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWalletFactory.sol):
-
-                                                                      >                _transactionIds = new uint[](to - from);
-                                                                      >                for (i=from; i<to; i++)
-                                                                      >                    _transactionIds[i - from] = transactionIdsTemp[i]
-                                                                      >            }
-                                                                      >        }
-        
-        /// @title Multisignature wallet factory - Allows creation of        /// @title Multisignature wallet factory - Allows creation of
-        /// @author Stefan George - <stefan.george@consensys.net>        /// @author Stefan George - <stefan.george@consensys.net>
-        contract MultiSigWalletFactory is Factory {                        contract MultiSigWalletFactory is Factory {
-        
-            /*                                                                    /*
-             * Public functions                                                     * Public functions
-             */                                                                     */
-            /// @dev Allows verified creation of multisignature walle            /// @dev Allows verified creation of multisignature walle
-            /// @param _owners List of initial owners.                            /// @param _owners List of initial owners.
-            /// @param _required Number of required confirmations.            /// @param _required Number of required confirmations.
-            /// @return Returns wallet address.                                    /// @return Returns wallet address.
-            function create(address[] _owners, uint _required)                    function create(address[] _owners, uint _required)
-                public                                                                public
-                returns (address wallet)                                        returns (address wallet)
-            {                                                                    {
-                wallet = new MultiSigWallet(_owners, _required);                wallet = new MultiSigWallet(_owners, _required);
-                register(wallet);                                                register(wallet);
-            }                                                                    }
-        }                                                                }
-        
-                                                                      >        /// @title Multisignature wallet factory - Allows creation of
-                                                                      >        /// @author Stefan George - <stefan.george@consensys.net>
-                                                                      >        contract MultiSigWalletFactory is Factory {
-                                                                      >
-                                                                      >            /*
-                                                                      >             * Public functions
-                                                                      >             */
-                                                                      >            /// @dev Allows verified creation of multisignature walle
-                                                                      >            /// @param _owners List of initial owners.
-                                                                      >            /// @param _required Number of required confirmations.
-                                                                      >            /// @return Returns wallet address.
-                                                                      >            function create(address[] _owners, uint _required)
-                                                                      >                public
-                                                                      >                returns (address wallet)
-                                                                      >            {
-                                                                      >                wallet = new MultiSigWallet(_owners, _required);
-                                                                      >                register(wallet);
-                                                                      >            }
-                                                                      >        }
+* [x] [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) - This is the Gnosis MultiSigWallet.sol and MultiSigWalletFactory.sol but the factory is included twice
+  * [x] In commit [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593), the code has been moved to [../chain/contracts/vendors/MultiSigWallet.sol](../chain/contracts/vendors/MultiSigWallet.sol) and is the same as [https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWallet.sol](https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWallet.sol) with some differences in the whitespace characters
 
 <br />
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Aug 16 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 11 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
