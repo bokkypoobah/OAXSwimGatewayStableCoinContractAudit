@@ -17,9 +17,9 @@ import "dappsys.sol";
 // BK NOTE - limitSetting.stopped=false
 // BK NOTE - limitSetting.limitCounterResetTimeOffset=0
 // BK NOTE - limitSetting.lastSettingResetTime=1534310818 Wed, 15 Aug 2018 05:26:58 UTC
-// BK NOTE - limitSetting.defaultDelayHours=0
-// BK NOTE - limitSetting.defaultDelayHoursBuffer=0
-// BK NOTE - limitSetting.lastDefaultDelayHoursSettingResetTime=0
+// BK NOTE - limitSetting.defaultDelayTime=0
+// BK NOTE - limitSetting.defaultDelayTimeBuffer=0
+// BK NOTE - limitSetting.lastDefaultDelaySettingResetTime=0
 // BK NOTE - limitSetting.defaultMintDailyLimit=1e+22 10000
 // BK NOTE - limitSetting.defaultBurnDailyLimit=1e+22 10000
 // BK NOTE - limitSetting.defaultMintDailyLimitBuffer=1e+22 10000
@@ -42,9 +42,9 @@ contract LimitSetting is DSAuth, DSStop {
     // delay hours settings for apply daily limit
     // BK NOTE - Next 3 can be made public for traceability
     // BK Next 3 Ok
-    uint256 private defaultDelayHours;
-    uint256 private defaultDelayHoursBuffer;
-    uint256 private lastDefaultDelayHoursSettingResetTime;
+    uint256 private defaultDelayTime;
+    uint256 private defaultDelayTimeBuffer;
+    uint256 private lastDefaultDelaySettingResetTime;
 
     // current limit setting
     // BK NOTE - Next 2 can be made public for traceability
@@ -64,14 +64,13 @@ contract LimitSetting is DSAuth, DSStop {
     mapping(address => uint256) private mintCustomDailyLimitBuffer;
     mapping(address => uint256) private burnCustomDailyLimitBuffer;
 
-    // BK NOTE - `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
     // BK Ok - Constructor
     constructor(
         DSAuthority _authority,
         uint256 _defaultMintDailyLimit,
         uint256 _defaultBurnDailyLimit,
-        int256 _defaultLimitCounterResetTimeffset,
-        uint256 _defaultSettingDelayHours
+        int256 _defaultLimitCounterResetTimeOffset,
+        uint256 _defaultSettingDelayTime
     ) public {
         // BK Ok
         require(
@@ -90,11 +89,12 @@ contract LimitSetting is DSAuth, DSStop {
         );
 
         // BK Ok
-        setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeffset);
+        setLimitCounterResetTimeOffset(_defaultLimitCounterResetTimeOffset);
+        lastDefaultDelaySettingResetTime = now;
         // BK Ok
         resetSettingDelayBuffer();
         // BK Next 5 Ok
-        defaultDelayHours = _defaultSettingDelayHours;
+        defaultDelayTime = _defaultSettingDelayTime;
         defaultMintDailyLimit = _defaultMintDailyLimit;
         defaultBurnDailyLimit = _defaultBurnDailyLimit;
         defaultMintDailyLimitBuffer = _defaultMintDailyLimit;
@@ -125,25 +125,24 @@ contract LimitSetting is DSAuth, DSStop {
     }
 
     // BK NOTE - gateRoles.RoleCapability code LimitSetting:0xa15ac97faf20d873309a67d762acc3968912e688 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setSettingDefaultDelayHours(uint256) role SYSTEM_ADMIN:1 true #7000 0x3951263abb528c0a2a92f5ef3ef7071ff266653ef6040ec7a6371ec75210a939
-    // BK NOTE - Consider adding a check that `_hours` is a reasonable number
-    // BK NOTE - `*DelayHours*` sometimes refers to hours and sometimes to seconds. Consider renaming to remove ambiguity
     // BK Ok - Only SYSTEM_ADMIN can execute
-    function setSettingDefaultDelayHours(uint256 _hours) public auth {
+    function setDefaultDelayHours(uint256 _hours) public auth {
+        require(
+            _hours * 1 hours <= 1 weeks,
+            "Maximum number of delay time is 1 week"
+        );
         // BK NOTE - The variable name implies *Hours*, but the number is stored in seconds
         // BK Ok
-        defaultDelayHoursBuffer = _hours * 1 hours;
+        defaultDelayTimeBuffer = _hours * 1 hours;
         // BK Ok
-        lastDefaultDelayHoursSettingResetTime = now;
+        lastDefaultDelaySettingResetTime = now;
         // BK Ok
         resetSettingDelayBuffer();
     }
 
-    // BK NOTE - Overloading event names make it difficult to retrieve the correct events in JavaScript using the ABI
     // BK Next 4 Ok
     event AdjustMintLimitRequested(address guy, uint wad);
     event AdjustBurnLimitRequested(address guy, uint wad);
-    event AdjustMintLimitRequested(uint wad);
-    event AdjustBurnLimitRequested(uint wad);
 
     // BK NOTE - gateRoles.RoleCapability code LimitSetting:0xa15ac97faf20d873309a67d762acc3968912e688 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultMintDailyLimit(uint256) role SYSTEM_ADMIN:1 true #7000 0x7ad23983e3aa67eda4b68e04e07255cdda95fba7e3fd5df17710e0bc1a7685a5
     // BK Ok - Only SYSTEM_ADMIN can execute
@@ -156,7 +155,7 @@ contract LimitSetting is DSAuth, DSStop {
         // BK Ok
         defaultMintDailyLimitBuffer = limit;
         // BK Ok - Log event
-        emit AdjustMintLimitRequested(defaultMintDailyLimitBuffer);
+        emit AdjustMintLimitRequested(address(0), defaultMintDailyLimitBuffer);
         // BK Ok
         resetSettingDelayBuffer();
     }
@@ -172,7 +171,7 @@ contract LimitSetting is DSAuth, DSStop {
         // BK Ok
         defaultBurnDailyLimitBuffer = limit;
         // BK Ok - Log event
-        emit AdjustBurnLimitRequested(defaultBurnDailyLimitBuffer);
+        emit AdjustBurnLimitRequested(address(0), defaultBurnDailyLimitBuffer);
         // BK Ok
         resetSettingDelayBuffer();
     }
@@ -232,10 +231,8 @@ contract LimitSetting is DSAuth, DSStop {
     // BK NOTE - LimitController calls this with 0x0 or an account
     // BK Ok - Any account can execute with another account as `guy` but it does not matter
     function getMintDailyLimit(address guy) public returns (uint256) {
-        // BK NOTE - Could use `require(...)` instead of `assert(...)` to save on gas cost when errored
-        assert(now >= lastSettingResetTime);
         // BK Ok
-        if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
+        if (now - lastSettingResetTime >= getDefaultDelayTime() || getDefaultDelayTime() == 0) {
             // BK Ok
             if (mintCustomDailyLimitBuffer[guy] > 0) {
                 // BK Ok
@@ -262,10 +259,8 @@ contract LimitSetting is DSAuth, DSStop {
     // BK NOTE - LimitController calls this with 0x0 or an account
     // BK Ok - Any account can execute with another account as `guy` but it does not matter
     function getBurnDailyLimit(address guy) public returns (uint256) {
-        // BK NOTE - Could use `require(...)` instead of `assert(...)` to save on gas cost when errored
-        assert(now >= lastSettingResetTime);
         // BK Ok
-        if (now - lastSettingResetTime >= getDefaultDelayHours() || getDefaultDelayHours() == 0) {
+        if (now - lastSettingResetTime >= getDefaultDelayTime() || getDefaultDelayTime() == 0) {
             // BK Ok
             if (burnCustomDailyLimitBuffer[guy] > 0) {
                 // BK Ok
@@ -296,14 +291,14 @@ contract LimitSetting is DSAuth, DSStop {
     }
 
     // BK NOTE - 30 days to change the delay changes
-    function getDefaultDelayHours() internal returns (uint256) {
-        // BK NOTE - Instead of the magic number, should use 30 days instead of 2592000, or use a named constant
-        if (now - lastDefaultDelayHoursSettingResetTime >= 2592000) {
+    function getDefaultDelayTime() internal returns (uint256) {
+        // BK Ok
+        if (now - lastDefaultDelaySettingResetTime >= 30 days) {
             // BK Ok
-            defaultDelayHours = defaultDelayHoursBuffer;
+            defaultDelayTime = defaultDelayTimeBuffer;
         }
         // BK Ok
-        return defaultDelayHours;
+        return defaultDelayTime;
     }
 
 }

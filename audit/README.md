@@ -64,14 +64,20 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
-* [ ] **LOW IMPORTANCE** In *LimitSetting*, overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
-* [ ] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant
-* [ ] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
-* [ ] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
-* [ ] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
+  * [x] Removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In *LimitSetting*, overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
+  * [x] Duplicate removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant
+  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
+  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
+* [x] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
+  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
 * [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [ ] **LOW IMPORTANCE** *MockOAXMembership* is for testing and should not be included with the production code in Membership.sol
 
 <br />
 
@@ -217,6 +223,8 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 ## Code Review
 
+* [code-review/AddressStatus.md](code-review/AddressStatus.md)
+  * contract AddressStatus is DSAuth
 * [x] [code-review/FiatToken.md](code-review/FiatToken.md)
   * [x] contract FiatToken is DSToken, ERC20Auth, TokenAuth
 * [x] [code-review/Gate.md](code-review/Gate.md)
@@ -240,11 +248,18 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract LimitController is DSMath, DSStop
 * [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
   * [x] contract LimitSetting is DSAuth, DSStop
+* [code-review/Membership.md](code-review/Membership.md)
+  * interface MembershipInterface
+  * contract MockOAXMembership is AddressStatus, MembershipInterface **NOTE that this test contract should not be included with production code**
 * [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
   * [x] interface ERC20Authority
   * [x] contract ERC20Auth is DSAuth
   * [x] interface TokenAuthority
   * [x] contract TokenAuth is DSAuth
+* [ ] [code-review/TokenRules.md](code-review/TokenRules.md)
+  * [ ] contract BaseRules is ERC20Authority, TokenAuthority
+  * [ ] contract BoundaryKycRules is BaseRules
+  * [ ] contract FullKycRules is BoundaryKycRules
 * [x] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
   * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 * [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
@@ -275,18 +290,6 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 ### Outside Scope
 
-As documented in [../README.md#new-simpler-contracts](../README.md#new-simpler-contracts), the following contracts are still being developed:
-
-* [code-review/AddressStatus.md](code-review/AddressStatus.md)
-  * contract AddressStatus is DSAuth
-* [code-review/Membership.md](code-review/Membership.md)
-  * interface MembershipInterface
-  * contract MockOAXMembership is AddressStatus, MembershipInterface
-* [code-review/TokenRules.md](code-review/TokenRules.md)
-  * contract BaseRules is ERC20Authority, TokenAuthority
-  * contract BoundaryKycRules is BaseRules
-  * contract FullKycRules is BoundaryKycRules
-
 The Gnosis Multisig wallet smart contract is outside the scope of this audit, but there is a duplicated contract in the source code:
 
 * [x] [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) - This is the Gnosis MultiSigWallet.sol and MultiSigWalletFactory.sol but the factory is included twice
@@ -296,4 +299,4 @@ The Gnosis Multisig wallet smart contract is outside the scope of this audit, bu
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 11 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 18 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
