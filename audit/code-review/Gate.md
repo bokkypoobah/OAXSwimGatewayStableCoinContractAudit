@@ -6,7 +6,7 @@ Source file [../../chain/contracts/Gate.sol](../../chain/contracts/Gate.sol).
 
 <hr />
 
-```javascript
+```solidity
 // BK Ok
 pragma solidity 0.4.23;
 
