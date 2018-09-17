@@ -56,7 +56,6 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** Consider logging events for `Kyc:MembershipWithNoKycAmlRule.setMembershipAuthority(...)`, `Kyc:MembershipWithBoundaryKycAmlRule.setMembershipAuthority(...)` and `Kyc:MembershipWithFullKycAmlRule.setMembershipAuthority(...)`
 * [x] **LOW IMPORTANCE** Consider making `TokenAuth:TokenAuth.tokenAuthority` public for traceability
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
@@ -66,7 +65,7 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
-* [ ] **LOW IMPORTANCE** Overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
+* [ ] **LOW IMPORTANCE** In *LimitSetting*, overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
 * [ ] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant
 * [ ] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
 * [ ] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
@@ -78,6 +77,7 @@ No potential vulnerabilities have been identified in the smart contracts.
 
 [code-review/Kyc.md](code-review/Kyc.md) is not longer used from [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
 
+* [ ] ~~**LOW IMPORTANCE** Consider logging events for `Kyc:MembershipWithNoKycAmlRule.setMembershipAuthority(...)`, `Kyc:MembershipWithBoundaryKycAmlRule.setMembershipAuthority(...)` and `Kyc:MembershipWithFullKycAmlRule.setMembershipAuthority(...)`~~
 * [ ] ~~**LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*~~
 * [ ] ~~**LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*~~
 * [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:ControllableKycAmlRule.addressControlStatus` public for traceability~~
