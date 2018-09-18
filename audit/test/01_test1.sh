@@ -27,20 +27,15 @@ rsync -rp $SOURCEDIR/* . --exclude=Multisig.sol
 # Copy modified contracts if any files exist
 find ./modifiedContracts -type f -name \* -exec cp {} . \;
 
+
 # --- Modify parameters ---
-`perl -pi -e "s/AddressControlStatus addressControlStatus;/AddressControlStatus public addressControlStatus;/" Kyc.sol`
-`perl -pi -e "s/KycAmlStatus kycAmlStatus;/KycAmlStatus public kycAmlStatus;/" Kyc.sol`
-`perl -pi -e "s/MembershipAuthorityInterface membershipAuthority;/MembershipAuthorityInterface public membershipAuthority;/" Kyc.sol`
-`perl -pi -e "s/uint256 private defaultDelayHours;/uint256 public defaultDelayHours;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private defaultDelayHoursBuffer;/uint256 public defaultDelayHoursBuffer;/" LimitSetting.sol`
-`perl -pi -e "s/uint256 private lastDefaultDelayHoursSettingResetTime;/uint256 public lastDefaultDelayHoursSettingResetTime;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultDelayTime;/uint256 public defaultDelayTime;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private defaultDelayTimeBuffer;/uint256 public defaultDelayTimeBuffer;/" LimitSetting.sol`
+`perl -pi -e "s/uint256 private lastDefaultDelaySettingResetTime;/uint256 public lastDefaultDelaySettingResetTime;/" LimitSetting.sol`
 `perl -pi -e "s/uint256 private defaultMintDailyLimit;/uint256 public defaultMintDailyLimit;/" LimitSetting.sol`
 `perl -pi -e "s/uint256 private defaultBurnDailyLimit;/uint256 public defaultBurnDailyLimit;/" LimitSetting.sol`
 `perl -pi -e "s/uint256 private defaultMintDailyLimitBuffer;/uint256 public defaultMintDailyLimitBuffer;/" LimitSetting.sol`
 `perl -pi -e "s/uint256 private defaultBurnDailyLimitBuffer;/uint256 public defaultBurnDailyLimitBuffer;/" LimitSetting.sol`
-`perl -pi -e "s/LimitSetting limitSetting;/LimitSetting public limitSetting;/" LimitController.sol`
-`perl -pi -e "s/TransferFeeController transferFeeController;/TransferFeeController public transferFeeController;/" GateWithFee.sol`
-`perl -pi -e "s/TokenAuthority tokenAuthority;/TokenAuthority public tokenAuthority;/" TokenAuth.sol`
 
 DIFFS1=`diff -r -x '*.js' -x '*.json' -x '*.txt' -x 'testchain' -x '*.md -x' -x '*.sh' -x 'settings' -x 'modifiedContracts' $SOURCEDIR .`
 echo "--- Differences $SOURCEDIR/*.sol *.sol ---" | tee -a $TEST1OUTPUT
@@ -49,51 +44,50 @@ echo "$DIFFS1" | tee -a $TEST1OUTPUT
 
 solc_0.4.23 --version | tee -a $TEST1OUTPUT
 
+echo "var addressStatusOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $ADDRESSSTATUSSOL`;" > $ADDRESSSTATUSJS
 echo "var gateRolesOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $GATEROLESSOL`;" > $GATEROLESJS
 echo "var dappsysOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $DAPPSYSSOL`;" > $DAPPSYSJS
-echo "var kycOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $KYCSOL`;" > $KYCJS
+echo "var tokenRulesOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $TOKENRULESSOL`;" > $TOKENRULESJS
 echo "var transferFeeControllerOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $TRANSFERFEECONTROLLERSOL`;" > $TRANSFERFEECONTROLLERJS
 echo "var limitSettingOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $LIMITSETTINGSOL`;" > $LIMITSETTINGJS
-echo "var membershipAuthorityOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $MEMBERSHIPAUTHORITYSOL`;" > $MEMBERSHIPAUTHORITYJS
+echo "var membershipOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $MEMBERSHIPSOL`;" > $MEMBERSHIPJS
 echo "var limitControllerOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $LIMITCONTROLLERSOL`;" > $LIMITCONTROLLERJS
 echo "var fiatTokenOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $FIATTOKENSOL`;" > $FIATTOKENJS
 echo "var gateWithFeeOutput=`solc_0.4.23 --allow-paths . --optimize --pretty-json --combined-json abi,bin,interface $GATEWITHFEESOL`;" > $GATEWITHFEEJS
 
 geth --verbosity 3 attach $GETHATTACHPOINT << EOF | tee -a $TEST1OUTPUT
+loadScript("$ADDRESSSTATUSJS");
 loadScript("$GATEROLESJS");
 loadScript("$DAPPSYSJS");
-loadScript("$KYCJS");
+loadScript("$TOKENRULESJS");
 loadScript("$TRANSFERFEECONTROLLERJS");
 loadScript("$LIMITSETTINGJS");
-loadScript("$MEMBERSHIPAUTHORITYJS");
+loadScript("$MEMBERSHIPJS");
 loadScript("$LIMITCONTROLLERJS");
 loadScript("$FIATTOKENJS");
 loadScript("$GATEWITHFEEJS");
 loadScript("lookups.js");
 loadScript("functions.js");
 
+
+var addressStatusAbi = JSON.parse(addressStatusOutput.contracts["$ADDRESSSTATUSSOL:AddressStatus"].abi);
+var addressStatusBin = "0x" + addressStatusOutput.contracts["$ADDRESSSTATUSSOL:AddressStatus"].bin;
 var gateRolesAbi = JSON.parse(gateRolesOutput.contracts["$GATEROLESSOL:GateRoles"].abi);
 var gateRolesBin = "0x" + gateRolesOutput.contracts["$GATEROLESSOL:GateRoles"].bin;
 var fiatTokenGuardAbi = JSON.parse(dappsysOutput.contracts["$DAPPSYSSOL:DSGuard"].abi);
 var fiatTokenGuardBin = "0x" + dappsysOutput.contracts["$DAPPSYSSOL:DSGuard"].bin;
-var kycAmlStatusAbi = JSON.parse(kycOutput.contracts["$KYCSOL:KycAmlStatus"].abi);
-var kycAmlStatusBin = "0x" + kycOutput.contracts["$KYCSOL:KycAmlStatus"].bin;
-var addressControlStatusAbi = JSON.parse(kycOutput.contracts["$KYCSOL:AddressControlStatus"].abi);
-var addressControlStatusBin = "0x" + kycOutput.contracts["$KYCSOL:AddressControlStatus"].bin;
 var transferFeeControllerAbi = JSON.parse(transferFeeControllerOutput.contracts["$TRANSFERFEECONTROLLERSOL:TransferFeeController"].abi);
 var transferFeeControllerBin = "0x" + transferFeeControllerOutput.contracts["$TRANSFERFEECONTROLLERSOL:TransferFeeController"].bin;
 var limitSettingAbi = JSON.parse(limitSettingOutput.contracts["$LIMITSETTINGSOL:LimitSetting"].abi);
 var limitSettingBin = "0x" + limitSettingOutput.contracts["$LIMITSETTINGSOL:LimitSetting"].bin;
-var noKycAmlRuleAbi = JSON.parse(kycOutput.contracts["$KYCSOL:NoKycAmlRule"].abi);
-var noKycAmlRuleBin = "0x" + kycOutput.contracts["$KYCSOL:NoKycAmlRule"].bin;
-var boundaryKycAmlRuleAbi = JSON.parse(kycOutput.contracts["$KYCSOL:BoundaryKycAmlRule"].abi);
-var boundaryKycAmlRuleBin = "0x" + kycOutput.contracts["$KYCSOL:BoundaryKycAmlRule"].bin;
-var fullKycAmlRuleAbi = JSON.parse(kycOutput.contracts["$KYCSOL:FullKycAmlRule"].abi);
-var fullKycAmlRuleBin = "0x" + kycOutput.contracts["$KYCSOL:FullKycAmlRule"].bin;
-var mockMembershipAuthorityAbi = JSON.parse(membershipAuthorityOutput.contracts["$MEMBERSHIPAUTHORITYSOL:MockMembershipAuthority"].abi);
-var mockMembershipAuthorityBin = "0x" + membershipAuthorityOutput.contracts["$MEMBERSHIPAUTHORITYSOL:MockMembershipAuthority"].bin;
-var membershipWithBoundaryKycAmlRuleAbi = JSON.parse(kycOutput.contracts["$KYCSOL:MembershipWithBoundaryKycAmlRule"].abi);
-var membershipWithBoundaryKycAmlRuleBin = "0x" + kycOutput.contracts["$KYCSOL:MembershipWithBoundaryKycAmlRule"].bin;
+var baseRuleAbi = JSON.parse(tokenRulesOutput.contracts["$TOKENRULESSOL:BaseRule"].abi);
+var baseRuleBin = "0x" + tokenRulesOutput.contracts["$TOKENRULESSOL:BaseRule"].bin;
+var boundaryKycRuleAbi = JSON.parse(tokenRulesOutput.contracts["$TOKENRULESSOL:BoundaryKycRule"].abi);
+var boundaryKycRuleBin = "0x" + tokenRulesOutput.contracts["$TOKENRULESSOL:BoundaryKycRule"].bin;
+var fullKycRuleAbi = JSON.parse(tokenRulesOutput.contracts["$TOKENRULESSOL:FullKycRule"].abi);
+var fullKycRuleBin = "0x" + tokenRulesOutput.contracts["$TOKENRULESSOL:FullKycRule"].bin;
+var mockMembershipAbi = JSON.parse(membershipOutput.contracts["$MEMBERSHIPSOL:MockOAXMembership"].abi);
+var mockMembershipBin = "0x" + membershipOutput.contracts["$MEMBERSHIPSOL:MockOAXMembership"].bin;
 var limitControllerAbi = JSON.parse(limitControllerOutput.contracts["$LIMITCONTROLLERSOL:LimitController"].abi);
 var limitControllerBin = "0x" + limitControllerOutput.contracts["$LIMITCONTROLLERSOL:LimitController"].bin;
 var fiatTokenAbi = JSON.parse(fiatTokenOutput.contracts["$FIATTOKENSOL:FiatToken"].abi);
@@ -101,28 +95,24 @@ var fiatTokenBin = "0x" + fiatTokenOutput.contracts["$FIATTOKENSOL:FiatToken"].b
 var gateWithFeeAbi = JSON.parse(gateWithFeeOutput.contracts["$GATEWITHFEESOL:GateWithFee"].abi);
 var gateWithFeeBin = "0x" + gateWithFeeOutput.contracts["$GATEWITHFEESOL:GateWithFee"].bin;
 
+// console.log("DATA: addressStatusAbi=" + JSON.stringify(addressStatusAbi));
+// console.log("DATA: addressStatusBin=" + JSON.stringify(addressStatusBin));
 // console.log("DATA: gateRolesAbi=" + JSON.stringify(gateRolesAbi));
 // console.log("DATA: gateRolesBin=" + JSON.stringify(gateRolesBin));
 // console.log("DATA: fiatTokenGuardAbi=" + JSON.stringify(fiatTokenGuardAbi));
 // console.log("DATA: fiatTokenGuardBin=" + JSON.stringify(fiatTokenGuardBin));
-// console.log("DATA: kycAmlStatusAbi=" + JSON.stringify(kycAmlStatusAbi));
-// console.log("DATA: kycAmlStatusBin=" + JSON.stringify(kycAmlStatusBin));
-// console.log("DATA: addressControlStatusAbi=" + JSON.stringify(addressControlStatusAbi));
-// console.log("DATA: addressControlStatusBin=" + JSON.stringify(addressControlStatusBin));
 // console.log("DATA: transferFeeControllerAbi=" + JSON.stringify(transferFeeControllerAbi));
 // console.log("DATA: transferFeeControllerBin=" + JSON.stringify(transferFeeControllerBin));
 // console.log("DATA: limitSettingAbi=" + JSON.stringify(limitSettingAbi));
 // console.log("DATA: limitSettingBin=" + JSON.stringify(limitSettingBin));
-// console.log("DATA: noKycAmlRuleAbi=" + JSON.stringify(noKycAmlRuleAbi));
-// console.log("DATA: noKycAmlRuleBin=" + JSON.stringify(noKycAmlRuleBin));
-// console.log("DATA: boundaryKycAmlRuleAbi=" + JSON.stringify(boundaryKycAmlRuleAbi));
-// console.log("DATA: boundaryKycAmlRuleBin=" + JSON.stringify(boundaryKycAmlRuleBin));
-// console.log("DATA: fullKycAmlRuleAbi=" + JSON.stringify(fullKycAmlRuleAbi));
-// console.log("DATA: fullKycAmlRuleBin=" + JSON.stringify(fullKycAmlRuleBin));
-// console.log("DATA: mockMembershipAuthorityAbi=" + JSON.stringify(mockMembershipAuthorityAbi));
-// console.log("DATA: mockMembershipAuthorityBin=" + JSON.stringify(mockMembershipAuthorityBin));
-// console.log("DATA: membershipWithBoundaryKycAmlRuleAbi=" + JSON.stringify(membershipWithBoundaryKycAmlRuleAbi));
-// console.log("DATA: membershipWithBoundaryKycAmlRuleBin=" + JSON.stringify(membershipWithBoundaryKycAmlRuleBin));
+// console.log("DATA: baseRuleAbi=" + JSON.stringify(baseRuleAbi));
+// console.log("DATA: baseRuleBin=" + JSON.stringify(baseRuleBin));
+// console.log("DATA: boundaryKycRuleAbi=" + JSON.stringify(boundaryKycRuleAbi));
+// console.log("DATA: boundaryKycRuleBin=" + JSON.stringify(boundaryKycRuleBin));
+// console.log("DATA: fullKycRuleAbi=" + JSON.stringify(fullKycRuleAbi));
+// console.log("DATA: fullKycRuleBin=" + JSON.stringify(fullKycRuleBin));
+// console.log("DATA: mockMembershipAbi=" + JSON.stringify(mockMembershipAbi));
+// console.log("DATA: mockMembershipBin=" + JSON.stringify(mockMembershipBin));
 // console.log("DATA: limitControllerAbi=" + JSON.stringify(limitControllerAbi));
 // console.log("DATA: limitControllerBin=" + JSON.stringify(limitControllerBin));
 // console.log("DATA: fiatTokenAbi=" + JSON.stringify(fiatTokenAbi));
@@ -194,40 +184,60 @@ console.log("RESULT: ");
 var deployGroup2Message = "Deploy Group #2";
 // -----------------------------------------------------------------------------
 console.log("RESULT: ---------- " + deployGroup2Message + " ----------");
-var kycAmlStatusContract = web3.eth.contract(kycAmlStatusAbi);
-var kycAmlStatusTx = null;
-var kycAmlStatusAddress = null;
-var kycAmlStatus = kycAmlStatusContract.new(gateRolesAddress, {from: deployer, data: kycAmlStatusBin, gas: 2000000, gasPrice: defaultGasPrice},
+var blacklistContract = web3.eth.contract(addressStatusAbi);
+var blacklistTx = null;
+var blacklistAddress = null;
+var blacklist = blacklistContract.new(gateRolesAddress, {from: deployer, data: addressStatusBin, gas: 2000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
-        kycAmlStatusTx = contract.transactionHash;
+        blacklistTx = contract.transactionHash;
       } else {
-        kycAmlStatusAddress = contract.address;
-        addAccount(kycAmlStatusAddress, "KycAmlStatus");
-        addKycAmlStatusContractAddressAndAbi(kycAmlStatusAddress, kycAmlStatusAbi);
-        console.log("DATA: var kycAmlStatusAddress=\"" + kycAmlStatusAddress + "\";");
-        console.log("DATA: var kycAmlStatusAbi=" + JSON.stringify(kycAmlStatusAbi) + ";");
-        console.log("DATA: var kycAmlStatus=eth.contract(kycAmlStatusAbi).at(kycAmlStatusAddress);");
+        blacklistAddress = contract.address;
+        addAccount(blacklistAddress, "Blacklist(AddressStatus)");
+        addBlacklistContractAddressAndAbi(blacklistAddress, addressStatusAbi);
+        console.log("DATA: var blacklistAddress=\"" + blacklistAddress + "\";");
+        console.log("DATA: var blacklistAbi=" + JSON.stringify(addressStatusAbi) + ";");
+        console.log("DATA: var blacklist=eth.contract(blacklistAbi).at(blacklistAddress);");
       }
     }
   }
 );
-var addressControlStatusContract = web3.eth.contract(addressControlStatusAbi);
-var addressControlStatusTx = null;
-var addressControlStatusAddress = null;
-var addressControlStatus = addressControlStatusContract.new(gateRolesAddress, {from: deployer, data: addressControlStatusBin, gas: 2000000, gasPrice: defaultGasPrice},
+var kycContract = web3.eth.contract(addressStatusAbi);
+var kycTx = null;
+var kycAddress = null;
+var kyc = kycContract.new(gateRolesAddress, {from: deployer, data: addressStatusBin, gas: 2000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
-        addressControlStatusTx = contract.transactionHash;
+        kycTx = contract.transactionHash;
       } else {
-        addressControlStatusAddress = contract.address;
-        addAccount(addressControlStatusAddress, "AddressControlStatus");
-        addAddressControlStatusContractAddressAndAbi(addressControlStatusAddress, addressControlStatusAbi);
-        console.log("DATA: var addressControlStatusAddress=\"" + addressControlStatusAddress + "\";");
-        console.log("DATA: var addressControlStatusAbi=" + JSON.stringify(addressControlStatusAbi) + ";");
-        console.log("DATA: var addressControlStatus=eth.contract(addressControlStatusAbi).at(addressControlStatusAddress);");
+        kycAddress = contract.address;
+        addAccount(kycAddress, "Kyc(AddressStatus)");
+        addKycContractAddressAndAbi(kycAddress, addressStatusAbi);
+        console.log("DATA: var kycAddress=\"" + kycAddress + "\";");
+        console.log("DATA: var kycAbi=" + JSON.stringify(addressStatusAbi) + ";");
+        console.log("DATA: var kyc=eth.contract(kycAbi).at(kycAddress);");
+      }
+    }
+  }
+);
+var mockMembershipContract = web3.eth.contract(mockMembershipAbi);
+var mockMembershipTx = null;
+var mockMembershipAddress = null;
+var mockMembership = mockMembershipContract.new(gateRolesAddress,{from: deployer, data: mockMembershipBin, gas: 2000000, gasPrice: defaultGasPrice},
+  function(e, contract) {
+    if (!e) {
+      if (!contract.address) {
+        mockMembershipTx = contract.transactionHash;
+      } else {
+        mockMembershipAddress = contract.address;
+        addAccount(mockMembershipAddress, "MockMembership");
+        addMockMembershipContractAddressAndAbi(mockMembershipAddress, mockMembershipAbi);
+        console.log("DATA: mockMembershipAddress=\"" + mockMembershipAddress + "\";");
+        console.log("DATA: var mockMembershipAddress=\"" + mockMembershipAddress + "\";");
+        console.log("DATA: var mockMembershipAbi=" + JSON.stringify(mockMembershipAbi) + ";");
+        console.log("DATA: var mockMembership=eth.contract(mockMembershipAbi).at(mockMembershipAddress);");
       }
     }
   }
@@ -273,16 +283,19 @@ var limitSetting = limitSettingContract.new(gateRolesAddress, $MINT_LIMIT, $BURN
 while (txpool.status.pending > 0) {
 }
 printBalances();
-failIfTxStatusError(kycAmlStatusTx, deployGroup2Message + " - KycAmlStatus");
-failIfTxStatusError(addressControlStatusTx, deployGroup2Message + " - AddressControlStatus");
+failIfTxStatusError(blacklistTx, deployGroup2Message + " - Blacklist(AddressStatus)");
+failIfTxStatusError(kycTx, deployGroup2Message + " - Kyc(AddressStatus)");
+failIfTxStatusError(mockMembershipTx, deployGroup2Message + " - MockMembership");
 failIfTxStatusError(transferFeeControllerTx, deployGroup2Message + " - TransferFeeController");
 failIfTxStatusError(limitSettingTx, deployGroup2Message + " - LimitSetting");
-printTxData("kycAmlStatusTx", kycAmlStatusTx);
-printTxData("addressControlStatusTx", addressControlStatusTx);
+printTxData("blacklistTx", blacklistTx);
+printTxData("kycTx", kycTx);
+printTxData("mockMembershipTx", mockMembershipTx);
 printTxData("transferFeeControllerTx", transferFeeControllerTx);
 printTxData("limitSettingTx", limitSettingTx);
-printKycAmlStatusContractDetails();
-printAddressControlStatusContractDetails();
+printBlacklistContractDetails();
+printKycContractDetails();
+printMockMembershipContractDetails();
 printTransferFeeControllerContractDetails();
 printLimitSettingContractDetails();
 console.log("RESULT: ");
@@ -292,100 +305,59 @@ console.log("RESULT: ");
 var deployGroup3Message = "Deploy Group #3";
 // -----------------------------------------------------------------------------
 console.log("RESULT: ---------- " + deployGroup3Message + " ----------");
-var noKycAmlRuleContract = web3.eth.contract(noKycAmlRuleAbi);
-var noKycAmlRuleTx = null;
-var noKycAmlRuleAddress = null;
-var noKycAmlRule = noKycAmlRuleContract.new(addressControlStatusAddress, {from: deployer, data: noKycAmlRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
+var baseRuleContract = web3.eth.contract(baseRuleAbi);
+var baseRuleTx = null;
+var baseRuleAddress = null;
+var baseRule = baseRuleContract.new(blacklistAddress, {from: deployer, data: baseRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
-        noKycAmlRuleTx = contract.transactionHash;
+        baseRuleTx = contract.transactionHash;
       } else {
-        noKycAmlRuleAddress = contract.address;
-        addAccount(noKycAmlRuleAddress, "NoKycAmlRule");
-        addNoKycAmlRuleContractAddressAndAbi(noKycAmlRuleAddress, noKycAmlRuleAbi);
-        console.log("DATA: var noKycAmlRuleAddress=\"" + noKycAmlRuleAddress + "\";");
-        console.log("DATA: var noKycAmlRuleAbi=" + JSON.stringify(noKycAmlRuleAbi) + ";");
-        console.log("DATA: var noKycAmlRule=eth.contract(noKycAmlRuleAbi).at(noKycAmlRuleAddress);");
+        baseRuleAddress = contract.address;
+        addAccount(baseRuleAddress, "BaseRule");
+        addBaseRuleContractAddressAndAbi(baseRuleAddress, baseRuleAbi);
+        console.log("DATA: var baseRuleAddress=\"" + baseRuleAddress + "\";");
+        console.log("DATA: var baseRuleAbi=" + JSON.stringify(baseRuleAbi) + ";");
+        console.log("DATA: var baseRule=eth.contract(baseRuleAbi).at(baseRuleAddress);");
       }
     }
   }
 );
-var boundaryKycAmlRuleContract = web3.eth.contract(boundaryKycAmlRuleAbi);
-var boundaryKycAmlRuleTx = null;
-var boundaryKycAmlRuleAddress = null;
-var boundaryKycAmlRule = boundaryKycAmlRuleContract.new(addressControlStatusAddress, kycAmlStatusAddress, {from: deployer, data: boundaryKycAmlRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
+var boundaryKycRuleContract = web3.eth.contract(boundaryKycRuleAbi);
+var boundaryKycRuleTx = null;
+var boundaryKycRuleAddress = null;
+var boundaryKycRule = boundaryKycRuleContract.new(blacklistAddress, kycAddress, mockMembershipAddress, {from: deployer, data: boundaryKycRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
-        boundaryKycAmlRuleTx = contract.transactionHash;
+        boundaryKycRuleTx = contract.transactionHash;
       } else {
-        boundaryKycAmlRuleAddress = contract.address;
-        addAccount(boundaryKycAmlRuleAddress, "BoundaryKycAmlRule");
-        addBoundaryKycAmlRuleContractAddressAndAbi(boundaryKycAmlRuleAddress, boundaryKycAmlRuleAbi);
-        console.log("DATA: var boundaryKycAmlRuleAddress=\"" + boundaryKycAmlRuleAddress + "\";");
-        console.log("DATA: var boundaryKycAmlRuleAbi=" + JSON.stringify(boundaryKycAmlRuleAbi) + ";");
-        console.log("DATA: var boundaryKycAmlRule=eth.contract(boundaryKycAmlRuleAbi).at(boundaryKycAmlRuleAddress);");
+        boundaryKycRuleAddress = contract.address;
+        addAccount(boundaryKycRuleAddress, "BoundaryKycRule");
+        addBoundaryKycRuleContractAddressAndAbi(boundaryKycRuleAddress, boundaryKycRuleAbi);
+        console.log("DATA: var boundaryKycRuleAddress=\"" + boundaryKycRuleAddress + "\";");
+        console.log("DATA: var boundaryKycRuleAbi=" + JSON.stringify(boundaryKycRuleAbi) + ";");
+        console.log("DATA: var boundaryKycRule=eth.contract(boundaryKycRuleAbi).at(boundaryKycRuleAddress);");
       }
     }
   }
 );
-var fullKycAmlRuleContract = web3.eth.contract(fullKycAmlRuleAbi);
-var fullKycAmlRuleTx = null;
-var fullKycAmlRuleAddress = null;
-var fullKycAmlRule = fullKycAmlRuleContract.new(addressControlStatusAddress, kycAmlStatusAddress, {from: deployer, data: fullKycAmlRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
+var fullKycRuleContract = web3.eth.contract(fullKycRuleAbi);
+var fullKycRuleTx = null;
+var fullKycRuleAddress = null;
+var fullKycRule = fullKycRuleContract.new(blacklistAddress, kycAddress, mockMembershipAddress, {from: deployer, data: fullKycRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
-        fullKycAmlRuleTx = contract.transactionHash;
+        fullKycRuleTx = contract.transactionHash;
       } else {
-        fullKycAmlRuleAddress = contract.address;
-        addAccount(fullKycAmlRuleAddress, "FullKycAmlRule");
-        addFullKycAmlRuleContractAddressAndAbi(fullKycAmlRuleAddress, fullKycAmlRuleAbi);
-        console.log("DATA: var fullKycAmlRuleAddress=\"" + fullKycAmlRuleAddress + "\";");
-        console.log("DATA: var fullKycAmlRuleAbi=" + JSON.stringify(fullKycAmlRuleAbi) + ";");
-        console.log("DATA: var fullKycAmlRule=eth.contract(fullKycAmlRuleAbi).at(fullKycAmlRuleAddress);");
-      }
-    }
-  }
-);
-var mockMembershipAuthorityContract = web3.eth.contract(mockMembershipAuthorityAbi);
-var mockMembershipAuthorityTx = null;
-var mockMembershipAuthorityAddress = null;
-var mockMembershipAuthority = mockMembershipAuthorityContract.new({from: deployer, data: mockMembershipAuthorityBin, gas: 2000000, gasPrice: defaultGasPrice},
-  function(e, contract) {
-    if (!e) {
-      if (!contract.address) {
-        mockMembershipAuthorityTx = contract.transactionHash;
-      } else {
-        mockMembershipAuthorityAddress = contract.address;
-        addAccount(mockMembershipAuthorityAddress, "MockMembershipAuthority");
-        // BK TODO
-        console.log("DATA: mockMembershipAuthorityAddress=\"" + mockMembershipAuthorityAddress + "\";");
-        console.log("DATA: var mockMembershipAuthorityAddress=\"" + mockMembershipAuthorityAddress + "\";");
-        console.log("DATA: var mockMembershipAuthorityAbi=" + JSON.stringify(mockMembershipAuthorityAbi) + ";");
-        console.log("DATA: var mockMembershipAuthority=eth.contract(mockMembershipAuthorityAbi).at(mockMembershipAuthorityAddress);");
-      }
-    }
-  }
-);
-while (txpool.status.pending > 0) {
-}
-var membershipWithBoundaryKycAmlRuleContract = web3.eth.contract(membershipWithBoundaryKycAmlRuleAbi);
-var membershipWithBoundaryKycAmlRuleTx = null;
-var membershipWithBoundaryKycAmlRuleAddress = null;
-var membershipWithBoundaryKycAmlRule = membershipWithBoundaryKycAmlRuleContract.new(gateRolesAddress, addressControlStatusAddress, kycAmlStatusAddress, mockMembershipAuthorityAddress, {from: deployer, data: membershipWithBoundaryKycAmlRuleBin, gas: 2000000, gasPrice: defaultGasPrice},
-  function(e, contract) {
-    if (!e) {
-      if (!contract.address) {
-        membershipWithBoundaryKycAmlRuleTx = contract.transactionHash;
-      } else {
-        membershipWithBoundaryKycAmlRuleAddress = contract.address;
-        addAccount(membershipWithBoundaryKycAmlRuleAddress, "MembershipWithBoundaryKycAmlRule");
-        addMembershipWithBoundaryKycAmlRuleContractAddressAndAbi(membershipWithBoundaryKycAmlRuleAddress, membershipWithBoundaryKycAmlRuleAbi);
-        console.log("DATA: var membershipWithBoundaryKycAmlRuleAddress=\"" + membershipWithBoundaryKycAmlRuleAddress + "\";");
-        console.log("DATA: var membershipWithBoundaryKycAmlRuleAbi=" + JSON.stringify(membershipWithBoundaryKycAmlRuleAbi) + ";");
-        console.log("DATA: var membershipWithBoundaryKycAmlRule=eth.contract(membershipWithBoundaryKycAmlRuleAbi).at(membershipWithBoundaryKycAmlRuleAddress);");
+        fullKycRuleAddress = contract.address;
+        addAccount(fullKycRuleAddress, "FullKycRule");
+        addFullKycRuleContractAddressAndAbi(fullKycRuleAddress, fullKycRuleAbi);
+        console.log("DATA: var fullKycRuleAddress=\"" + fullKycRuleAddress + "\";");
+        console.log("DATA: var fullKycRuleAbi=" + JSON.stringify(fullKycRuleAbi) + ";");
+        console.log("DATA: var fullKycRule=eth.contract(fullKycRuleAbi).at(fullKycRuleAddress);");
       }
     }
   }
@@ -431,24 +403,19 @@ var fiatToken = fiatTokenContract.new(fiatTokenGuardAddress, "USD", "USDToken", 
 while (txpool.status.pending > 0) {
 }
 printBalances();
-failIfTxStatusError(noKycAmlRuleTx, deployGroup3Message + " - NoKycAmlRule");
-failIfTxStatusError(boundaryKycAmlRuleTx, deployGroup3Message + " - BoundaryKycAmlRule");
-failIfTxStatusError(fullKycAmlRuleTx, deployGroup3Message + " - FullKycAmlRule");
-failIfTxStatusError(mockMembershipAuthorityTx, deployGroup3Message + " - MockMembershipAuthority");
-failIfTxStatusError(membershipWithBoundaryKycAmlRuleTx, deployGroup3Message + " - MembershipWithBoundaryKycAmlRule");
+failIfTxStatusError(baseRuleTx, deployGroup3Message + " - BaseRule");
+failIfTxStatusError(boundaryKycRuleTx, deployGroup3Message + " - BoundaryKycRule");
+failIfTxStatusError(fullKycRuleTx, deployGroup3Message + " - FullKycRule");
 failIfTxStatusError(limitControllerTx, deployGroup3Message + " - LimitController");
 failIfTxStatusError(fiatTokenTx, deployGroup3Message + " - FiatToken");
-printTxData("noKycAmlRuleTx", noKycAmlRuleTx);
-printTxData("boundaryKycAmlRuleTx", boundaryKycAmlRuleTx);
-printTxData("fullKycAmlRuleTx", fullKycAmlRuleTx);
-printTxData("mockMembershipAuthorityTx", mockMembershipAuthorityTx);
-printTxData("membershipWithBoundaryKycAmlRuleTx", membershipWithBoundaryKycAmlRuleTx);
+printTxData("baseRuleTx", baseRuleTx);
+printTxData("boundaryKycRuleTx", boundaryKycRuleTx);
+printTxData("fullKycRuleTx", fullKycRuleTx);
 printTxData("limitControllerTx", limitControllerTx);
 printTxData("fiatTokenTx", fiatTokenTx);
-printNoKycAmlRuleContractDetails();
-printBoundaryKycAmlRuleContractDetails();
-printFullKycAmlRuleContractDetails();
-printMembershipWithBoundaryKycAmlRuleContractDetails();
+printBaseRuleContractDetails();
+printBoundaryKycRuleContractDetails();
+printFullKycRuleContractDetails();
 printLimitControllerContractDetails();
 printTokenAContractDetails();
 console.log("RESULT: ");
@@ -481,31 +448,27 @@ console.log("RESULT: ");
 var setRoleRules1Message = "Set Roles Rules #1";
 // -----------------------------------------------------------------------------
 console.log("RESULT: ---------- " + setRoleRules1Message + " ----------");
-var setRoleRules1_1Tx = gateRoles.setRoleCapability(KYC_OPERATOR_ROLE, kycAmlStatusAddress, web3.sha3("setKycVerified(address,bool)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_2Tx = gateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, addressControlStatusAddress, web3.sha3("freezeAddress(address)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_3Tx = gateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, addressControlStatusAddress, web3.sha3("unfreezeAddress(address)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_4Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setSettingDefaultDelayHours(uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_5Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setLimitCounterResetTimeOffset(int256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_6Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setDefaultMintDailyLimit(uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_7Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setDefaultBurnDailyLimit(uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_8Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setCustomMintDailyLimit(address,uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_9Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setCustomBurnDailyLimit(address,uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_10Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeControllerAddress, web3.sha3("setDefaultTransferFee(uint256,uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
-var setRoleRules1_11Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRuleAddress, web3.sha3("setMembershipAuthority(address)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_1Tx = gateRoles.setRoleCapability(KYC_OPERATOR_ROLE, kycAddress, web3.sha3("set(address,bool)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_2Tx = gateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, blacklistAddress, web3.sha3("set(address,bool)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_3Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setDefaultDelayHours(uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_4Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setLimitCounterResetTimeOffset(int256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_5Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setDefaultMintDailyLimit(uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_6Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setDefaultBurnDailyLimit(uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_7Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setCustomMintDailyLimit(address,uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_8Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3("setCustomBurnDailyLimit(address,uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
+var setRoleRules1_9Tx = gateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeControllerAddress, web3.sha3("setDefaultTransferFee(uint256,uint256)").substring(0, 10), true, {from: deployer, gas: 400000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printBalances();
-failIfTxStatusError(setRoleRules1_1Tx, setRoleRules1Message + " - setRoleCapability(KYC_OPERATOR_ROLE, kycAmlStatusAddress, web3.sha3(\"setKycVerified(address,bool)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_2Tx, setRoleRules1Message + " - setRoleCapability(MONEY_OPERATOR_ROLE, addressControlStatusAddress, web3.sha3(\"freezeAddress(address)\").substring(0, 10), true");
-failIfTxStatusError(setRoleRules1_3Tx, setRoleRules1Message + " - setRoleCapability(MONEY_OPERATOR_ROLE, addressControlStatusAddress, web3.sha3(\"unfreezeAddress(address)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_4Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setSettingDefaultDelayHours(uint256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_5Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setLimitCounterResetTimeOffset(int256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_6Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setDefaultMintDailyLimit(uint256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_7Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setDefaultBurnDailyLimit(uint256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_8Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setCustomMintDailyLimit(address,uint256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_9Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setCustomBurnDailyLimit(address,uint256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_10Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeControllerAddress, web3.sha3(\"setDefaultTransferFee(uint256,uint256)\").substring(0, 10), true)");
-failIfTxStatusError(setRoleRules1_11Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRuleAddress, web3.sha3(\"setMembershipAuthority(address)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_1Tx, setRoleRules1Message + " - setRoleCapability(KYC_OPERATOR_ROLE, kyc, web3.sha3(\"set(address,bool)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_2Tx, setRoleRules1Message + " - setRoleCapability(MONEY_OPERATOR_ROLE, blacklist, web3.sha3(\"set(address,bool)\").substring(0, 10), true");
+failIfTxStatusError(setRoleRules1_3Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setDefaultDelayHours(uint256)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_4Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setLimitCounterResetTimeOffset(int256)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_5Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setDefaultMintDailyLimit(uint256)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_6Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setDefaultBurnDailyLimit(uint256)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_7Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setCustomMintDailyLimit(address,uint256)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_8Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSettingAddress, web3.sha3(\"setCustomBurnDailyLimit(address,uint256)\").substring(0, 10), true)");
+failIfTxStatusError(setRoleRules1_9Tx, setRoleRules1Message + " - setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeControllerAddress, web3.sha3(\"setDefaultTransferFee(uint256,uint256)\").substring(0, 10), true)");
 printTxData("setRoleRules1_1Tx", setRoleRules1_1Tx);
 printTxData("setRoleRules1_2Tx", setRoleRules1_2Tx);
 printTxData("setRoleRules1_3Tx", setRoleRules1_3Tx);
@@ -515,8 +478,6 @@ printTxData("setRoleRules1_6Tx", setRoleRules1_6Tx);
 printTxData("setRoleRules1_7Tx", setRoleRules1_6Tx);
 printTxData("setRoleRules1_8Tx", setRoleRules1_8Tx);
 printTxData("setRoleRules1_9Tx", setRoleRules1_9Tx);
-printTxData("setRoleRules1_10Tx", setRoleRules1_10Tx);
-printTxData("setRoleRules1_11Tx", setRoleRules1_11Tx);
 printGateRolesContractDetails();
 console.log("RESULT: ");
 
@@ -528,7 +489,7 @@ console.log("RESULT: ---------- " + deployGroup2Message + " ----------");
 var gateWithFeeContract = web3.eth.contract(gateWithFeeAbi);
 var gateWithFeeTx = null;
 var gateWithFeeAddress = null;
-var gateWithFee = gateWithFeeContract.new(gateRolesAddress, fiatTokenAddress, limitControllerAddress, mintFeeCollector, burnFeeCollector, transferFeeControllerAddress, {from: deployer, data: gateWithFeeBin, gas: 4000000, gasPrice: defaultGasPrice},
+var gateWithFee = gateWithFeeContract.new(gateRolesAddress, fiatTokenAddress, limitControllerAddress, mintFeeCollector, burnFeeCollector, {from: deployer, data: gateWithFeeBin, gas: 4000000, gasPrice: defaultGasPrice},
   function(e, contract) {
     if (!e) {
       if (!contract.address) {
@@ -686,13 +647,13 @@ console.log("RESULT: ");
 var setGateWithFeeTokenAuth1Message = "Set GateWithFee TokenAuth";
 // -----------------------------------------------------------------------------
 console.log("RESULT: ---------- " + transferOwnership11Message + " ----------");
-var setGateWithFeeTokenAuth1_1Tx = gateWithFee.setERC20Authority(fullKycAmlRuleAddress, {from: sysAdmin, gas: 400000, gasPrice: defaultGasPrice});
-var setGateWithFeeTokenAuth1_2Tx = gateWithFee.setTokenAuthority(fullKycAmlRuleAddress, {from: sysAdmin, gas: 400000, gasPrice: defaultGasPrice});
+var setGateWithFeeTokenAuth1_1Tx = gateWithFee.setERC20Authority(fullKycRuleAddress, {from: sysAdmin, gas: 400000, gasPrice: defaultGasPrice});
+var setGateWithFeeTokenAuth1_2Tx = gateWithFee.setTokenAuthority(fullKycRuleAddress, {from: sysAdmin, gas: 400000, gasPrice: defaultGasPrice});
 while (txpool.status.pending > 0) {
 }
 printBalances();
-failIfTxStatusError(setGateWithFeeTokenAuth1_1Tx, setGateWithFeeTokenAuth1Message + " - gateWithFee.setERC20Authority(fullKycAmlRule)");
-failIfTxStatusError(setGateWithFeeTokenAuth1_2Tx, setGateWithFeeTokenAuth1Message + " - gateWithFee.setTokenAuthority(fullKycAmlRule)");
+failIfTxStatusError(setGateWithFeeTokenAuth1_1Tx, setGateWithFeeTokenAuth1Message + " - gateWithFee.setERC20Authority(fullKycRule)");
+failIfTxStatusError(setGateWithFeeTokenAuth1_2Tx, setGateWithFeeTokenAuth1Message + " - gateWithFee.setTokenAuthority(fullKycRule)");
 printTxData("setGateWithFeeTokenAuth1_1Tx", setGateWithFeeTokenAuth1_1Tx);
 printTxData("setGateWithFeeTokenAuth1_2Tx", setGateWithFeeTokenAuth1_2Tx);
 printGateWithFeeContractDetails();

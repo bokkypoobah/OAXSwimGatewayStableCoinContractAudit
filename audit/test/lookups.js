@@ -47,11 +47,13 @@ addSig("pull(address,uint256)");
 
 // From AddressStatus
 addSig("set(address,bool)");
+
+// From FiatToken
 addSig("approve(address,uint256)");
 addSig("transfer(address,uint256)");
 addSig("transferFrom(address,address,uint256)");
 addSig("setTransferFeeCollector(address)");
-addSig("setTransferFeeController()");
+addSig("setTransferFeeController(address)");
 
 // From Gate
 addSig("setLimitController(address)");
@@ -68,22 +70,6 @@ addSig("setTransferFeeController(address)");
 addSig("mintWithFee(address,uint256,uint256)");
 addSig("burnWithFee(address,uint256,uint256)");
 
-// From Kyc:AddressControlStatus
-addSig("freezeAddress(address)");
-addSig("unfreezeAddress(address)");
-
-// From Kyc:KycAmlStatus
-addSig("setKycVerified(address,bool)");
-
-// From Kyc:MembershipWithNoKycAmlRule
-addSig("setMembershipAuthority(address)");
-
-// From Kyc:MembershipWithBoundaryKycAmlRule
-addSig("setMembershipAuthority(address)");
-
-// From Kyc:MembershipWithFullKycAmlRule
-addSig("setMembershipAuthority(address)");
-
 // From LimitController
 addSig("bumpMintLimitCounter(uint256)");
 addSig("bumpBurnLimitCounter(uint256)");
@@ -95,15 +81,6 @@ addSig("setDefaultMintDailyLimit(uint256)");
 addSig("setDefaultBurnDailyLimit(uint256)");
 addSig("setCustomMintDailyLimit(address,uint256)");
 addSig("setCustomBurnDailyLimit(address,uint256)");
-
-// From DSSoloVault
-addSig("lock(bytes32,uint256)");
-addSig("free(bytes32,uint256)");
-addSig("draw(bytes32,uint256)");
-addSig("wipe(bytes32,uint256)");
-addSig("shut(bytes32)");
-addSig("bite(bytes32)");
-addSig("cage(uint256,uint256)");
 
 // From TokenAuth
 addSig("setTokenAuthority(address)");

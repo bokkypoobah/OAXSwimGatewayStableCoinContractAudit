@@ -3,18 +3,20 @@ PASSWORD=
 
 SOURCEDIR=../../chain/contracts/
 
+ADDRESSSTATUSSOL=AddressStatus.sol
+ADDRESSSTATUSJS=AddressStatus.js
 GATEROLESSOL=GateRoles.sol
 GATEROLESJS=GateRoles.js
 DAPPSYSSOL=dappsys.sol
 DAPPSYSJS=dappsys.js
-KYCSOL=Kyc.sol
-KYCJS=Kyc.js
+TOKENRULESSOL=TokenRules.sol
+TOKENRULESJS=TokenRules.js
 TRANSFERFEECONTROLLERSOL=TransferFeeController.sol
 TRANSFERFEECONTROLLERJS=TransferFeeController.js
 LIMITSETTINGSOL=LimitSetting.sol
 LIMITSETTINGJS=LimitSetting.js
-MEMBERSHIPAUTHORITYSOL=test/MockMembershipAuthority.sol
-MEMBERSHIPAUTHORITYJS=MockMembershipAuthority.js
+MEMBERSHIPSOL=Membership.sol
+MEMBERSHIPJS=Membership.js
 LIMITCONTROLLERSOL=LimitController.sol
 LIMITCONTROLLERJS=LimitController.js
 FIATTOKENSOL=FiatToken.sol

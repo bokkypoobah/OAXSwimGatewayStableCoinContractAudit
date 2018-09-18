@@ -157,32 +157,29 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] `GateRoles()`
   * [x] `FiatTokenGuard()`
 * [x] Group #2 deployment
-  * [x] `KycAmlStatus(GateRoles)`
-  * [x] `AddressControlStatus(GateRoles)`
+  * [x] `Blacklist"AddressStatus"(GateRoles)`
+  * [x] `Kyc"AddressStatus"(GateRoles)`
+  * [x] `MockMembership(GateRoles)`
   * [x] `TransferFeeController(GateRoles, 0, 0)`
   * [x] `LimitSetting(GateRoles, {mint limit}, {burn limit}, ...)`
 * [x] Group #3 deployment
-  * [x] `NoKycAmlRule(AddressControlStatus)`
-  * [x] `BoundaryKycAmlRule(AddressControlStatus, KycAmlStatus)`
-  * [x] `FullKycAmlRule(AddressControlStatus, KycAmlStatus)`
-  * [x] `MockMembershipAuthority()`
-  * [x] `MembershipWithBoundaryKycAmlRule(GateRoles, AddressControlStatus, KycAmlStatus, MockMembershipAuthority)`
+  * [x] `BaseRule(Blacklist)`
+  * [x] `BoundaryKycRule(Blacklist, Kyc, MockMembership)`
+  * [x] `FullKycRule(Blacklist, Kyc, MockMembership)`
   * [x] `LimitController(FiatTokenGuard, LimitSetting)`
   * [x] `FiatToken(FiatTokenGuard, {symbol}, {name}, {transferFeeCollector}, TransferFeeController)`
 * [x] Set User Roles
   * [x] `GateRoles([sysAdmin=SYSTEM_ADMIN_ROLE(1), kycOperator=KYC_OPERATOR_ROLE(2), moneyOperator=MONEY_OPERATOR_ROLE(3)])`
 * [x] Set Roles Rules #1
-  * [x] `GateRoles.setRoleCapability(KYC_OPERATOR_ROLE, KycAmlStatus, sig("setKycVerified(address,bool)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, AddressControlStatus, sig("freezeAddress(address)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, AddressControlStatus, sig("unfreezeAddress(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setSettingDefaultDelayHours(uint256)"))`
+  * [x] `GateRoles.setRoleCapability(KYC_OPERATOR_ROLE, Kyc(AddressStatus), sig("set(address,bool)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, Blacklist(AddressStatus), sig("set(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultDelayHours(uint256)"))`
   * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setLimitCounterResetTimeOffset(int256)"))`
   * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultMintDailyLimit(uint256)"))`
   * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultBurnDailyLimit(uint256)"))`
   * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setCustomMintDailyLimit(address,uint256)"))`
   * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setCustomBurnDailyLimit(address,uint256)"))`
   * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeController, sig("setDefaultTransferFee(uint256,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, membershipWithBoundaryKycAmlRule, sig("setMembershipAuthority(address)"))`
 * [x] Group #4 deployment
   * [x] `GateWithFee(GateRoles, FiatToken, LimitController, {mintFeeCollector}, {burnFeeCollector}, TransferFeeController)`
 * [x] Set Roles Rules #2

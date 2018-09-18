@@ -1,18 +1,16 @@
 pragma solidity 0.4.23;
 
-import "../FiatToken.sol";
+import "AddressStatus.sol";
 
-contract MockMembershipAuthorityFalse {
+interface MembershipInterface {
+    function isMember(address guy) external returns (bool);
+}
 
-    mapping (address => bool) public membershipAddress;
-
-    constructor() public {
+contract MockMembershipAuthorityFalse is AddressStatus, MembershipInterface {
+    constructor(DSAuthority authority) AddressStatus(authority) public {
     }
 
-    function isMember(address guy)
-    public
-    view
-    returns (bool) {
-        return membershipAddress[guy];        
+    function isMember(address guy) public returns (bool) {
+        return status[guy];
     }
 }

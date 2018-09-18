@@ -35,13 +35,13 @@ var account10 = eth.accounts[10];
 var account11 = eth.accounts[11];
 
 console.log("DATA: var minerAccount=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var deployer=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var sysAdmin=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var kycOperator=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var moneyOperator=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var transferFeeCollector=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var mintFeeCollector=\"" + eth.accounts[0] + "\";");
-console.log("DATA: var burnFeeCollector=\"" + eth.accounts[0] + "\";");
+console.log("DATA: var deployer=\"" + eth.accounts[1] + "\";");
+console.log("DATA: var sysAdmin=\"" + eth.accounts[2] + "\";");
+console.log("DATA: var kycOperator=\"" + eth.accounts[3] + "\";");
+console.log("DATA: var moneyOperator=\"" + eth.accounts[4] + "\";");
+console.log("DATA: var transferFeeCollector=\"" + eth.accounts[5] + "\";");
+console.log("DATA: var mintFeeCollector=\"" + eth.accounts[6] + "\";");
+console.log("DATA: var burnFeeCollector=\"" + eth.accounts[7] + "\";");
 
 
 var baseBlock = eth.blockNumber;
@@ -572,82 +572,154 @@ function printTokenGuardContractDetails() {
 
 
 // -----------------------------------------------------------------------------
-// KycAmlStatus Contract
+// Blacklist Contract
 // -----------------------------------------------------------------------------
-var kycAmlStatusContractAddress = null;
-var kycAmlStatusContractAbi = null;
+var blacklistContractAddress = null;
+var blacklistContractAbi = null;
 
-function addKycAmlStatusContractAddressAndAbi(address, abi) {
-  kycAmlStatusContractAddress = address;
-  kycAmlStatusContractAbi = abi;
+function addBlacklistContractAddressAndAbi(address, abi) {
+  blacklistContractAddress = address;
+  blacklistContractAbi = abi;
 }
 
-var kycAmlStatusFromBlock = 0;
-function printKycAmlStatusContractDetails() {
-  if (kycAmlStatusFromBlock == 0) {
-    kycAmlStatusFromBlock = baseBlock;
+var blacklistFromBlock = 0;
+function printBlacklistContractDetails() {
+  if (blacklistFromBlock == 0) {
+    blacklistFromBlock = baseBlock;
   }
-  console.log("RESULT: kycAmlStatus.address=" + getAddressName(kycAmlStatusContractAddress));
-  if (kycAmlStatusContractAddress != null && kycAmlStatusContractAbi != null) {
-    var contract = eth.contract(kycAmlStatusContractAbi).at(kycAmlStatusContractAddress);
-    console.log("RESULT: kycAmlStatus.authority=" + getAddressName(contract.authority()));
-    console.log("RESULT: kycAmlStatus.owner=" + getAddressName(contract.owner()));
+  console.log("RESULT: blacklist.address=" + getAddressName(blacklistContractAddress));
+  if (blacklistContractAddress != null && blacklistContractAbi != null) {
+    var contract = eth.contract(blacklistContractAbi).at(blacklistContractAddress);
+    console.log("RESULT: blacklist.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: blacklist.owner=" + getAddressName(contract.owner()));
 
     var latestBlock = eth.blockNumber;
     var i;
 
-    var kycVerifyEvents = contract.KYCVerify({}, { fromBlock: kycAmlStatusFromBlock, toBlock: latestBlock });
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: blacklistFromBlock, toBlock: latestBlock });
     i = 0;
-    kycVerifyEvents.watch(function (error, result) {
-      console.log("RESULT: kycAmlStatus.KYCVerify " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: blacklist.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
-    kycVerifyEvents.stopWatching();
+    logSetAuthorityEvents.stopWatching();
 
-    kycAmlStatusFromBlock = latestBlock + 1;
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: blacklistFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: blacklist.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    var logSetAddressStatusEvents = contract.LogSetAddressStatus({}, { fromBlock: blacklistFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAddressStatusEvents.watch(function (error, result) {
+      console.log("RESULT: blacklist.LogSetAddressStatus " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAddressStatusEvents.stopWatching();
+
+    blacklistFromBlock = latestBlock + 1;
   }
 }
 
 
 // -----------------------------------------------------------------------------
-// AddressControlStatus Contract
+// Kyc Contract
 // -----------------------------------------------------------------------------
-var addressControlStatusContractAddress = null;
-var addressControlStatusContractAbi = null;
+var kycContractAddress = null;
+var kycContractAbi = null;
 
-function addAddressControlStatusContractAddressAndAbi(address, abi) {
-  addressControlStatusContractAddress = address;
-  addressControlStatusContractAbi = abi;
+function addKycContractAddressAndAbi(address, abi) {
+  kycContractAddress = address;
+  kycContractAbi = abi;
 }
 
-var addressControlStatusFromBlock = 0;
-function printAddressControlStatusContractDetails() {
-  if (addressControlStatusFromBlock == 0) {
-    addressControlStatusFromBlock = baseBlock;
+var kycFromBlock = 0;
+function printKycContractDetails() {
+  if (kycFromBlock == 0) {
+    kycFromBlock = baseBlock;
   }
-  console.log("RESULT: addressControlStatus.address=" + getAddressName(addressControlStatusContractAddress));
-  if (addressControlStatusContractAddress != null && addressControlStatusContractAbi != null) {
-    var contract = eth.contract(addressControlStatusContractAbi).at(addressControlStatusContractAddress);
-    console.log("RESULT: addressControlStatus.authority=" + getAddressName(contract.authority()));
-    console.log("RESULT: addressControlStatus.owner=" + getAddressName(contract.owner()));
+  console.log("RESULT: kyc.address=" + getAddressName(kycContractAddress));
+  if (kycContractAddress != null && kycContractAbi != null) {
+    var contract = eth.contract(kycContractAbi).at(kycContractAddress);
+    console.log("RESULT: kyc.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: kyc.owner=" + getAddressName(contract.owner()));
 
     var latestBlock = eth.blockNumber;
     var i;
 
-    var freezeAddressEvents = contract.FreezeAddress({}, { fromBlock: addressControlStatusFromBlock, toBlock: latestBlock });
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: kycFromBlock, toBlock: latestBlock });
     i = 0;
-    freezeAddressEvents.watch(function (error, result) {
-      console.log("RESULT: addressControlStatus.FreezeAddress " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: kyc.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
-    freezeAddressEvents.stopWatching();
+    logSetAuthorityEvents.stopWatching();
 
-    var unfreezeAddressEvents = contract.UnfreezeAddress({}, { fromBlock: addressControlStatusFromBlock, toBlock: latestBlock });
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: kycFromBlock, toBlock: latestBlock });
     i = 0;
-    unfreezeAddressEvents.watch(function (error, result) {
-      console.log("RESULT: addressControlStatus.UnfreezeAddress " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: kyc.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
     });
-    unfreezeAddressEvents.stopWatching();
+    logSetOwnerEvents.stopWatching();
 
-    addressControlStatusFromBlock = latestBlock + 1;
+    var logSetAddressStatusEvents = contract.LogSetAddressStatus({}, { fromBlock: kycFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAddressStatusEvents.watch(function (error, result) {
+      console.log("RESULT: kyc.LogSetAddressStatus " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAddressStatusEvents.stopWatching();
+
+    kycFromBlock = latestBlock + 1;
+  }
+}
+
+
+// -----------------------------------------------------------------------------
+// MockMembership Contract
+// -----------------------------------------------------------------------------
+var mockMembershipContractAddress = null;
+var mockMembershipContractAbi = null;
+
+function addMockMembershipContractAddressAndAbi(address, abi) {
+  mockMembershipContractAddress = address;
+  mockMembershipContractAbi = abi;
+}
+
+var mockMembershipFromBlock = 0;
+function printMockMembershipContractDetails() {
+  if (mockMembershipFromBlock == 0) {
+    mockMembershipFromBlock = baseBlock;
+  }
+  console.log("RESULT: mockMembership.address=" + getAddressName(mockMembershipContractAddress));
+  if (mockMembershipContractAddress != null && mockMembershipContractAbi != null) {
+    var contract = eth.contract(mockMembershipContractAbi).at(mockMembershipContractAddress);
+    console.log("RESULT: mockMembership.authority=" + getAddressName(contract.authority()));
+    console.log("RESULT: mockMembership.owner=" + getAddressName(contract.owner()));
+
+    var latestBlock = eth.blockNumber;
+    var i;
+
+    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: mockMembershipFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAuthorityEvents.watch(function (error, result) {
+      console.log("RESULT: mockMembership.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAuthorityEvents.stopWatching();
+
+    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: mockMembershipFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetOwnerEvents.watch(function (error, result) {
+      console.log("RESULT: mockMembership.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetOwnerEvents.stopWatching();
+
+    var logSetAddressStatusEvents = contract.LogSetAddressStatus({}, { fromBlock: mockMembershipFromBlock, toBlock: latestBlock });
+    i = 0;
+    logSetAddressStatusEvents.watch(function (error, result) {
+      console.log("RESULT: mockMembership.LogSetAddressStatus " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    logSetAddressStatusEvents.stopWatching();
+
+    mockMembershipFromBlock = latestBlock + 1;
   }
 }
 
@@ -710,9 +782,9 @@ function printLimitSettingContractDetails() {
     console.log("RESULT: limitSetting.stopped=" + contract.stopped());
     console.log("RESULT: limitSetting.limitCounterResetTimeOffset=" + contract.limitCounterResetTimeOffset());
     console.log("RESULT: limitSetting.lastSettingResetTime=" + contract.lastSettingResetTime() + " " + new Date(contract.lastSettingResetTime() * 1000).toUTCString());
-    console.log("RESULT: limitSetting.defaultDelayHours=" + contract.defaultDelayHours());
-    console.log("RESULT: limitSetting.defaultDelayHoursBuffer=" + contract.defaultDelayHoursBuffer());
-    console.log("RESULT: limitSetting.lastDefaultDelayHoursSettingResetTime=" + contract.lastDefaultDelayHoursSettingResetTime());
+    console.log("RESULT: limitSetting.defaultDelayTime=" + contract.defaultDelayTime());
+    console.log("RESULT: limitSetting.defaultDelayTimeBuffer=" + contract.defaultDelayTimeBuffer());
+    console.log("RESULT: limitSetting.lastDefaultDelaySettingResetTime=" + contract.lastDefaultDelaySettingResetTime());
     console.log("RESULT: limitSetting.defaultMintDailyLimit=" + contract.defaultMintDailyLimit() + " " + contract.defaultMintDailyLimit().shift(-18));
     console.log("RESULT: limitSetting.defaultBurnDailyLimit=" + contract.defaultBurnDailyLimit() + " " + contract.defaultBurnDailyLimit().shift(-18));
     console.log("RESULT: limitSetting.defaultMintDailyLimitBuffer=" + contract.defaultMintDailyLimitBuffer() + " " + contract.defaultMintDailyLimitBuffer().shift(-18));
@@ -764,139 +836,89 @@ function printLimitSettingContractDetails() {
 
 
 // -----------------------------------------------------------------------------
-// NoKycAmlRule Contract
+// BaseRule Contract
 // -----------------------------------------------------------------------------
-var noKycAmlRuleContractAddress = null;
-var noKycAmlRuleContractAbi = null;
+var baseRuleContractAddress = null;
+var baseRuleContractAbi = null;
 
-function addNoKycAmlRuleContractAddressAndAbi(address, abi) {
-  noKycAmlRuleContractAddress = address;
-  noKycAmlRuleContractAbi = abi;
+function addBaseRuleContractAddressAndAbi(address, abi) {
+  baseRuleContractAddress = address;
+  baseRuleContractAbi = abi;
 }
 
-var noKycAmlRuleFromBlock = 0;
-function printNoKycAmlRuleContractDetails() {
-  if (noKycAmlRuleFromBlock == 0) {
-    noKycAmlRuleFromBlock = baseBlock;
+var baseRuleFromBlock = 0;
+function printBaseRuleContractDetails() {
+  if (baseRuleFromBlock == 0) {
+    baseRuleFromBlock = baseBlock;
   }
-  console.log("RESULT: noKycAmlRule.address=" + getAddressName(noKycAmlRuleContractAddress));
-  if (noKycAmlRuleContractAddress != null && noKycAmlRuleContractAbi != null) {
-    var contract = eth.contract(noKycAmlRuleContractAbi).at(noKycAmlRuleContractAddress);
-    console.log("RESULT: noKycAmlRule.addressControlStatus=" + getAddressName(contract.addressControlStatus()));
+  console.log("RESULT: baseRule.address=" + getAddressName(baseRuleContractAddress));
+  if (baseRuleContractAddress != null && baseRuleContractAbi != null) {
+    var contract = eth.contract(baseRuleContractAbi).at(baseRuleContractAddress);
+    console.log("RESULT: baseRule.blacklist=" + getAddressName(contract.blacklist()));
 
     var latestBlock = eth.blockNumber;
-    var i;
 
-    // No events
-
-    noKycAmlRuleFromBlock = latestBlock + 1;
+    baseRuleFromBlock = latestBlock + 1;
   }
 }
 
 
 // -----------------------------------------------------------------------------
-// BoundaryKycAmlRule Contract
+// BoundaryKycRule Contract
 // -----------------------------------------------------------------------------
-var boundaryKycAmlRuleContractAddress = null;
-var boundaryKycAmlRuleContractAbi = null;
+var boundaryKycRuleContractAddress = null;
+var boundaryKycRuleContractAbi = null;
 
-function addBoundaryKycAmlRuleContractAddressAndAbi(address, abi) {
-  boundaryKycAmlRuleContractAddress = address;
-  boundaryKycAmlRuleContractAbi = abi;
+function addBoundaryKycRuleContractAddressAndAbi(address, abi) {
+  boundaryKycRuleContractAddress = address;
+  boundaryKycRuleContractAbi = abi;
 }
 
-var boundaryKycAmlRuleFromBlock = 0;
-function printBoundaryKycAmlRuleContractDetails() {
-  if (boundaryKycAmlRuleFromBlock == 0) {
-    boundaryKycAmlRuleFromBlock = baseBlock;
+var boundaryKycRuleFromBlock = 0;
+function printBoundaryKycRuleContractDetails() {
+  if (boundaryKycRuleFromBlock == 0) {
+    boundaryKycRuleFromBlock = baseBlock;
   }
-  console.log("RESULT: boundaryKycAmlRule.address=" + getAddressName(boundaryKycAmlRuleContractAddress));
-  if (boundaryKycAmlRuleContractAddress != null && boundaryKycAmlRuleContractAbi != null) {
-    var contract = eth.contract(boundaryKycAmlRuleContractAbi).at(boundaryKycAmlRuleContractAddress);
-    console.log("RESULT: boundaryKycAmlRule.addressControlStatus=" + getAddressName(contract.addressControlStatus()));
-    console.log("RESULT: boundaryKycAmlRule.kycAmlStatus=" + getAddressName(contract.kycAmlStatus()));
+  console.log("RESULT: boundaryKycRule.address=" + getAddressName(boundaryKycRuleContractAddress));
+  if (boundaryKycRuleContractAddress != null && boundaryKycRuleContractAbi != null) {
+    var contract = eth.contract(boundaryKycRuleContractAbi).at(boundaryKycRuleContractAddress);
+    console.log("RESULT: boundaryKycRule.blacklist=" + getAddressName(contract.blacklist()));
+    console.log("RESULT: boundaryKycRule.kyc=" + getAddressName(contract.kyc()));
+    console.log("RESULT: boundaryKycRule.membership=" + getAddressName(contract.membership()));
 
     var latestBlock = eth.blockNumber;
-    var i;
 
-    // No events
-
-    boundaryKycAmlRuleFromBlock = latestBlock + 1;
+    boundaryKycRuleFromBlock = latestBlock + 1;
   }
 }
 
 
 // -----------------------------------------------------------------------------
-// FullKycAmlRule Contract
+// FullKycRule Contract
 // -----------------------------------------------------------------------------
-var fullKycAmlRuleContractAddress = null;
-var fullKycAmlRuleContractAbi = null;
+var fullKycRuleContractAddress = null;
+var fullKycRuleContractAbi = null;
 
-function addFullKycAmlRuleContractAddressAndAbi(address, abi) {
-  fullKycAmlRuleContractAddress = address;
-  fullKycAmlRuleContractAbi = abi;
+function addFullKycRuleContractAddressAndAbi(address, abi) {
+  fullKycRuleContractAddress = address;
+  fullKycRuleContractAbi = abi;
 }
 
-var fullKycAmlRuleFromBlock = 0;
-function printFullKycAmlRuleContractDetails() {
-  if (fullKycAmlRuleFromBlock == 0) {
-    fullKycAmlRuleFromBlock = baseBlock;
+var fullKycRuleFromBlock = 0;
+function printFullKycRuleContractDetails() {
+  if (fullKycRuleFromBlock == 0) {
+    fullKycRuleFromBlock = baseBlock;
   }
-  console.log("RESULT: fullKycAmlRule.address=" + getAddressName(fullKycAmlRuleContractAddress));
-  if (fullKycAmlRuleContractAddress != null && fullKycAmlRuleContractAbi != null) {
-    var contract = eth.contract(fullKycAmlRuleContractAbi).at(fullKycAmlRuleContractAddress);
-    console.log("RESULT: fullKycAmlRule.addressControlStatus=" + getAddressName(contract.addressControlStatus()));
-    console.log("RESULT: fullKycAmlRule.kycAmlStatus=" + getAddressName(contract.kycAmlStatus()));
+  console.log("RESULT: fullKycRule.address=" + getAddressName(fullKycRuleContractAddress));
+  if (fullKycRuleContractAddress != null && fullKycRuleContractAbi != null) {
+    var contract = eth.contract(fullKycRuleContractAbi).at(fullKycRuleContractAddress);
+    console.log("RESULT: fullKycRule.blacklist=" + getAddressName(contract.blacklist()));
+    console.log("RESULT: fullKycRule.kyc=" + getAddressName(contract.kyc()));
+    console.log("RESULT: fullKycRule.membership=" + getAddressName(contract.membership()));
 
     var latestBlock = eth.blockNumber;
-    var i;
 
-    fullKycAmlRuleFromBlock = latestBlock + 1;
-  }
-}
-
-
-// -----------------------------------------------------------------------------
-// MembershipWithBoundaryKycAmlRule Contract
-// -----------------------------------------------------------------------------
-var membershipWithBoundaryKycAmlRuleContractAddress = null;
-var membershipWithBoundaryKycAmlRuleContractAbi = null;
-
-function addMembershipWithBoundaryKycAmlRuleContractAddressAndAbi(address, abi) {
-  membershipWithBoundaryKycAmlRuleContractAddress = address;
-  membershipWithBoundaryKycAmlRuleContractAbi = abi;
-}
-
-var membershipWithBoundaryKycAmlRuleFromBlock = 0;
-function printMembershipWithBoundaryKycAmlRuleContractDetails() {
-  if (membershipWithBoundaryKycAmlRuleFromBlock == 0) {
-    membershipWithBoundaryKycAmlRuleFromBlock = baseBlock;
-  }
-  console.log("RESULT: membershipWithBoundaryKycAmlRule.address=" + getAddressName(membershipWithBoundaryKycAmlRuleContractAddress));
-  if (membershipWithBoundaryKycAmlRuleContractAddress != null && membershipWithBoundaryKycAmlRuleContractAbi != null) {
-    var contract = eth.contract(membershipWithBoundaryKycAmlRuleContractAbi).at(membershipWithBoundaryKycAmlRuleContractAddress);
-    console.log("RESULT: membershipWithBoundaryKycAmlRule.authority=" + getAddressName(contract.authority()));
-    console.log("RESULT: membershipWithBoundaryKycAmlRule.owner=" + getAddressName(contract.owner()));
-    console.log("RESULT: membershipWithBoundaryKycAmlRule.membershipAuthority=" + getAddressName(contract.membershipAuthority()));
-
-    var latestBlock = eth.blockNumber;
-    var i;
-
-    var logSetAuthorityEvents = contract.LogSetAuthority({}, { fromBlock: membershipWithBoundaryKycAmlRuleFromBlock, toBlock: latestBlock });
-    i = 0;
-    logSetAuthorityEvents.watch(function (error, result) {
-      console.log("RESULT: membershipWithBoundaryKycAmlRule.LogSetAuthority " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-    });
-    logSetAuthorityEvents.stopWatching();
-
-    var logSetOwnerEvents = contract.LogSetOwner({}, { fromBlock: membershipWithBoundaryKycAmlRuleFromBlock, toBlock: latestBlock });
-    i = 0;
-    logSetOwnerEvents.watch(function (error, result) {
-      console.log("RESULT: membershipWithBoundaryKycAmlRule.LogSetOwner " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-    });
-    logSetOwnerEvents.stopWatching();
-
-    membershipWithBoundaryKycAmlRuleFromBlock = latestBlock + 1;
+    fullKycRuleFromBlock = latestBlock + 1;
   }
 }
 
@@ -981,7 +1003,6 @@ function printGateWithFeeContractDetails() {
     console.log("RESULT: gateWithFee.limitController=" + getAddressName(contract.limitController()));
     console.log("RESULT: gateWithFee.mintFeeCollector=" + getAddressName(contract.mintFeeCollector()));
     console.log("RESULT: gateWithFee.burnFeeCollector=" + getAddressName(contract.burnFeeCollector()));
-    console.log("RESULT: gateWithFee.transferFeeController=" + getAddressName(contract.transferFeeController()));
     console.log("RESULT: gateWithFee.stopped=" + contract.stopped());
     console.log("RESULT: gateWithFee.token=" + getAddressName(contract.token()));
 

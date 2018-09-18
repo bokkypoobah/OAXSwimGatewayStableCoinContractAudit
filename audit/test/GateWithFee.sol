@@ -18,23 +18,18 @@ contract GateWithFee is Gate {
     address public mintFeeCollector;
     address public burnFeeCollector;
 
-    TransferFeeController public transferFeeController;
-
     constructor(
         DSAuthority _authority,
         DSToken fiatToken, 
         LimitController _limitController, 
         address mintFeeCollector_, 
-        address burnFeeCollector_,
-        TransferFeeController transferFeeController_
+        address burnFeeCollector_
         )
     public
     Gate(_authority, fiatToken, _limitController)
     {
         mintFeeCollector = mintFeeCollector_;
         burnFeeCollector = burnFeeCollector_;
-
-        transferFeeController = transferFeeController_;
     }
 
     function setMintFeeCollector(address mintFeeCollector_) public auth {
