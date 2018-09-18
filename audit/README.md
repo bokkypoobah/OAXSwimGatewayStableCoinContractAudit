@@ -60,9 +60,9 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* and *TokenAuth:TokenAuth.\*(...)* to save on gas when errored
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* to save on gas for errors
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas when errored
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas for errors
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
   * [x] Removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
@@ -78,6 +78,7 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [ ] **LOW IMPORTANCE** *MockOAXMembership* is for testing and should not be included with the production code in Membership.sol
+* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
 
 <br />
 
@@ -248,9 +249,9 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract LimitController is DSMath, DSStop
 * [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
   * [x] contract LimitSetting is DSAuth, DSStop
-* [code-review/Membership.md](code-review/Membership.md)
-  * interface MembershipInterface
-  * contract MockOAXMembership is AddressStatus, MembershipInterface **NOTE that this test contract should not be included with production code**
+* [x] [code-review/Membership.md](code-review/Membership.md)
+  * [x] interface MembershipInterface
+  * [x] contract MockOAXMembership is AddressStatus, MembershipInterface **NOTE that this test contract should not be included with production code**
 * [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
   * [x] interface ERC20Authority
   * [x] contract ERC20Auth is DSAuth

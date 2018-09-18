@@ -13,7 +13,7 @@ pragma solidity 0.4.23;
 // BK Ok
 import "dappsys.sol"; // Uses auth.sol, token.sol
 
-// BK NOTE - Implemented in Kyc:ControllableKycAmlRule
+// BK NOTE - Implemented in TokenRules:BaseRule -> TokenRules:BoundaryKycRule and TokenRules:FullKycRule
 // BK Ok
 interface ERC20Authority {
     // BK NOTE - src = msg.sender; dst = contract address
@@ -36,7 +36,7 @@ contract ERC20Auth is DSAuth {
     // BK NOTE - Used in FiatToken.approve(...)
     // BK Ok
     modifier authApprove(address guy, uint wad) {
-        // BK NOTE - Calling Kyc:*.canApprove(...)
+        // BK NOTE - Calling TokenRules:BaseRule.canApprove(...)
         // BK Ok
         require(
             erc20Authority.canApprove(msg.sender, this, guy, wad),
@@ -48,7 +48,7 @@ contract ERC20Auth is DSAuth {
 
     // BK NOTE - Used in FiatToken.transfer(...)
     modifier authTransfer(address to, uint wad) {
-        // BK NOTE - Calling Kyc:*.canTransfer(...)
+        // BK NOTE - Calling TokenRules:BaseRule.canTransfer(...) and TokenRules:FullKycRule.canTransfer(...)
         // BK Ok
         require(
             erc20Authority.canTransfer(msg.sender, this, to, wad),
@@ -60,7 +60,7 @@ contract ERC20Auth is DSAuth {
 
     // BK NOTE - Used in FiatToken.transferFrom(...)
     modifier authTransferFrom(address from, address to, uint wad) {
-        // BK NOTE - Calling Kyc:*.canTransferFrom(...)
+        // BK NOTE - Calling TokenRules:BaseRule.canTransferFrom(...) and TokenRules:FullKycRule.canTransferFrom(...)
         // BK Ok
         require(
             erc20Authority.canTransferFrom(msg.sender, this, from, to, wad),
@@ -80,7 +80,7 @@ contract ERC20Auth is DSAuth {
 }
 
 
-// BK NOTE - Implemented in Kyc:ControllableKycAmlRule
+// BK NOTE - Implemented in TokenRules:BaseRule -> TokenRules:BoundaryKycRule and TokenRules:FullKycRule
 interface TokenAuthority {
     // BK NOTE - src = msg.sender; dst = contract address
     // BK Next 2 Ok
@@ -90,6 +90,7 @@ interface TokenAuthority {
 
 
 // BK NOTE - Inherited by FiatToken
+// BK Ok
 contract TokenAuth is DSAuth {
     // BK NOTE - Should make the following public
     // BK Ok
@@ -100,7 +101,7 @@ contract TokenAuth is DSAuth {
 
     // BK NOTE - Used in FiatToken.mint(...)
     modifier authMint(address guy, uint wad) {
-        // BK NOTE - Calling Kyc:*.canMint(...)
+        // BK NOTE - Calling TokenRules:BaseRule.canMint(...) and TokenRules:BoundaryKycRule.canMint(...)
         // BK NOTE - Could use `require(...)` instead of `assert(...)` to save gas on error
         // BK Ok
         assert(tokenAuthority.canMint(msg.sender, this, guy, wad));
@@ -110,7 +111,7 @@ contract TokenAuth is DSAuth {
 
     // BK NOTE - Used in FiatToken.burn(...)
     modifier authBurn(address guy, uint wad) {
-        // BK NOTE - Calling Kyc:*.canBurn(...)
+        // BK NOTE - Calling TokenRules:BaseRule.canBurn(...) and TokenRules:BoundaryKycRule.canBurn(...)
         // BK NOTE - Could use `require(...)` instead of `assert(...)` to save gas on error
         // BK Ok
         assert(tokenAuthority.canBurn(msg.sender, this, guy, wad));
