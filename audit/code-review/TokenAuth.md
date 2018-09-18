@@ -16,6 +16,7 @@ import "dappsys.sol"; // Uses auth.sol, token.sol
 // BK NOTE - Implemented in TokenRules:BaseRule -> TokenRules:BoundaryKycRule and TokenRules:FullKycRule
 // BK Ok
 interface ERC20Authority {
+    // BK NOTE - Consider setting canApprove(...), canTransferFrom(...) and canTransfer(...) as view functions
     // BK NOTE - src = msg.sender; dst = contract address
     // BK Next 3 Ok
     function canApprove(address src, address dst, address guy, uint wad) external returns (bool);
@@ -82,6 +83,7 @@ contract ERC20Auth is DSAuth {
 
 // BK NOTE - Implemented in TokenRules:BaseRule -> TokenRules:BoundaryKycRule and TokenRules:FullKycRule
 interface TokenAuthority {
+    // BK NOTE - Consider setting canMint(...) and canBurn(...) as view functions
     // BK NOTE - src = msg.sender; dst = contract address
     // BK Next 2 Ok
     function canMint(address src, address dst, address guy, uint wad) external returns (bool);

@@ -77,8 +77,9 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
 * [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** *MockOAXMembership* is for testing and should not be included with the production code in Membership.sol
+* [ ] **LOW IMPORTANCE** The name *MockOAXMembership* implies that the contract is for testing and not to be included with the production code in Membership.sol
 * [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
+* [ ] **LOW IMPORTANCE** Consider setting `canApprove(...)`, `canTransferFrom(...)`, `canTransfer(...)`, `canMint(...)` and `canBurn(...)` to view functions - in *TokenAuth.sol* and *TokenRules.sol*
 
 <br />
 
@@ -257,10 +258,10 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract ERC20Auth is DSAuth
   * [x] interface TokenAuthority
   * [x] contract TokenAuth is DSAuth
-* [ ] [code-review/TokenRules.md](code-review/TokenRules.md)
-  * [ ] contract BaseRules is ERC20Authority, TokenAuthority
-  * [ ] contract BoundaryKycRules is BaseRules
-  * [ ] contract FullKycRules is BoundaryKycRules
+* [x] [code-review/TokenRules.md](code-review/TokenRules.md)
+  * [x] contract BaseRules is ERC20Authority, TokenAuthority
+  * [x] contract BoundaryKycRules is BaseRules
+  * [x] contract FullKycRules is BoundaryKycRules
 * [x] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
   * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
 * [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
@@ -300,4 +301,4 @@ The Gnosis Multisig wallet smart contract is outside the scope of this audit, bu
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 18 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 19 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
