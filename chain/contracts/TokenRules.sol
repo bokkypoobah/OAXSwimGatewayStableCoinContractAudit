@@ -17,30 +17,30 @@ contract BaseRule is ERC20Authority, TokenAuthority {
 
     /* ERC20Authority */
     function canApprove(address /*src*/, address /*dst*/, address guy, uint /*wad*/)
-    public returns (bool)
+    public view returns (bool)
     {
         return !blacklist.status(guy);
     }
 
     function canTransferFrom(address /*src*/, address /*dst*/, address from, address to, uint /*wad*/)
-    public returns (bool)
+    public view returns (bool)
     {
         return !blacklist.status(from) && !blacklist.status(to);
     }
 
     function canTransfer(address src, address dst, address to, uint wad)
-    public returns (bool)
+    public view returns (bool)
     {
         return canTransferFrom(src, dst, src, to, wad);
     }
 
     /* TokenAuthority */
-    function canMint(address /*src*/, address /*dst*/, address guy, uint /*wad*/) public returns (bool)
+    function canMint(address /*src*/, address /*dst*/, address guy, uint /*wad*/) public view returns (bool)
     {
         return !blacklist.status(guy);
     }
 
-    function canBurn(address src, address dst, address guy, uint wad) public returns (bool)
+    function canBurn(address src, address dst, address guy, uint wad) public view returns (bool)
     {
         return canMint(src, dst, guy, wad);
     }
@@ -67,12 +67,12 @@ contract BoundaryKycRule is BaseRule {
     }
 
     /* TokenAuthority */
-    function canMint(address src, address dst, address guy, uint wad) public returns (bool)
+    function canMint(address src, address dst, address guy, uint wad) public view returns (bool)
     {
         return super.canMint(src, dst, guy, wad) && kyc.status(guy) && membership.isMember(guy);
     }
 
-    function canBurn(address src, address dst, address guy, uint wad) public returns (bool)
+    function canBurn(address src, address dst, address guy, uint wad) public view returns (bool)
     {
         return super.canBurn(src, dst, guy, wad) && kyc.status(guy) && membership.isMember(guy);
     }
@@ -97,13 +97,13 @@ contract FullKycRule is BoundaryKycRule {
 
     /* ERC20Authority */
     function canTransferFrom(address src, address dst, address from, address to, uint wad)
-    public returns (bool)
+    public view returns (bool)
     {
         return super.canTransferFrom(src, dst, from, to, wad) && kyc.status(from) && kyc.status(to);
     }
 
     function canTransfer(address src, address dst, address to, uint wad)
-    public returns (bool)
+    public view returns (bool)
     {
         return super.canTransfer(src, dst, to, wad) && canTransferFrom(src, dst, src, to, wad);
     }
