@@ -3,9 +3,9 @@ pragma solidity 0.4.23;
 import "dappsys.sol"; // Uses auth.sol, token.sol
 
 interface ERC20Authority {
-    function canApprove(address src, address dst, address guy, uint wad) external returns (bool);
-    function canTransfer(address src, address dst, address to, uint wad) external returns (bool);
-    function canTransferFrom(address src, address dst, address from, address to, uint wad) external returns (bool);
+    function canApprove(address src, address dst, address guy, uint wad) external view returns (bool);
+    function canTransfer(address src, address dst, address to, uint wad) external view returns (bool);
+    function canTransferFrom(address src, address dst, address from, address to, uint wad) external view returns (bool);
 }
 
 
@@ -46,8 +46,8 @@ contract ERC20Auth is DSAuth {
 
 
 interface TokenAuthority {
-    function canMint(address src, address dst, address guy, uint wad) external returns (bool);
-    function canBurn(address src, address dst, address guy, uint wad) external returns (bool);
+    function canMint(address src, address dst, address guy, uint wad) external view returns (bool);
+    function canBurn(address src, address dst, address guy, uint wad) external view returns (bool);
 }
 
 
@@ -57,12 +57,18 @@ contract TokenAuth is DSAuth {
     event LogSetTokenAuthority(TokenAuthority tokenAuthority);
 
     modifier authMint(address guy, uint wad) {
-        assert(tokenAuthority.canMint(msg.sender, this, guy, wad));
+        require(
+            tokenAuthority.canMint(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use mint function"
+        );
         _;
     }
 
     modifier authBurn(address guy, uint wad) {
-        assert(tokenAuthority.canBurn(msg.sender, this, guy, wad));
+        require(
+            tokenAuthority.canBurn(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use burn function"
+        );
         _;
     }
 

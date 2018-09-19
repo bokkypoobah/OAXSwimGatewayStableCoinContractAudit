@@ -72,7 +72,7 @@ async function main() {
                 mintLimit,
                 burnLimit,
                 limit.DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
-                limit.DEFAULT_SETTING_DELAY_HOURS
+                limit.DEFAULT_SETTING_DELAY_SECOND
             )
 
             break;
