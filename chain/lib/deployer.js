@@ -17,7 +17,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
                     MINT_LIMIT = wad(10000),
                     BURN_LIMIT = wad(10000),
                     DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
-                    DEFAULT_SETTING_DELAY_HOURS = 0
+                    DEFAULT_SETTING_DELAY_SECOND = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const deployMultiple = (identifier, ...args) => createMultiple(identifier, web3, DEPLOYER, ...args)
@@ -40,7 +40,7 @@ const init = async (web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR
     fiatTokenGuard = await deploy(DSGuard)
 
     transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
-    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
+    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_SECOND)
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
     blacklist = await deployMultiple('blacklist',AddressStatus, address(gateRoles))
@@ -128,7 +128,7 @@ const base = async (web3,
                     MINT_LIMIT = wad(10000),
                     BURN_LIMIT = wad(10000),
                     DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
-                    DEFAULT_SETTING_DELAY_HOURS = 0
+                    DEFAULT_SETTING_DELAY_SECOND = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
 
@@ -136,7 +136,7 @@ const base = async (web3,
         FEE_COLLECTOR = SYSTEM_ADMIN
     }
 
-    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
+    await init(web3, contractRegistry, DEPLOYER, SYSTEM_ADMIN, KYC_OPERATOR, MONEY_OPERATOR, FEE_COLLECTOR, MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_SECOND)
 
     const {
         Gate
