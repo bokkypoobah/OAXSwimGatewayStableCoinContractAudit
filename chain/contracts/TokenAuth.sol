@@ -57,12 +57,18 @@ contract TokenAuth is DSAuth {
     event LogSetTokenAuthority(TokenAuthority tokenAuthority);
 
     modifier authMint(address guy, uint wad) {
-        assert(tokenAuthority.canMint(msg.sender, this, guy, wad));
+        require(
+            tokenAuthority.canMint(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use mint function"
+        );
         _;
     }
 
     modifier authBurn(address guy, uint wad) {
-        assert(tokenAuthority.canBurn(msg.sender, this, guy, wad));
+        require(
+            tokenAuthority.canBurn(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use burn function"
+        );
         _;
     }
 
