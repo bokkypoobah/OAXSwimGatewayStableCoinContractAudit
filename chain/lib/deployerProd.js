@@ -23,7 +23,7 @@ const initContract = async (contractRegistry,
         MINT_LIMIT = wad(10000),
         BURN_LIMIT = wad(10000),
         DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0,
-        DEFAULT_SETTING_DELAY_HOURS = 0
+        DEFAULT_SETTING_DELAY_SECOND = 0
 ) => {
     const deploy = (...args) => create(web3, DEPLOYER, ...args)
     const deployMultiple = (identifier, ...args) => createMultiple(identifier, web3, DEPLOYER, ...args)
@@ -46,7 +46,7 @@ const initContract = async (contractRegistry,
     fiatTokenGuard = await deploy(DSGuard)
 
     transferFeeController = await deploy(TransferFeeController, address(gateRoles), wad(0), wad(0))
-    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_HOURS)
+    limitSetting = await deploy(LimitSetting, address(gateRoles), MINT_LIMIT, BURN_LIMIT, DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET, DEFAULT_SETTING_DELAY_SECOND)
     limitController = await deploy(LimitController, address(fiatTokenGuard), address(limitSetting))
 
     blacklist = await deployMultiple('blacklist',AddressStatus, address(gateRoles))
