@@ -42,12 +42,17 @@ async function main() {
     const collector = config.get('collector')
     const limit = config.get('limit')
 
+    const mintLimit = new web3.utils.BN(web3.utils.toWei(limit.MINT_LIMIT.toString(), 'ether'));
+    const burnLimit = new web3.utils.BN(web3.utils.toWei(limit.BURN_LIMIT.toString(), 'ether'));
+
     const block = await web3.eth.getBlockNumber()
     log(`Block Number:  ${block}`)
     const balance = await web3.eth.getBalance(DEPLOYER)
     log(`Balance:       ${web3.utils.fromWei(balance,'ether')}`)
+    // log(`MINT LIMIT: ${mintLimit} wei | ${web3.utils.fromWei(mintLimit, 'ether')} ether`)
+    // log(`BURN LIMIT: ${burnLimit} wei | ${web3.utils.fromWei(burnLimit, 'ether')} ether`)
     log()
-
+    
     function compiledContracts() {
         return solc(__dirname, './solc-input.json')
     }
@@ -64,10 +69,10 @@ async function main() {
                 general.TOKEN_SYMBOL,
                 general.TOKEN_NAME,
                 collector.TRANSFER_FEE_COLLECTOR,
-                wad(limit.MINT_LIMIT),
-                wad(limit.BURN_LIMIT),
+                mintLimit,
+                burnLimit,
                 limit.DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
-                limit.DEFAULT_SETTING_DELAY_HOURS
+                limit.DEFAULT_SETTING_DELAY_SECOND
             )
 
             break;

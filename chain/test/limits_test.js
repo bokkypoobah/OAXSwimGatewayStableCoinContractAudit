@@ -37,7 +37,7 @@ describe("Limits:", function () {
         DEFAULT_DAILY_MINT_LIMIT = wad(10000)
         DEFAULT_DAILY_BURN_LIMIT = wad(20000)
         DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET = 0
-        DEFAULT_SETTING_DELAY_HOURS = 0
+        DEFAULT_SETTING_DELAY_SECOND = 0
 
         ;({
             gate, gateRoles, token,
@@ -52,7 +52,7 @@ describe("Limits:", function () {
             DEFAULT_DAILY_MINT_LIMIT,
             DEFAULT_DAILY_BURN_LIMIT,
             DEFAULT_LIMIT_COUNTER_RESET_TIME_OFFSET,
-            DEFAULT_SETTING_DELAY_HOURS
+            DEFAULT_SETTING_DELAY_SECOND
         ))
 
         const MONEY_OPERATOR_ROLE = await call(gateRoles, 'MONEY_OPERATOR')
@@ -510,8 +510,41 @@ describe("Limits:", function () {
               await send(limitSetting2, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, 100)
               let mintLimit = await call(limitSetting2, "getMintDailyLimit", MONEY_OPERATOR)
               expect(mintLimit).to.eq(1e18)
+
+              await web3.evm.increaseTime(3600)
+
+              let mintLimit2 = await call(limitSetting2, "getMintDailyLimit", MONEY_OPERATOR)
+              expect(mintLimit2).to.eq(100)
             })
 
+        })
+
+        it('Custom Mint Limits decrease takes effect after {24} hours check with getMintDailyLimit', async () => {
+
+            //request default limit increase (new_larger_limit)
+            await expectNoAsyncThrow(async () => {
+              await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, 2444)
+              let mintLimit = await call(limitSetting, "getMintDailyLimit", MONEY_OPERATOR)
+              expect(mintLimit).to.eq(2444)
+
+              await send(limitSetting, SYSTEM_ADMIN, "setDefaultDelayHours", 24)
+              await web3.evm.increaseTime(24*60*60*31) // Increase 30days
+
+              let events = await txEvents(await send(limitSetting, SYSTEM_ADMIN, "setCustomMintDailyLimit", MONEY_OPERATOR, 100))
+              let mintLimit2 = await call(limitSetting, "getMintDailyLimit", MONEY_OPERATOR)
+
+            })
+
+            await web3.evm.increaseTime(25*60*60) // Increase 24 hours
+
+
+            await expectThrow(async () => {
+                await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 101)
+            })
+
+            await expectNoAsyncThrow(async ()=> {
+              await send(gate, MONEY_OPERATOR, mint, CUSTOMER, 100)
+            })
 
         })
 
