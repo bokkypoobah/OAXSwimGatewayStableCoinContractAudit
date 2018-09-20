@@ -17,8 +17,6 @@ import "TokenAuth.sol";
 import "AddressStatus.sol";
 import "Membership.sol";
 
-// BK NOTE - Consider setting canApprove(...), canTransferFrom(...), canTransfer(...), canMint(...) and canBurn(...) as view functions
-
 // BK Ok
 contract BaseRule is ERC20Authority, TokenAuthority {
     // BK Ok
@@ -37,16 +35,15 @@ contract BaseRule is ERC20Authority, TokenAuthority {
     /* ERC20Authority */
     // BK Ok
     function canApprove(address /*src*/, address /*dst*/, address guy, uint /*wad*/)
-    public returns (bool)
+    public view returns (bool)
     {
         // BK Ok
         return !blacklist.status(guy);
     }
 
-    // BK NOTE - Can be made into a view function
     // BK Ok
     function canTransferFrom(address /*src*/, address /*dst*/, address from, address to, uint /*wad*/)
-    public returns (bool)
+    public view returns (bool)
     {
         // BK Ok
         return !blacklist.status(from) && !blacklist.status(to);
@@ -54,7 +51,7 @@ contract BaseRule is ERC20Authority, TokenAuthority {
 
     // BK Ok
     function canTransfer(address src, address dst, address to, uint wad)
-    public returns (bool)
+    public view returns (bool)
     {
         // BK Ok
         return canTransferFrom(src, dst, src, to, wad);
@@ -62,14 +59,14 @@ contract BaseRule is ERC20Authority, TokenAuthority {
 
     /* TokenAuthority */
     // BK Ok
-    function canMint(address /*src*/, address /*dst*/, address guy, uint /*wad*/) public returns (bool)
+    function canMint(address /*src*/, address /*dst*/, address guy, uint /*wad*/) public view returns (bool)
     {
         // BK Ok
         return !blacklist.status(guy);
     }
 
     // BK Ok
-    function canBurn(address src, address dst, address guy, uint wad) public returns (bool)
+    function canBurn(address src, address dst, address guy, uint wad) public view returns (bool)
     {
         // BK Ok
         return canMint(src, dst, guy, wad);
@@ -106,14 +103,14 @@ contract BoundaryKycRule is BaseRule {
 
     /* TokenAuthority */
     // BK Ok
-    function canMint(address src, address dst, address guy, uint wad) public returns (bool)
+    function canMint(address src, address dst, address guy, uint wad) public view returns (bool)
     {
         // BK Ok
         return super.canMint(src, dst, guy, wad) && kyc.status(guy) && membership.isMember(guy);
     }
 
     // BK Ok
-    function canBurn(address src, address dst, address guy, uint wad) public returns (bool)
+    function canBurn(address src, address dst, address guy, uint wad) public view returns (bool)
     {
         // BK Ok
         return super.canBurn(src, dst, guy, wad) && kyc.status(guy) && membership.isMember(guy);
@@ -146,7 +143,7 @@ contract FullKycRule is BoundaryKycRule {
     /* ERC20Authority */
     // BK Ok
     function canTransferFrom(address src, address dst, address from, address to, uint wad)
-    public returns (bool)
+    public view returns (bool)
     {
         // BK Ok
         return super.canTransferFrom(src, dst, from, to, wad) && kyc.status(from) && kyc.status(to);
@@ -154,7 +151,7 @@ contract FullKycRule is BoundaryKycRule {
 
     // BK Ok
     function canTransfer(address src, address dst, address to, uint wad)
-    public returns (bool)
+    public view returns (bool)
     {
         // BK Ok
         return super.canTransfer(src, dst, to, wad) && canTransferFrom(src, dst, src, to, wad);

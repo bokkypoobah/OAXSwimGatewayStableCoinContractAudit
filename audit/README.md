@@ -10,6 +10,8 @@ This audit has been conducted on the source code from [swim-gateway/stable-coin 
 
 Changes made after the first round of audits are in commit [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1).
 
+Changes made after the second round of audits are in commit [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e).
+
 No potential vulnerabilities have been identified in the smart contracts.
 
 <br />
@@ -77,9 +79,12 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
 * [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [ ] **LOW IMPORTANCE** The name *MockOAXMembership* implies that the contract is for testing and not to be included with the production code in Membership.sol
-* [ ] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
-* [ ] **LOW IMPORTANCE** Consider setting `canApprove(...)`, `canTransferFrom(...)`, `canTransfer(...)`, `canMint(...)` and `canBurn(...)` to view functions - in *TokenAuth.sol* and *TokenRules.sol*
+* [x] **LOW IMPORTANCE** The name *MockOAXMembership* implies that the contract is for testing and not to be included with the production code in Membership.sol
+  * [x] Developer has advised that the name *MockOAXMembership* will be used in the current form
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
+  * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
+* [x] **LOW IMPORTANCE** Consider setting `canApprove(...)`, `canTransferFrom(...)`, `canTransfer(...)`, `canMint(...)` and `canBurn(...)` to view functions - in *TokenAuth.sol* and *TokenRules.sol*
+  * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
 
 <br />
 
@@ -298,4 +303,4 @@ The Gnosis Multisig wallet smart contract is outside the scope of this audit, bu
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 19 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 20 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.

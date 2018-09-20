@@ -13,21 +13,21 @@ pragma solidity 0.4.23;
 // BK Ok
 import "AddressStatus.sol";
 
-//BK Ok
+// BK Ok
 interface MembershipInterface {
  // BK Ok
-    function isMember(address guy) external returns (bool);
+    function isMember(address guy) external view returns (bool);
 }
 
-//BK NOTE - This testing code should be removed from Membership.sol
-//BK Ok
+// BK NOTE - This testing code should be removed from Membership.sol
+// BK Ok
 contract MockOAXMembership is AddressStatus, MembershipInterface {
  // BK Ok
     constructor(DSAuthority authority) AddressStatus(authority) public {
     }
 
  // BK Ok
-    function isMember(address guy) public returns (bool) {
+    function isMember(address guy) public view returns (bool) {
         // BK NOTE - This is for testing to allow all addresses to be treated as being approved
         return !status[guy];
     }

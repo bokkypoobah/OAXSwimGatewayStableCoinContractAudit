@@ -41,9 +41,9 @@ TEST3OUTPUT=test3output.txt
 TEST3RESULTS=test3results.txt
 TEST4OUTPUT=test4output.txt
 TEST4RESULTS=test4results.txt
-CURRENTTIME               = '1537322260' 'Wed Sep 19 11:57:40 2018'
-START_DATE                = '1537322305' 'Wed Sep 19 11:58:25 2018'
-END_DATE                  = '1537322380' 'Wed Sep 19 11:59:40 2018'
+CURRENTTIME               = '1537422205' 'Thu Sep 20 15:43:25 2018'
+START_DATE                = '1537422250' 'Thu Sep 20 15:44:10 2018'
+END_DATE                  = '1537422325' 'Thu Sep 20 15:45:25 2018'
 --- Differences ../../chain/contracts//*.sol *.sol ---
 diff -r -x '*.js' -x '*.json' -x '*.txt' -x testchain -x '*.md -x' -x '*.sh' -x settings -x modifiedContracts ../../chain/contracts/LimitSetting.sol ./LimitSetting.sol
 14,16c14,16
@@ -73,7 +73,7 @@ Welcome to the Geth JavaScript console!
 
 instance: Geth/v1.8.12-stable-37685930/darwin-amd64/go1.10.3
 coinbase: 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e
-at block: 12474 (Wed, 19 Sep 2018 11:57:45 AEST)
+at block: 8 (Thu, 20 Sep 2018 15:43:30 AEST)
  datadir: /Users/bok/Projects/OAXSwimGatewayStableCoinContractAudit/audit/test/testchain
  modules: admin:1.0 clique:1.0 debug:1.0 eth:1.0 miner:1.0 net:1.0 personal:1.0 rpc:1.0 shh:1.0 txpool:1.0 web3:1.0
 
@@ -296,10 +296,10 @@ undefined
 ... 
 undefined
 > 
-DATA: var gateRolesAddress="0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c";
+DATA: var gateRolesAddress="0x90d8927407c79c4a28ee879b821c76fc9bcc2688";
 DATA: var gateRolesAbi=[{"constant":true,"inputs":[{"name":"who","type":"address"}],"name":"getUserRoles","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"code","type":"address"},{"name":"sig","type":"bytes4"}],"name":"getCapabilityRoles","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"code","type":"address"},{"name":"sig","type":"bytes4"}],"name":"isCapabilityPublic","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"MONEY_OPERATOR","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"who","type":"address"},{"name":"role","type":"uint8"},{"name":"enabled","type":"bool"}],"name":"setUserRole","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"role","type":"uint8"},{"name":"code","type":"address"},{"name":"sig","type":"bytes4"},{"name":"enabled","type":"bool"}],"name":"setRoleCapability","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"SYSTEM_ADMIN","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"who","type":"address"},{"name":"role","type":"uint8"}],"name":"hasUserRole","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"KYC_OPERATOR","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"caller","type":"address"},{"name":"code","type":"address"},{"name":"sig","type":"bytes4"}],"name":"canCall","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"code","type":"address"},{"name":"sig","type":"bytes4"},{"name":"enabled","type":"bool"}],"name":"setPublicCapability","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"who","type":"address"},{"name":"enabled","type":"bool"}],"name":"setRootUser","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"who","type":"address"}],"name":"isUserRoot","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"who","type":"address"},{"indexed":false,"name":"enabled","type":"bool"}],"name":"LogSetRootUser","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"who","type":"address"},{"indexed":true,"name":"userRoles","type":"bytes32"},{"indexed":false,"name":"role","type":"uint8"},{"indexed":false,"name":"enabled","type":"bool"}],"name":"LogSetUserRole","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"code","type":"address"},{"indexed":false,"name":"sig","type":"bytes4"},{"indexed":false,"name":"enabled","type":"bool"}],"name":"LogSetPublicCapability","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"code","type":"address"},{"indexed":false,"name":"capabilityRoles","type":"bytes32"},{"indexed":false,"name":"role","type":"uint8"},{"indexed":false,"name":"sig","type":"bytes4"},{"indexed":false,"name":"enabled","type":"bool"}],"name":"LogSetRoleCapability","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
 DATA: var gateRoles=eth.contract(gateRolesAbi).at(gateRolesAddress);
-DATA: var fiatTokenGuardAddress="0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44";
+DATA: var fiatTokenGuardAddress="0x0e946b999033257976aa5cbe0e3530618ca1582d";
 DATA: var fiatTokenGuardAbi=[{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"sig","type":"bytes32"}],"name":"forbid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"bytes32"},{"name":"dst","type":"bytes32"},{"name":"sig","type":"bytes32"}],"name":"forbid","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"ANY","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src_","type":"address"},{"name":"dst_","type":"address"},{"name":"sig","type":"bytes4"}],"name":"canCall","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"sig","type":"bytes32"}],"name":"permit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"bytes32"},{"name":"dst","type":"bytes32"},{"name":"sig","type":"bytes32"}],"name":"permit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"bytes32"},{"indexed":true,"name":"dst","type":"bytes32"},{"indexed":true,"name":"sig","type":"bytes32"}],"name":"LogPermit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"bytes32"},{"indexed":true,"name":"dst","type":"bytes32"},{"indexed":true,"name":"sig","type":"bytes32"}],"name":"LogForbid","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
 DATA: var fiatTokenGuard=eth.contract(fiatTokenGuardAbi).at(fiatTokenGuardAddress);
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
@@ -316,8 +316,8 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -330,25 +330,25 @@ RESULT: PASS Deploy Group #1 - GateRoles
 RESULT: PASS Deploy Group #1 - FiatTokenGuard
 1
 > 
-RESULT: gateRolesTx status=0x1 Success gas=2000000 gasUsed=805463 costETH=0.001610926 costUSD=0.7017999119 @ ETH/USD=435.65 gasPrice=2 gwei block=12484 txIx=0 txId=0xf02e5e6c0ad7bba26ef72c6d0d5db3ee020212226eff3df932099118c642910e @ 1537322275 Wed, 19 Sep 2018 01:57:55 UTC
+RESULT: gateRolesTx status=0x1 Success gas=2000000 gasUsed=805463 costETH=0.001610926 costUSD=0.7017999119 @ ETH/USD=435.65 gasPrice=2 gwei block=29 txIx=0 txId=0x62361ed28a520d04baba134f333c7103f84ca624dc01f713d14ad31d9e47a3b6 @ 1537422231 Thu, 20 Sep 2018 05:43:51 UTC
 undefined
 > 
-RESULT: fiatTokenGuardTx status=0x1 Success gas=2000000 gasUsed=603088 costETH=0.001206176 costUSD=0.5254705744 @ ETH/USD=435.65 gasPrice=2 gwei block=12484 txIx=1 txId=0x9b280fd245425438e422b9dd8a6a36d7611b017f2b2ec8ed733b48c8afe7b28d @ 1537322275 Wed, 19 Sep 2018 01:57:55 UTC
+RESULT: fiatTokenGuardTx status=0x1 Success gas=2000000 gasUsed=603088 costETH=0.001206176 costUSD=0.5254705744 @ ETH/USD=435.65 gasPrice=2 gwei block=29 txIx=1 txId=0x2b36d0025fa517b88cf54db8983451366b62c95e7b88afd1fdee50b9f771c739 @ 1537422231 Thu, 20 Sep 2018 05:43:51 UTC
 undefined
 > 
-RESULT: gateRoles.address=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateRoles.address=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateRoles.authority=0x0000000000000000000000000000000000000000
 RESULT: gateRoles.owner=Account #1 - Deployer:0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: gateRoles.SYSTEM_ADMIN=SYSTEM_ADMIN:1
 RESULT: gateRoles.KYC_OPERATOR=KYC_OPERATOR:2
 RESULT: gateRoles.MONEY_OPERATOR=MONEY_OPERATOR:3
-RESULT: gateRoles.LogSetOwner 0 #12484 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: gateRoles.LogSetOwner 0 #29 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
 undefined
 > 
-RESULT: tokenGuard.address=FiatTokenGuard:0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44
+RESULT: tokenGuard.address=FiatTokenGuard:0x0e946b999033257976aa5cbe0e3530618ca1582d
 RESULT: tokenGuard.authority=0x0000000000000000000000000000000000000000
 RESULT: tokenGuard.owner=Account #1 - Deployer:0xa11aae29840fbb5c86e6fd4cf809eba183aef433
-RESULT: tokenGuard.LogSetOwner 0 #12484 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: tokenGuard.LogSetOwner 0 #29 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
 undefined
 > 
 RESULT: 
@@ -484,20 +484,20 @@ undefined
 ... 
 undefined
 > 
-DATA: var blacklistAddress="0x83d75d5b9dc6c675266353c9e23a9dde2e00492c";
+DATA: var blacklistAddress="0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff";
 DATA: var blacklistAbi=[{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"newStatus","type":"bool"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"status","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"authority","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"status","type":"bool"}],"name":"LogSetAddressStatus","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
 DATA: var blacklist=eth.contract(blacklistAbi).at(blacklistAddress);
-DATA: var kycAddress="0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f";
+DATA: var kycAddress="0xe6ada9beed6e24be4c0259383db61b52bfca85f3";
 DATA: var kycAbi=[{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"newStatus","type":"bool"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"status","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"authority","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"status","type":"bool"}],"name":"LogSetAddressStatus","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
 DATA: var kyc=eth.contract(kycAbi).at(kycAddress);
-DATA: mockMembershipAddress="0xce036399e649463d8b59a01c24b9d95b5e24c20d";
-DATA: var mockMembershipAddress="0xce036399e649463d8b59a01c24b9d95b5e24c20d";
-DATA: var mockMembershipAbi=[{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"newStatus","type":"bool"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"status","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"}],"name":"isMember","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"authority","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"status","type":"bool"}],"name":"LogSetAddressStatus","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
+DATA: mockMembershipAddress="0xf4441f10804b35b13bad1e664e32237773276253";
+DATA: var mockMembershipAddress="0xf4441f10804b35b13bad1e664e32237773276253";
+DATA: var mockMembershipAbi=[{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"newStatus","type":"bool"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"status","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"guy","type":"address"}],"name":"isMember","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"authority","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"status","type":"bool"}],"name":"LogSetAddressStatus","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
 DATA: var mockMembership=eth.contract(mockMembershipAbi).at(mockMembershipAddress);
-DATA: var transferFeeControllerAddress="0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1";
+DATA: var transferFeeControllerAddress="0x57930444aa5c1e758c1407ded001a8f36aa80b1d";
 DATA: var transferFeeControllerAbi=[{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"defaultTransferFeeAbs","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"wad","type":"uint256"}],"name":"calculateTransferFee","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"defaultTransferFeeAbs_","type":"uint256"},{"name":"defaultTransferFeeBps_","type":"uint256"}],"name":"setDefaultTransferFee","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"defaultTransferFeeBps","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_authority","type":"address"},{"name":"defaultTransferFeeAbs_","type":"uint256"},{"name":"defaultTransferFeeBps_","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"defaultTransferFeeAbs","type":"uint256"},{"indexed":false,"name":"defaultTransferFeeBps","type":"uint256"}],"name":"LogSetDefaultTransferFee","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"}];
 DATA: var transferFeeController=eth.contract(transferFeeControllerAbi).at(transferFeeControllerAddress);
-DATA: var limitSettingAddress="0x19c69daf103746b409da28b213cf74daa893dbf7";
+DATA: var limitSettingAddress="0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a";
 DATA: var limitSettingAbi=[{"constant":false,"inputs":[{"name":"_hours","type":"uint256"}],"name":"setDefaultDelayHours","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"stop","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"lastSettingResetTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"defaultBurnDailyLimit","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_timestampOffset","type":"int256"}],"name":"setLimitCounterResetTimeOffset","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"limit","type":"uint256"}],"name":"setCustomMintDailyLimit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"defaultMintDailyLimit","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"limit","type":"uint256"}],"name":"setCustomBurnDailyLimit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"limit","type":"uint256"}],"name":"setDefaultMintDailyLimit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"lastDefaultDelaySettingResetTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"defaultDelayTimeBuffer","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"}],"name":"getMintDailyLimit","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"stopped","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"limitCounterResetTimeOffset","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"start","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"limit","type":"uint256"}],"name":"setDefaultBurnDailyLimit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"defaultBurnDailyLimitBuffer","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getLimitCounterResetTimeOffset","outputs":[{"name":"","type":"int256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"defaultMintDailyLimitBuffer","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"defaultDelayTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"}],"name":"getBurnDailyLimit","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_authority","type":"address"},{"name":"_defaultMintDailyLimit","type":"uint256"},{"name":"_defaultBurnDailyLimit","type":"uint256"},{"name":"_defaultLimitCounterResetTimeOffset","type":"int256"},{"name":"_defaultSettingDelayTime","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"AdjustMintLimitRequested","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"AdjustBurnLimitRequested","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"},{"anonymous":true,"inputs":[{"indexed":true,"name":"sig","type":"bytes4"},{"indexed":true,"name":"guy","type":"address"},{"indexed":true,"name":"foo","type":"bytes32"},{"indexed":true,"name":"bar","type":"bytes32"},{"indexed":false,"name":"wad","type":"uint256"},{"indexed":false,"name":"fax","type":"bytes"}],"name":"LogNote","type":"event"}];
 DATA: var limitSetting=eth.contract(limitSettingAbi).at(limitSettingAddress);
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
@@ -514,13 +514,13 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -542,68 +542,68 @@ RESULT: PASS Deploy Group #2 - TransferFeeController
 RESULT: PASS Deploy Group #2 - LimitSetting
 1
 > 
-RESULT: blacklistTx status=0x1 Success gas=2000000 gasUsed=425769 costETH=0.000851538 costUSD=0.3709725297 @ ETH/USD=435.65 gasPrice=2 gwei block=12486 txIx=0 txId=0xad6500fddd8d3471272b49c5812a2f04a3a6fb406e5a57b2fcf1527650833a94 @ 1537322277 Wed, 19 Sep 2018 01:57:57 UTC
+RESULT: blacklistTx status=0x1 Success gas=2000000 gasUsed=425769 costETH=0.000851538 costUSD=0.3709725297 @ ETH/USD=435.65 gasPrice=2 gwei block=31 txIx=0 txId=0x3fc21d36adae282687a029db1309e04296542c0aa7e2b1c6b24f5b4d851ab480 @ 1537422233 Thu, 20 Sep 2018 05:43:53 UTC
 undefined
 > 
-RESULT: kycTx status=0x1 Success gas=2000000 gasUsed=425769 costETH=0.000851538 costUSD=0.3709725297 @ ETH/USD=435.65 gasPrice=2 gwei block=12486 txIx=1 txId=0xe9b5e07df258c10834d1274341afddf9436d2065c3e1b3c0c6d088016047065c @ 1537322277 Wed, 19 Sep 2018 01:57:57 UTC
+RESULT: kycTx status=0x1 Success gas=2000000 gasUsed=425769 costETH=0.000851538 costUSD=0.3709725297 @ ETH/USD=435.65 gasPrice=2 gwei block=31 txIx=1 txId=0xd69dc1e624410c9a935caab039386b50df2a210135786478ceea9b71ddc9b13c @ 1537422233 Thu, 20 Sep 2018 05:43:53 UTC
 undefined
 > 
-RESULT: mockMembershipTx status=0x1 Success gas=2000000 gasUsed=446164 costETH=0.000892328 costUSD=0.3887426932 @ ETH/USD=435.65 gasPrice=2 gwei block=12486 txIx=2 txId=0x64ceba66edce0147386a44a80edcc9f777ddc3e7e4eb239812fad7e752c93d6c @ 1537322277 Wed, 19 Sep 2018 01:57:57 UTC
+RESULT: mockMembershipTx status=0x1 Success gas=2000000 gasUsed=446164 costETH=0.000892328 costUSD=0.3887426932 @ ETH/USD=435.65 gasPrice=2 gwei block=31 txIx=2 txId=0x72691fff92d842f453d8c8c1e91d2a817836e8586f9104476e6716f13a0a1b06 @ 1537422233 Thu, 20 Sep 2018 05:43:53 UTC
 undefined
 > 
-RESULT: transferFeeControllerTx status=0x1 Success gas=2000000 gasUsed=551332 costETH=0.001102664 costUSD=0.4803755716 @ ETH/USD=435.65 gasPrice=2 gwei block=12486 txIx=3 txId=0xacc52926edc814898e6282a85b35ba7ce8bb1ea84b440f152a5b42a4c8c1c158 @ 1537322277 Wed, 19 Sep 2018 01:57:57 UTC
+RESULT: transferFeeControllerTx status=0x1 Success gas=2000000 gasUsed=551332 costETH=0.001102664 costUSD=0.4803755716 @ ETH/USD=435.65 gasPrice=2 gwei block=31 txIx=3 txId=0xcb06ad75d274e356779ceab6cd31a76d2b614c62bb3d305610369e033a104d5d @ 1537422233 Thu, 20 Sep 2018 05:43:53 UTC
 undefined
 > 
-RESULT: limitSettingTx status=0x1 Success gas=2000000 gasUsed=1467784 costETH=0.002935568 costUSD=1.2788801992 @ ETH/USD=435.65 gasPrice=2 gwei block=12486 txIx=4 txId=0x85a9a5ad8ffd8fa5427bc7fc36403a4483bd00b1434e21fe7d12176e3ff1f2a2 @ 1537322277 Wed, 19 Sep 2018 01:57:57 UTC
+RESULT: limitSettingTx status=0x1 Success gas=2000000 gasUsed=1467784 costETH=0.002935568 costUSD=1.2788801992 @ ETH/USD=435.65 gasPrice=2 gwei block=31 txIx=4 txId=0x005965c37001823a35876e3d5e3464e720e3623bcf23794b4b8ed8e41e8d22ab @ 1537422233 Thu, 20 Sep 2018 05:43:53 UTC
 undefined
 > 
-RESULT: blacklist.address=Blacklist(AddressStatus):0x83d75d5b9dc6c675266353c9e23a9dde2e00492c
-RESULT: blacklist.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: blacklist.address=Blacklist(AddressStatus):0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff
+RESULT: blacklist.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: blacklist.owner=0x0000000000000000000000000000000000000000
-RESULT: blacklist.LogSetAuthority 0 #12486 {"authority":"0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c"}
-RESULT: blacklist.LogSetOwner 0 #12486 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: blacklist.LogSetOwner 1 #12486 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: blacklist.LogSetAuthority 0 #31 {"authority":"0x90d8927407c79c4a28ee879b821c76fc9bcc2688"}
+RESULT: blacklist.LogSetOwner 0 #31 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: blacklist.LogSetOwner 1 #31 {"owner":"0x0000000000000000000000000000000000000000"}
 undefined
 > 
-RESULT: kyc.address=Kyc(AddressStatus):0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f
-RESULT: kyc.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: kyc.address=Kyc(AddressStatus):0xe6ada9beed6e24be4c0259383db61b52bfca85f3
+RESULT: kyc.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: kyc.owner=0x0000000000000000000000000000000000000000
-RESULT: kyc.LogSetAuthority 0 #12486 {"authority":"0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c"}
-RESULT: kyc.LogSetOwner 0 #12486 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: kyc.LogSetOwner 1 #12486 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: kyc.LogSetAuthority 0 #31 {"authority":"0x90d8927407c79c4a28ee879b821c76fc9bcc2688"}
+RESULT: kyc.LogSetOwner 0 #31 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: kyc.LogSetOwner 1 #31 {"owner":"0x0000000000000000000000000000000000000000"}
 undefined
 > 
-RESULT: mockMembership.address=MockMembership:0xce036399e649463d8b59a01c24b9d95b5e24c20d
-RESULT: mockMembership.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: mockMembership.address=MockMembership:0xf4441f10804b35b13bad1e664e32237773276253
+RESULT: mockMembership.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: mockMembership.owner=0x0000000000000000000000000000000000000000
-RESULT: mockMembership.LogSetAuthority 0 #12486 {"authority":"0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c"}
-RESULT: mockMembership.LogSetOwner 0 #12486 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: mockMembership.LogSetOwner 1 #12486 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: mockMembership.LogSetAuthority 0 #31 {"authority":"0x90d8927407c79c4a28ee879b821c76fc9bcc2688"}
+RESULT: mockMembership.LogSetOwner 0 #31 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: mockMembership.LogSetOwner 1 #31 {"owner":"0x0000000000000000000000000000000000000000"}
 undefined
 > 
-RESULT: transferFeeController.address=TransferFeeController:0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1
-RESULT: transferFeeController.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: transferFeeController.address=TransferFeeController:0x57930444aa5c1e758c1407ded001a8f36aa80b1d
+RESULT: transferFeeController.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: transferFeeController.owner=0x0000000000000000000000000000000000000000
 RESULT: transferFeeController.defaultTransferFeeAbs=0
 RESULT: transferFeeController.defaultTransferFeeBps=0
 undefined
 > 
-RESULT: limitSetting.address=LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7
-RESULT: limitSetting.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: limitSetting.address=LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a
+RESULT: limitSetting.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: limitSetting.owner=0x0000000000000000000000000000000000000000
 RESULT: limitSetting.stopped=false
 RESULT: limitSetting.limitCounterResetTimeOffset=0
-RESULT: limitSetting.lastSettingResetTime=1537322277 Wed, 19 Sep 2018 01:57:57 UTC
+RESULT: limitSetting.lastSettingResetTime=1537422233 Thu, 20 Sep 2018 05:43:53 UTC
 RESULT: limitSetting.defaultDelayTime=0
 RESULT: limitSetting.defaultDelayTimeBuffer=0
-RESULT: limitSetting.lastDefaultDelaySettingResetTime=1537322277
+RESULT: limitSetting.lastDefaultDelaySettingResetTime=1537422233
 RESULT: limitSetting.defaultMintDailyLimit=1e+22 10000
 RESULT: limitSetting.defaultBurnDailyLimit=1e+22 10000
 RESULT: limitSetting.defaultMintDailyLimitBuffer=1e+22 10000
 RESULT: limitSetting.defaultBurnDailyLimitBuffer=1e+22 10000
-RESULT: limitSetting.LogSetAuthority 0 #12486 {"authority":"0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c"}
-RESULT: limitSetting.LogSetOwner 0 #12486 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: limitSetting.LogSetOwner 1 #12486 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: limitSetting.LogSetAuthority 0 #31 {"authority":"0x90d8927407c79c4a28ee879b821c76fc9bcc2688"}
+RESULT: limitSetting.LogSetOwner 0 #31 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: limitSetting.LogSetOwner 1 #31 {"owner":"0x0000000000000000000000000000000000000000"}
 undefined
 > 
 RESULT: 
@@ -738,25 +738,25 @@ undefined
 ... 
 undefined
 > 
-DATA: var baseRuleAddress="0xf9706caa2ec5c487d16221aff57a4e3d688f81e7";
-DATA: var baseRuleAbi=[{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"","type":"uint256"}],"name":"canTransferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canApprove","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"blacklist","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canMint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_blacklist","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+DATA: var baseRuleAddress="0xb8c31f47dfba40162326aba12cd577ae5cb2ce99";
+DATA: var baseRuleAbi=[{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"","type":"uint256"}],"name":"canTransferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canApprove","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"blacklist","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canMint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_blacklist","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 DATA: var baseRule=eth.contract(baseRuleAbi).at(baseRuleAddress);
-DATA: var boundaryKycRuleAddress="0x3f8862c98c88a31fffe4f135a6bae6fc39089966";
-DATA: var boundaryKycRuleAbi=[{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"","type":"uint256"}],"name":"canTransferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canApprove","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kyc","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"membership","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"blacklist","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canMint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_blacklist","type":"address"},{"name":"_kyc","type":"address"},{"name":"_membership","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+DATA: var boundaryKycRuleAddress="0x0a91add9e3e97057980da7826043aab2a2d4c35b";
+DATA: var boundaryKycRuleAbi=[{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"","type":"uint256"}],"name":"canTransferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canApprove","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"kyc","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"membership","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"blacklist","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canMint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_blacklist","type":"address"},{"name":"_kyc","type":"address"},{"name":"_membership","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 DATA: var boundaryKycRule=eth.contract(boundaryKycRuleAbi).at(boundaryKycRuleAddress);
-DATA: var fullKycRuleAddress="0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383";
-DATA: var fullKycRuleAbi=[{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canApprove","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kyc","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"membership","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"blacklist","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canMint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_blacklist","type":"address"},{"name":"_kyc","type":"address"},{"name":"_membership","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+DATA: var fullKycRuleAddress="0x821ca8becdbfb00ca55e722908796a375bc2d538";
+DATA: var fullKycRuleAbi=[{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canBurn","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"canTransferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"},{"name":"guy","type":"address"},{"name":"","type":"uint256"}],"name":"canApprove","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"kyc","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"membership","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"blacklist","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"canMint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_blacklist","type":"address"},{"name":"_kyc","type":"address"},{"name":"_membership","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 DATA: var fullKycRule=eth.contract(fullKycRuleAbi).at(fullKycRuleAddress);
-DATA: var limitControllerAddress="0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2";
+DATA: var limitControllerAddress="0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b";
 DATA: var limitControllerAbi=[{"constant":false,"inputs":[],"name":"stop","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"lastLimitResetTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"bumpBurnLimitCounter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"stopped","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"bumpMintLimitCounter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"limitSetting","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"isWithinBurnLimit","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"start","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"isWithinMintLimit","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"mintLimitCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"burnLimitCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_authority","type":"address"},{"name":"limitSetting_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"},{"anonymous":true,"inputs":[{"indexed":true,"name":"sig","type":"bytes4"},{"indexed":true,"name":"guy","type":"address"},{"indexed":true,"name":"foo","type":"bytes32"},{"indexed":true,"name":"bar","type":"bytes32"},{"indexed":false,"name":"wad","type":"uint256"},{"indexed":false,"name":"fax","type":"bytes"}],"name":"LogNote","type":"event"}];
 DATA: var limitController=eth.contract(limitControllerAbi).at(limitControllerAddress);
-DATA: var fiatTokenAddress="0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b";
+DATA: var fiatTokenAddress="0x1029670471248c1046263e47c431a061a7fa34ab";
 DATA: var fiatTokenAbi=[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"stop","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"feeCollector_","type":"address"}],"name":"setTransferFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_erc20Authority","type":"address"}],"name":"setERC20Authority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"tokenAuthority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"mint","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"name_","type":"bytes32"}],"name":"setName","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"transferFeeCollector","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"erc20Authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"stopped","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"mint","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"wad","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"push","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"move","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"transferFeeController","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"start","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"transferFeeController_","type":"address"}],"name":"setTransferFeeController","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"guy","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_tokenAuthority","type":"address"}],"name":"setTokenAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"wad","type":"uint256"}],"name":"pull","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_authority","type":"address"},{"name":"symbol","type":"bytes32"},{"name":"tokenName","type":"bytes32"},{"name":"transferFeeCollector_","type":"address"},{"name":"transferFeeController_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"feeCollector","type":"address"}],"name":"LogSetTransferFeeCollector","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"transferFeeController","type":"address"}],"name":"LogSetTransferFeeController","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenAuthority","type":"address"}],"name":"LogSetTokenAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"erc20Authority","type":"address"}],"name":"LogSetERC20Authority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"},{"anonymous":true,"inputs":[{"indexed":true,"name":"sig","type":"bytes4"},{"indexed":true,"name":"guy","type":"address"},{"indexed":true,"name":"foo","type":"bytes32"},{"indexed":true,"name":"bar","type":"bytes32"},{"indexed":false,"name":"wad","type":"uint256"},{"indexed":false,"name":"fax","type":"bytes"}],"name":"LogNote","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Transfer","type":"event"}];
 DATA: var fiatToken=eth.contract(fiatTokenAbi).at(fiatTokenAddress);
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.018028290000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.018028290000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.018092290000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.018092290000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -767,18 +767,18 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -800,64 +800,64 @@ RESULT: PASS Deploy Group #3 - LimitController
 RESULT: PASS Deploy Group #3 - FiatToken
 1
 > 
-RESULT: baseRuleTx status=0x1 Success gas=2000000 gasUsed=334353 costETH=0.000668706 costUSD=0.2913217689 @ ETH/USD=435.65 gasPrice=2 gwei block=12489 txIx=0 txId=0x224d427061930b8493a57b1574384bcbb31e699f41446c17e2321f4a1a95dd3f @ 1537322280 Wed, 19 Sep 2018 01:58:00 UTC
+RESULT: baseRuleTx status=0x1 Success gas=2000000 gasUsed=334353 costETH=0.000668706 costUSD=0.2913217689 @ ETH/USD=435.65 gasPrice=2 gwei block=34 txIx=0 txId=0xdd6ff6f8eecddaada5b90e0992eda5529c2dc97f6dbb9229d21991cf4da2d847 @ 1537422236 Thu, 20 Sep 2018 05:43:56 UTC
 undefined
 > 
-RESULT: boundaryKycRuleTx status=0x1 Success gas=2000000 gasUsed=512455 costETH=0.00102491 costUSD=0.4465020415 @ ETH/USD=435.65 gasPrice=2 gwei block=12489 txIx=1 txId=0x902deb42543711d7eda69762c5fea4d183a63fa1c864f7b723ad88a70307cfe3 @ 1537322280 Wed, 19 Sep 2018 01:58:00 UTC
+RESULT: boundaryKycRuleTx status=0x1 Success gas=2000000 gasUsed=512519 costETH=0.001025038 costUSD=0.4465578047 @ ETH/USD=435.65 gasPrice=2 gwei block=34 txIx=1 txId=0x4117fc02e8cce7cdcb8f7b87ee06bd447d96e0639594f443d277dcfa3a0e53ca @ 1537422236 Thu, 20 Sep 2018 05:43:56 UTC
 undefined
 > 
-RESULT: fullKycRuleTx status=0x1 Success gas=2000000 gasUsed=626640 costETH=0.00125328 costUSD=0.545991432 @ ETH/USD=435.65 gasPrice=2 gwei block=12489 txIx=2 txId=0x2338810c2eb10cc161b94cfb0bfea0a4751a7d2c45816a561ff43b8d0dc23e8d @ 1537322280 Wed, 19 Sep 2018 01:58:00 UTC
+RESULT: fullKycRuleTx status=0x1 Success gas=2000000 gasUsed=626704 costETH=0.001253408 costUSD=0.5460471952 @ ETH/USD=435.65 gasPrice=2 gwei block=34 txIx=2 txId=0x6de92c8c5a3df11cb7d83bd51c70de24157fcee5c1a2a8276ef6e1efbc049586 @ 1537422236 Thu, 20 Sep 2018 05:43:56 UTC
 undefined
 > 
-RESULT: limitControllerTx status=0x1 Success gas=2000000 gasUsed=959901 costETH=0.001919802 costUSD=0.8363617413 @ ETH/USD=435.65 gasPrice=2 gwei block=12489 txIx=3 txId=0x012028668cc820ee76eb1e7b01a52df8810a32f1ba3a865620bd4cff77a27587 @ 1537322280 Wed, 19 Sep 2018 01:58:00 UTC
+RESULT: limitControllerTx status=0x1 Success gas=2000000 gasUsed=959901 costETH=0.001919802 costUSD=0.8363617413 @ ETH/USD=435.65 gasPrice=2 gwei block=34 txIx=3 txId=0x02da28afc86065dee83078eea4d1e6c40b177f259b20729261080306ba11c298 @ 1537422236 Thu, 20 Sep 2018 05:43:56 UTC
 undefined
 > 
-RESULT: fiatTokenTx status=0x1 Success gas=2000000 gasUsed=1855427 costETH=0.003710854 costUSD=1.6166335451 @ ETH/USD=435.65 gasPrice=2 gwei block=12489 txIx=4 txId=0x80fc591547c869c6dfe4e82be657768b081161368da413e9d22dad7d13c3bd1f @ 1537322280 Wed, 19 Sep 2018 01:58:00 UTC
+RESULT: fiatTokenTx status=0x1 Success gas=2000000 gasUsed=1887299 costETH=0.003774598 costUSD=1.6444036187 @ ETH/USD=435.65 gasPrice=2 gwei block=35 txIx=0 txId=0xe42a376b3343bc673e3fe0574154980cdca140c414326b871d99284af18e064f @ 1537422237 Thu, 20 Sep 2018 05:43:57 UTC
 undefined
 > 
-RESULT: baseRule.address=BaseRule:0xf9706caa2ec5c487d16221aff57a4e3d688f81e7
-RESULT: baseRule.blacklist=Blacklist(AddressStatus):0x83d75d5b9dc6c675266353c9e23a9dde2e00492c
+RESULT: baseRule.address=BaseRule:0xb8c31f47dfba40162326aba12cd577ae5cb2ce99
+RESULT: baseRule.blacklist=Blacklist(AddressStatus):0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff
 undefined
 > 
-RESULT: boundaryKycRule.address=BoundaryKycRule:0x3f8862c98c88a31fffe4f135a6bae6fc39089966
-RESULT: boundaryKycRule.blacklist=Blacklist(AddressStatus):0x83d75d5b9dc6c675266353c9e23a9dde2e00492c
-RESULT: boundaryKycRule.kyc=Kyc(AddressStatus):0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f
-RESULT: boundaryKycRule.membership=MockMembership:0xce036399e649463d8b59a01c24b9d95b5e24c20d
+RESULT: boundaryKycRule.address=BoundaryKycRule:0x0a91add9e3e97057980da7826043aab2a2d4c35b
+RESULT: boundaryKycRule.blacklist=Blacklist(AddressStatus):0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff
+RESULT: boundaryKycRule.kyc=Kyc(AddressStatus):0xe6ada9beed6e24be4c0259383db61b52bfca85f3
+RESULT: boundaryKycRule.membership=MockMembership:0xf4441f10804b35b13bad1e664e32237773276253
 undefined
 > 
-RESULT: fullKycRule.address=FullKycRule:0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383
-RESULT: fullKycRule.blacklist=Blacklist(AddressStatus):0x83d75d5b9dc6c675266353c9e23a9dde2e00492c
-RESULT: fullKycRule.kyc=Kyc(AddressStatus):0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f
-RESULT: fullKycRule.membership=MockMembership:0xce036399e649463d8b59a01c24b9d95b5e24c20d
+RESULT: fullKycRule.address=FullKycRule:0x821ca8becdbfb00ca55e722908796a375bc2d538
+RESULT: fullKycRule.blacklist=Blacklist(AddressStatus):0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff
+RESULT: fullKycRule.kyc=Kyc(AddressStatus):0xe6ada9beed6e24be4c0259383db61b52bfca85f3
+RESULT: fullKycRule.membership=MockMembership:0xf4441f10804b35b13bad1e664e32237773276253
 undefined
 > 
-RESULT: limitController.address=LimitController:0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2
-RESULT: limitController.authority=FiatTokenGuard:0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44
+RESULT: limitController.address=LimitController:0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b
+RESULT: limitController.authority=FiatTokenGuard:0x0e946b999033257976aa5cbe0e3530618ca1582d
 RESULT: limitController.owner=0x0000000000000000000000000000000000000000
 RESULT: limitController.stopped=false
 RESULT: limitController.mintLimitCounter=0
 RESULT: limitController.burnLimitCounter=0
-RESULT: limitController.lastLimitResetTime=1537315200 Wed, 19 Sep 2018 00:00:00 UTC
-RESULT: limitController.limitSetting=LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7
-RESULT: limitController.LogSetAuthority 0 #12489 {"authority":"0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44"}
-RESULT: limitController.LogSetOwner 0 #12489 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: limitController.LogSetOwner 1 #12489 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: limitController.lastLimitResetTime=1537401600 Thu, 20 Sep 2018 00:00:00 UTC
+RESULT: limitController.limitSetting=LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a
+RESULT: limitController.LogSetAuthority 0 #34 {"authority":"0x0e946b999033257976aa5cbe0e3530618ca1582d"}
+RESULT: limitController.LogSetOwner 0 #34 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: limitController.LogSetOwner 1 #34 {"owner":"0x0000000000000000000000000000000000000000"}
 undefined
 > 
-RESULT: tokenAContractAddress=FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b
-RESULT: token.authority=FiatTokenGuard:0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44
+RESULT: tokenAContractAddress=FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab
+RESULT: token.authority=FiatTokenGuard:0x0e946b999033257976aa5cbe0e3530618ca1582d
 RESULT: token.owner=0x0000000000000000000000000000000000000000
 RESULT: token.erc20Authority=0x0000000000000000000000000000000000000000
 RESULT: token.tokenAuthority=0x0000000000000000000000000000000000000000
-RESULT: token.transferFeeController=TransferFeeController:0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1
+RESULT: token.transferFeeController=TransferFeeController:0x57930444aa5c1e758c1407ded001a8f36aa80b1d
 RESULT: token.transferFeeCollector=Account #5 - TransferFeeCollector:0xa55a151eb00fded1634d27d1127b4be4627079ea
 RESULT: token.symbol=USD
 RESULT: token.name=USDToken
 RESULT: token.decimals=18
 RESULT: token.totalSupply=0 0
-RESULT: token.LogSetAuthority 0 #12489 {"authority":"0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44"}
-RESULT: token.LogSetOwner 0 #12489 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: token.LogSetOwner 1 #12489 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: token.LogSetAuthority 0 #35 {"authority":"0x0e946b999033257976aa5cbe0e3530618ca1582d"}
+RESULT: token.LogSetOwner 0 #35 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: token.LogSetOwner 1 #35 {"owner":"0x0000000000000000000000000000000000000000"}
 undefined
 > 
 RESULT: 
@@ -891,8 +891,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.018311184000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.018311184000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.018375184000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.018375184000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -903,18 +903,18 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -930,24 +930,24 @@ RESULT: PASS Set User Roles - setUserRole(kycOperator, KYC_OPERATOR_ROLE, true)
 RESULT: PASS Set User Roles - setUserRole(moneyOperator, MONEY_OPERATOR_ROLE, true)
 1
 > 
-RESULT: setUserRoles1_1Tx status=0x1 Success gas=400000 gasUsed=47149 costETH=0.000094298 costUSD=0.0410809237 @ ETH/USD=435.65 gasPrice=2 gwei block=12493 txIx=0 txId=0xaaf4ea907ce96460c346ac8f8b8b0eaf833c97ba7738956ff87c62744d84668a @ 1537322284 Wed, 19 Sep 2018 01:58:04 UTC
+RESULT: setUserRoles1_1Tx status=0x1 Success gas=400000 gasUsed=47149 costETH=0.000094298 costUSD=0.0410809237 @ ETH/USD=435.65 gasPrice=2 gwei block=38 txIx=0 txId=0xaff664b9d535a9ee05dd2fa571613cb408d85adb03f374bd0b881cc1e4f7a4fe @ 1537422240 Thu, 20 Sep 2018 05:44:00 UTC
 undefined
 > 
-RESULT: setUserRoles1_2Tx status=0x1 Success gas=400000 gasUsed=47149 costETH=0.000094298 costUSD=0.0410809237 @ ETH/USD=435.65 gasPrice=2 gwei block=12493 txIx=1 txId=0x39537393de5df2a289ff52ff758800aa3d1ca887bdcca47335d8cdfd26f188bd @ 1537322284 Wed, 19 Sep 2018 01:58:04 UTC
+RESULT: setUserRoles1_2Tx status=0x1 Success gas=400000 gasUsed=47149 costETH=0.000094298 costUSD=0.0410809237 @ ETH/USD=435.65 gasPrice=2 gwei block=38 txIx=1 txId=0x9e54b7554478e093dfef3c11dbce7d4e2f35fd9dc2884d8882ad63b46e3393f0 @ 1537422240 Thu, 20 Sep 2018 05:44:00 UTC
 undefined
 > 
-RESULT: setUserRoles1_3Tx status=0x1 Success gas=400000 gasUsed=47149 costETH=0.000094298 costUSD=0.0410809237 @ ETH/USD=435.65 gasPrice=2 gwei block=12493 txIx=2 txId=0xc3bdd9fa3653bb5950fecb1b552ba01e5ce87392c564a6f134990d1bc11fd79c @ 1537322284 Wed, 19 Sep 2018 01:58:04 UTC
+RESULT: setUserRoles1_3Tx status=0x1 Success gas=400000 gasUsed=47149 costETH=0.000094298 costUSD=0.0410809237 @ ETH/USD=435.65 gasPrice=2 gwei block=38 txIx=2 txId=0x936a3aa303dc47a5e70f52a8b71216e884ff2e04ffe183055eb6742b46c7c1d9 @ 1537422240 Thu, 20 Sep 2018 05:44:00 UTC
 undefined
 > 
-RESULT: gateRoles.address=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateRoles.address=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateRoles.authority=0x0000000000000000000000000000000000000000
 RESULT: gateRoles.owner=Account #1 - Deployer:0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: gateRoles.SYSTEM_ADMIN=SYSTEM_ADMIN:1
 RESULT: gateRoles.KYC_OPERATOR=KYC_OPERATOR:2
 RESULT: gateRoles.MONEY_OPERATOR=MONEY_OPERATOR:3
-RESULT: gateRoles.LogSetUserRole 0 #12493 {"enabled":true,"role":"1","userRoles":"0x0000000000000000000000000000000000000000000000000000000000000002","who":"0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976"}
-RESULT: gateRoles.LogSetUserRole 1 #12493 {"enabled":true,"role":"2","userRoles":"0x0000000000000000000000000000000000000000000000000000000000000004","who":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0"}
-RESULT: gateRoles.LogSetUserRole 2 #12493 {"enabled":true,"role":"3","userRoles":"0x0000000000000000000000000000000000000000000000000000000000000008","who":"0xa44a08d3f6933c69212114bb66e2df1813651844"}
+RESULT: gateRoles.LogSetUserRole 0 #38 {"enabled":true,"role":"1","userRoles":"0x0000000000000000000000000000000000000000000000000000000000000002","who":"0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976"}
+RESULT: gateRoles.LogSetUserRole 1 #38 {"enabled":true,"role":"2","userRoles":"0x0000000000000000000000000000000000000000000000000000000000000004","who":"0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0"}
+RESULT: gateRoles.LogSetUserRole 2 #38 {"enabled":true,"role":"3","userRoles":"0x0000000000000000000000000000000000000000000000000000000000000008","who":"0xa44a08d3f6933c69212114bb66e2df1813651844"}
 undefined
 > 
 RESULT: 
@@ -987,8 +987,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.019178224000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.019178224000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.019242352000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.019242352000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -999,18 +999,18 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -1044,48 +1044,48 @@ RESULT: PASS Set Roles Rules #1 - setRoleCapability(SYSTEM_ADMIN_ROLE, limitSett
 RESULT: PASS Set Roles Rules #1 - setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeControllerAddress, web3.sha3("setDefaultTransferFee(uint256,uint256)").substring(0, 10), true)
 1
 > 
-RESULT: setRoleRules1_1Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12496 txIx=0 txId=0xa3203fa13d6989be39ee4762e932c0bcd4af981ea52112aa864e80fe3e5721c1 @ 1537322287 Wed, 19 Sep 2018 01:58:07 UTC
+RESULT: setRoleRules1_1Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=0 txId=0x29bb40ed5c07fb61ef5bf821486c9095f1a845f633da4d49fcae8901b889a94b @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_2Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12496 txIx=1 txId=0xf271e5ab326d153d91f5632bcd871b652ade4f6aa692a70e210e3c09995ae77d @ 1537322287 Wed, 19 Sep 2018 01:58:07 UTC
+RESULT: setRoleRules1_2Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=1 txId=0xc7d85bfd097e67c0e2c1d817c5536a23f51360b530c30ab908c608e08e62e733 @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_3Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12496 txIx=2 txId=0xd3b2b5349bfbe240003c63085b2eb896516aa98ee1b29b8b4c47fcfa0bb3e0bd @ 1537322287 Wed, 19 Sep 2018 01:58:07 UTC
+RESULT: setRoleRules1_3Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=2 txId=0xa8b72891b3016214ed96270359d1c36ecfd922e3b9c9a1a1828fc4b8a2363a2d @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_4Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12497 txIx=0 txId=0xe34eb4a0b1f2f6c25e0822d104b9f4f3adff612ba39a195f14c46986e422539f @ 1537322288 Wed, 19 Sep 2018 01:58:08 UTC
+RESULT: setRoleRules1_4Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=3 txId=0x420f3d17c6cd811590670f532747fc4a7e7dc1fb5a20fdf8129b7e1e62765107 @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_5Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12497 txIx=1 txId=0xc058b394d29ad94a7c369acb2e6d0cd95fc865240e05c50c3e063d5c1f2d984e @ 1537322288 Wed, 19 Sep 2018 01:58:08 UTC
+RESULT: setRoleRules1_5Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=4 txId=0x512a90638bcbe8df5861704bac52fa1356896781cbaf6d1fc3feee1fa1ce98ec @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_6Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12497 txIx=2 txId=0x6b8493c81e9c6ee32d8321577d61cc9c2789304aa195f42e3785d777b7ec9065 @ 1537322288 Wed, 19 Sep 2018 01:58:08 UTC
+RESULT: setRoleRules1_6Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=5 txId=0x75b7c873f230445dab1f89b3057a462175564072766cbf610e1812e76444f6bc @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_7Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12497 txIx=2 txId=0x6b8493c81e9c6ee32d8321577d61cc9c2789304aa195f42e3785d777b7ec9065 @ 1537322288 Wed, 19 Sep 2018 01:58:08 UTC
+RESULT: setRoleRules1_7Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=5 txId=0x75b7c873f230445dab1f89b3057a462175564072766cbf610e1812e76444f6bc @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_8Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12497 txIx=4 txId=0xd5d56742496f28a427218460e8e1c5c68b25e4379dd2413f8e93a47a4226b183 @ 1537322288 Wed, 19 Sep 2018 01:58:08 UTC
+RESULT: setRoleRules1_8Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=7 txId=0x0669058ee8c1943265e463f7fec9a0d9d955a83935dc1e3ebc0db19c742e635d @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: setRoleRules1_9Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=12497 txIx=5 txId=0xb0530e4b90b6939fd01dce0b96df51a942b4654f4c439e8fb0e5a30edb2c49a0 @ 1537322288 Wed, 19 Sep 2018 01:58:08 UTC
+RESULT: setRoleRules1_9Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=41 txIx=8 txId=0xed25d53cd805c9d555aa05767b1a1a41cf8e5a5b602e0be7b5d62497ca63da73 @ 1537422243 Thu, 20 Sep 2018 05:44:03 UTC
 undefined
 > 
-RESULT: gateRoles.address=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateRoles.address=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateRoles.authority=0x0000000000000000000000000000000000000000
 RESULT: gateRoles.owner=Account #1 - Deployer:0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: gateRoles.SYSTEM_ADMIN=SYSTEM_ADMIN:1
 RESULT: gateRoles.KYC_OPERATOR=KYC_OPERATOR:2
 RESULT: gateRoles.MONEY_OPERATOR=MONEY_OPERATOR:3
-RESULT: gateRoles.RoleCapability code Kyc(AddressStatus):0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000004 for set(address,bool) role KYC_OPERATOR:2 true #12496 0xa3203fa13d6989be39ee4762e932c0bcd4af981ea52112aa864e80fe3e5721c1
-RESULT: gateRoles.RoleCapability code Blacklist(AddressStatus):0x83d75d5b9dc6c675266353c9e23a9dde2e00492c capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for set(address,bool) role MONEY_OPERATOR:3 true #12496 0xf271e5ab326d153d91f5632bcd871b652ade4f6aa692a70e210e3c09995ae77d
-RESULT: gateRoles.LogSetRoleCapability 0 #12496 {"capabilityRoles":"0x0000000000000000000000000000000000000000000000000000000000000002","code":"0x19c69daf103746b409da28b213cf74daa893dbf7","enabled":true,"role":"1","sig":"0x060460ce"}
-RESULT: gateRoles.RoleCapability code LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setLimitCounterResetTimeOffset(int256) role SYSTEM_ADMIN:1 true #12497 0xe34eb4a0b1f2f6c25e0822d104b9f4f3adff612ba39a195f14c46986e422539f
-RESULT: gateRoles.RoleCapability code LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultMintDailyLimit(uint256) role SYSTEM_ADMIN:1 true #12497 0xc058b394d29ad94a7c369acb2e6d0cd95fc865240e05c50c3e063d5c1f2d984e
-RESULT: gateRoles.RoleCapability code LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultBurnDailyLimit(uint256) role SYSTEM_ADMIN:1 true #12497 0x6b8493c81e9c6ee32d8321577d61cc9c2789304aa195f42e3785d777b7ec9065
-RESULT: gateRoles.RoleCapability code LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setCustomMintDailyLimit(address,uint256) role SYSTEM_ADMIN:1 true #12497 0xe2a3f29ac14072bde25ce1851bc37e65b467817eb46f7c3b4cad98efcaaa0f67
-RESULT: gateRoles.RoleCapability code LimitSetting:0x19c69daf103746b409da28b213cf74daa893dbf7 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setCustomBurnDailyLimit(address,uint256) role SYSTEM_ADMIN:1 true #12497 0xd5d56742496f28a427218460e8e1c5c68b25e4379dd2413f8e93a47a4226b183
-RESULT: gateRoles.RoleCapability code TransferFeeController:0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultTransferFee(uint256,uint256) role SYSTEM_ADMIN:1 true #12497 0xb0530e4b90b6939fd01dce0b96df51a942b4654f4c439e8fb0e5a30edb2c49a0
+RESULT: gateRoles.RoleCapability code Kyc(AddressStatus):0xe6ada9beed6e24be4c0259383db61b52bfca85f3 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000004 for set(address,bool) role KYC_OPERATOR:2 true #41 0x29bb40ed5c07fb61ef5bf821486c9095f1a845f633da4d49fcae8901b889a94b
+RESULT: gateRoles.RoleCapability code Blacklist(AddressStatus):0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for set(address,bool) role MONEY_OPERATOR:3 true #41 0xc7d85bfd097e67c0e2c1d817c5536a23f51360b530c30ab908c608e08e62e733
+RESULT: gateRoles.LogSetRoleCapability 0 #41 {"capabilityRoles":"0x0000000000000000000000000000000000000000000000000000000000000002","code":"0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a","enabled":true,"role":"1","sig":"0x060460ce"}
+RESULT: gateRoles.RoleCapability code LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setLimitCounterResetTimeOffset(int256) role SYSTEM_ADMIN:1 true #41 0x420f3d17c6cd811590670f532747fc4a7e7dc1fb5a20fdf8129b7e1e62765107
+RESULT: gateRoles.RoleCapability code LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultMintDailyLimit(uint256) role SYSTEM_ADMIN:1 true #41 0x512a90638bcbe8df5861704bac52fa1356896781cbaf6d1fc3feee1fa1ce98ec
+RESULT: gateRoles.RoleCapability code LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultBurnDailyLimit(uint256) role SYSTEM_ADMIN:1 true #41 0x75b7c873f230445dab1f89b3057a462175564072766cbf610e1812e76444f6bc
+RESULT: gateRoles.RoleCapability code LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setCustomMintDailyLimit(address,uint256) role SYSTEM_ADMIN:1 true #41 0x137aae2c5d1a5ec91fbd66dedcb356edd74697353c9c0956aaec8092ff24a12b
+RESULT: gateRoles.RoleCapability code LimitSetting:0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setCustomBurnDailyLimit(address,uint256) role SYSTEM_ADMIN:1 true #41 0x0669058ee8c1943265e463f7fec9a0d9d955a83935dc1e3ebc0db19c742e635d
+RESULT: gateRoles.RoleCapability code TransferFeeController:0x57930444aa5c1e758c1407ded001a8f36aa80b1d capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setDefaultTransferFee(uint256,uint256) role SYSTEM_ADMIN:1 true #41 0xed25d53cd805c9d555aa05767b1a1a41cf8e5a5b602e0be7b5d62497ca63da73
 undefined
 > 
 RESULT: 
@@ -1128,13 +1128,13 @@ undefined
 ... 
 undefined
 > 
-DATA: var gateWithFeeAddress="0x2c8c72c685db003581fd830709169574a7b20a76";
+DATA: var gateWithFeeAddress="0xb797d2439cd318684f93de852b4928ea75ae6917";
 DATA: var gateWithFeeAbi=[{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"},{"name":"fee","type":"uint256"}],"name":"mintWithFee","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"token_","type":"address"}],"name":"swap","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"mintFeeCollector_","type":"address"}],"name":"setMintFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"stop","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"owner_","type":"address"}],"name":"setOwner","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"},{"name":"fee","type":"uint256"}],"name":"burnWithFee","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"burnFeeCollector","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"transferFeeCollector_","type":"address"}],"name":"setTransferFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_erc20Authority","type":"address"}],"name":"setERC20Authority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"mint","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"}],"name":"pull","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"stopped","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"authority_","type":"address"}],"name":"setAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_limitController","type":"address"}],"name":"setLimitController","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"dst","type":"address"}],"name":"push","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"mint","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"burnFeeCollector_","type":"address"}],"name":"setBurnFeeCollector","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"deposit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"push","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"start","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"authority","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"transferFeeController_","type":"address"}],"name":"setTransferFeeController","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"startToken","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"stopToken","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"limitController","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_tokenAuthority","type":"address"}],"name":"setTokenAuthority","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"mintFeeCollector","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"wad","type":"uint256"}],"name":"pull","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"token","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_authority","type":"address"},{"name":"fiatToken","type":"address"},{"name":"_limitController","type":"address"},{"name":"mintFeeCollector_","type":"address"},{"name":"burnFeeCollector_","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"by","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"DepositRequested","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Deposited","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"WithdrawalRequested","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Withdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_limitController","type":"address"}],"name":"LogSetLimitController","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"authority","type":"address"}],"name":"LogSetAuthority","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"}],"name":"LogSetOwner","type":"event"},{"anonymous":true,"inputs":[{"indexed":true,"name":"sig","type":"bytes4"},{"indexed":true,"name":"guy","type":"address"},{"indexed":true,"name":"foo","type":"bytes32"},{"indexed":true,"name":"bar","type":"bytes32"},{"indexed":false,"name":"wad","type":"uint256"},{"indexed":false,"name":"fax","type":"bytes"}],"name":"LogNote","type":"event"}];
 DATA: var gateWithFee=eth.contract(gateWithFeeAbi).at(gateWithFeeAddress);
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.023515556000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.023515556000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.023579684000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.023579684000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -1145,19 +1145,19 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
-RESULT: 24 0x2c8c72c685db003581fd830709169574a7b20a76        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 24 0xb797d2439cd318684f93de852b4928ea75ae6917        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -1167,21 +1167,21 @@ undefined
 RESULT: PASS Deploy Group #4 - GateWithFee
 1
 > 
-RESULT: gateWithFeeTx status=0x1 Success gas=4000000 gasUsed=2168666 costETH=0.004337332 costUSD=1.8895586858 @ ETH/USD=435.65 gasPrice=2 gwei block=12500 txIx=0 txId=0x3a219e9b0fb2ade393ee296b0ab7d33daca2e34e5d476b861a357aca0a4294bb @ 1537322291 Wed, 19 Sep 2018 01:58:11 UTC
+RESULT: gateWithFeeTx status=0x1 Success gas=4000000 gasUsed=2168666 costETH=0.004337332 costUSD=1.8895586858 @ ETH/USD=435.65 gasPrice=2 gwei block=44 txIx=0 txId=0x66fdfdd87f7a498c3f567c3367552c4f20e123f1c0aabd97f017b608ad4e5858 @ 1537422246 Thu, 20 Sep 2018 05:44:06 UTC
 undefined
 > 
-RESULT: gateWithFee.address=GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76
-RESULT: gateWithFee.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateWithFee.address=GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917
+RESULT: gateWithFee.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateWithFee.owner=0x0000000000000000000000000000000000000000
-RESULT: gateWithFee.limitController=LimitController:0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2
+RESULT: gateWithFee.limitController=LimitController:0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b
 RESULT: gateWithFee.mintFeeCollector=Account #6 - MintFeeCollector:0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9
 RESULT: gateWithFee.burnFeeCollector=Account #7 - BurnFeeCollector:0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec
 RESULT: gateWithFee.stopped=false
-RESULT: gateWithFee.token=FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b
-RESULT: gateWithFee.LogSetAuthority 0 #12500 {"authority":"0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c"}
-RESULT: gateWithFee.LogSetOwner 0 #12500 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
-RESULT: gateWithFee.LogSetOwner 1 #12500 {"owner":"0x0000000000000000000000000000000000000000"}
-RESULT: gateWithFee.LogSetLimitController 0 #12500 {"_limitController":"0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2"}
+RESULT: gateWithFee.token=FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab
+RESULT: gateWithFee.LogSetAuthority 0 #44 {"authority":"0x90d8927407c79c4a28ee879b821c76fc9bcc2688"}
+RESULT: gateWithFee.LogSetOwner 0 #44 {"owner":"0xa11aae29840fbb5c86e6fd4cf809eba183aef433"}
+RESULT: gateWithFee.LogSetOwner 1 #44 {"owner":"0x0000000000000000000000000000000000000000"}
+RESULT: gateWithFee.LogSetLimitController 0 #44 {"_limitController":"0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b"}
 undefined
 > 
 RESULT: 
@@ -1239,8 +1239,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.025247332000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.025247332000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.025313764000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.025313764000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -1251,19 +1251,19 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
-RESULT: 24 0x2c8c72c685db003581fd830709169574a7b20a76        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 24 0xb797d2439cd318684f93de852b4928ea75ae6917        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -1324,84 +1324,84 @@ RESULT: PASS Set Roles Rules #2 - setRoleCapability(SYSTEM_ADMIN_ROLE, gateWithF
 RESULT: PASS Set Roles Rules #2 - setRoleCapability(SYSTEM_ADMIN_ROLE, gateWithFeeAddress, web3.sha3("setBurnFeeCollector(address)").substring(0, 10), true)
 1
 > 
-RESULT: setRoleRules2_1Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12503 txIx=0 txId=0x1c050e5909be5788113d6bfce29e0bff3c20730b7a191737efee23e57fe88a49 @ 1537322294 Wed, 19 Sep 2018 01:58:14 UTC
+RESULT: setRoleRules2_1Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=0 txId=0x7b94d9db7e32f6b997b5d642157545b9e2be8c5aa7cfca88bb4c16c71f4721b2 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_2Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12503 txIx=1 txId=0xaee5df36e091b77870020caab0937e7def0cf7a6dfb692a4059d0ba88bcad952 @ 1537322294 Wed, 19 Sep 2018 01:58:14 UTC
+RESULT: setRoleRules2_2Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=1 txId=0x8ead88e56d6c078a7ea4f2159170339f46d6b245441f244f76d44f715ac8f52d @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_3Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12503 txIx=2 txId=0x2d8b4291d4e53f7b635b8112e55a606ab6a676842b85d992d8dce68da0205000 @ 1537322294 Wed, 19 Sep 2018 01:58:14 UTC
+RESULT: setRoleRules2_3Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=2 txId=0xa9dc3a434d7aba648be8074fbe9b1f53dd3a7e0706f7c0719e9be512fbebbbb7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_4Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12503 txIx=3 txId=0x0faf821da5ebb702dd1214664386587a33f4c02ff054260e5fa4c16bf7be84d1 @ 1537322294 Wed, 19 Sep 2018 01:58:14 UTC
+RESULT: setRoleRules2_4Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=3 txId=0xfa5417d36572378fc1ef14b54489c64ed1a34fdca09164042bbb7fb327d77b5b @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_5Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12503 txIx=4 txId=0x9aea0340a01d985ec8ca455c0c7fd9cf7c2e2bc908dff9d99206a327eef02185 @ 1537322294 Wed, 19 Sep 2018 01:58:14 UTC
+RESULT: setRoleRules2_5Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=4 txId=0x37befe27f207e207b1a356a9ee7a28c7c08f82918a7281762241ccf5e4ac68db @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_6Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=0 txId=0xa36265c913bd9f63bc81421808c49e36a10551e8bf9f13eaac95501fcb76cacd @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_6Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=5 txId=0xbcfd30986d5142642d7e60b90e687f2bae981f82b8c854a2b375d26231b71ce1 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_7Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=0 txId=0xa36265c913bd9f63bc81421808c49e36a10551e8bf9f13eaac95501fcb76cacd @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_7Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=5 txId=0xbcfd30986d5142642d7e60b90e687f2bae981f82b8c854a2b375d26231b71ce1 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_8Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=2 txId=0x3b4e86a6d2d4864c005532971ca80528d2166e5f142b4ddb7f26d34ba74700f6 @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_8Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=7 txId=0x021606c8ec82b1045d297fe417270e25532cf17a65aa2246593da6b906c5fad3 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_9Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=3 txId=0x8ccf2a26668a1d575104ddb552e4818a97feaed94211a296589deb298c315295 @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_9Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=8 txId=0x851d31b3ac5636ddced822ff1c7acf648be6fd35844459f58708f7896c2d04ec @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_10Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=4 txId=0xfec5c0c50200d5134b299c9e611984cfc5ab221dc4b2e67c5fa2e3f9d0006376 @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_10Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=9 txId=0x636601790a9c2bd994e0a9231cc899aff379c32003231504de419dbbd79f98fc @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_11Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_11Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_12Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_12Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_13Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_13Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_14Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_14Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_15Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_15Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_16Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_16Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_17Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_17Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: setRoleRules2_18Tx status=0x1 Success gas=400000 gasUsed=48112 costETH=0.000096224 costUSD=0.0419199856 @ ETH/USD=435.65 gasPrice=2 gwei block=12504 txIx=5 txId=0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e @ 1537322295 Wed, 19 Sep 2018 01:58:15 UTC
+RESULT: setRoleRules2_18Tx status=0x1 Success gas=400000 gasUsed=48176 costETH=0.000096352 costUSD=0.0419757488 @ ETH/USD=435.65 gasPrice=2 gwei block=47 txIx=10 txId=0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7 @ 1537422249 Thu, 20 Sep 2018 05:44:09 UTC
 undefined
 > 
-RESULT: gateRoles.address=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateRoles.address=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateRoles.authority=0x0000000000000000000000000000000000000000
 RESULT: gateRoles.owner=Account #1 - Deployer:0xa11aae29840fbb5c86e6fd4cf809eba183aef433
 RESULT: gateRoles.SYSTEM_ADMIN=SYSTEM_ADMIN:1
 RESULT: gateRoles.KYC_OPERATOR=KYC_OPERATOR:2
 RESULT: gateRoles.MONEY_OPERATOR=MONEY_OPERATOR:3
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for mint(uint256) role MONEY_OPERATOR:3 true #12503 0x1c050e5909be5788113d6bfce29e0bff3c20730b7a191737efee23e57fe88a49
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for mint(address,uint256) role MONEY_OPERATOR:3 true #12503 0xaee5df36e091b77870020caab0937e7def0cf7a6dfb692a4059d0ba88bcad952
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for burn(uint256) role MONEY_OPERATOR:3 true #12503 0x2d8b4291d4e53f7b635b8112e55a606ab6a676842b85d992d8dce68da0205000
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for burn(address,uint256) role MONEY_OPERATOR:3 true #12503 0x0faf821da5ebb702dd1214664386587a33f4c02ff054260e5fa4c16bf7be84d1
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for start() role MONEY_OPERATOR:3 true #12503 0x9aea0340a01d985ec8ca455c0c7fd9cf7c2e2bc908dff9d99206a327eef02185
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for stop() role MONEY_OPERATOR:3 true #12504 0xa36265c913bd9f63bc81421808c49e36a10551e8bf9f13eaac95501fcb76cacd
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for startToken() role MONEY_OPERATOR:3 true #12504 0xccf55b7d633f8e3406a21943ff469c2dad44862c5b5bae872836514a2bce8d73
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for stopToken() role MONEY_OPERATOR:3 true #12504 0x3b4e86a6d2d4864c005532971ca80528d2166e5f142b4ddb7f26d34ba74700f6
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setERC20Authority(address) role SYSTEM_ADMIN:1 true #12504 0x8ccf2a26668a1d575104ddb552e4818a97feaed94211a296589deb298c315295
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setTokenAuthority(address) role SYSTEM_ADMIN:1 true #12504 0xfec5c0c50200d5134b299c9e611984cfc5ab221dc4b2e67c5fa2e3f9d0006376
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setLimitController(address) role SYSTEM_ADMIN:1 true #12504 0xcb169ca68c681fc962ccb5451c687047fcedcf5454fe82ff37b860370b384a7e
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for mintWithFee(address,uint256,uint256) role MONEY_OPERATOR:3 true #12504 0x609d408de656703e1b6f79e6c1a86c7b36b3dfe1c3af4c93e60b3e1e4cfe6330
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for burnWithFee(address,uint256,uint256) role MONEY_OPERATOR:3 true #12504 0x5334658dd843bcde129b19c2cbe83d26856c2eeb13518f9d0efede7aafb66602
-RESULT: gateRoles.LogSetRoleCapability 0 #12504 {"capabilityRoles":"0x0000000000000000000000000000000000000000000000000000000000000002","code":"0x2c8c72c685db003581fd830709169574a7b20a76","enabled":true,"role":"1","sig":"0xa42dce80"}
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setTransferFeeCollector(address) role SYSTEM_ADMIN:1 true #12504 0xe02d7cf407d51c61b0d8bae60d2aed1e7bc188124ce84083c60ea46d74b9dbc2
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setTransferFeeController(address) role SYSTEM_ADMIN:1 true #12504 0x5ed0bf6eebbfab0181372dd743480ffa462325bd5b290fda23b74eb3ed0cf7ef
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setMintFeeCollector(address) role SYSTEM_ADMIN:1 true #12504 0xdb823cce11025323bbc390ba6af533f18227d40718edd5ab1f9db357d41f30b0
-RESULT: gateRoles.RoleCapability code GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setBurnFeeCollector(address) role SYSTEM_ADMIN:1 true #12504 0xbe4d500c78629b7069c04540d50c5c82609615b13da886adf1a105ca2f176d35
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for mint(uint256) role MONEY_OPERATOR:3 true #47 0x7b94d9db7e32f6b997b5d642157545b9e2be8c5aa7cfca88bb4c16c71f4721b2
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for mint(address,uint256) role MONEY_OPERATOR:3 true #47 0x8ead88e56d6c078a7ea4f2159170339f46d6b245441f244f76d44f715ac8f52d
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for burn(uint256) role MONEY_OPERATOR:3 true #47 0xa9dc3a434d7aba648be8074fbe9b1f53dd3a7e0706f7c0719e9be512fbebbbb7
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for burn(address,uint256) role MONEY_OPERATOR:3 true #47 0xfa5417d36572378fc1ef14b54489c64ed1a34fdca09164042bbb7fb327d77b5b
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for start() role MONEY_OPERATOR:3 true #47 0x37befe27f207e207b1a356a9ee7a28c7c08f82918a7281762241ccf5e4ac68db
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for stop() role MONEY_OPERATOR:3 true #47 0xbcfd30986d5142642d7e60b90e687f2bae981f82b8c854a2b375d26231b71ce1
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for startToken() role MONEY_OPERATOR:3 true #47 0x90ed74865391c6e2aabb311800a545042cd7d0be06913566cad4a3dd43b34356
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for stopToken() role MONEY_OPERATOR:3 true #47 0x021606c8ec82b1045d297fe417270e25532cf17a65aa2246593da6b906c5fad3
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setERC20Authority(address) role SYSTEM_ADMIN:1 true #47 0x851d31b3ac5636ddced822ff1c7acf648be6fd35844459f58708f7896c2d04ec
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setTokenAuthority(address) role SYSTEM_ADMIN:1 true #47 0x636601790a9c2bd994e0a9231cc899aff379c32003231504de419dbbd79f98fc
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setLimitController(address) role SYSTEM_ADMIN:1 true #47 0x958f7a1e28ad8483668217479835193c3b1ce566e82538c6e0ab5549195874b7
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for mintWithFee(address,uint256,uint256) role MONEY_OPERATOR:3 true #48 0xb0e5b681d910ab54a9ef2ba94aa9cfeb047a7feae0f7cc5b30cd1664de9b87e6
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000008 for burnWithFee(address,uint256,uint256) role MONEY_OPERATOR:3 true #48 0x1fb4912d6d526ff3ea9d576ae4b4434ccbdd1b4b031616ecf859d13abdc94ef1
+RESULT: gateRoles.LogSetRoleCapability 0 #48 {"capabilityRoles":"0x0000000000000000000000000000000000000000000000000000000000000002","code":"0xb797d2439cd318684f93de852b4928ea75ae6917","enabled":true,"role":"1","sig":"0xa42dce80"}
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setTransferFeeCollector(address) role SYSTEM_ADMIN:1 true #48 0x1b181ab2098962b6401bfe21d47f326a691b5aac84a47365ecee910bd8a393df
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setTransferFeeController(address) role SYSTEM_ADMIN:1 true #48 0x88b622cfbdb9210fff92fd8cac27b21607ec20b7aec0345ec85979a1b9c21c50
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setMintFeeCollector(address) role SYSTEM_ADMIN:1 true #48 0xa43e8a26b5a7b5935698dc0f77cec31fa354d5565e4f6f2a10eb564576dcc978
+RESULT: gateRoles.RoleCapability code GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 capabilityRoles 0x0000000000000000000000000000000000000000000000000000000000000002 for setBurnFeeCollector(address) role SYSTEM_ADMIN:1 true #48 0x0d6d3753ed09e0576242ccede5dd24f42adfcd2a8b7d2842ff968e6521a5a9fa
 undefined
 > 
 RESULT: 
@@ -1449,8 +1449,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.026492940000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.026492940000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.026561036000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.026561036000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -1461,19 +1461,19 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
-RESULT: 24 0x2c8c72c685db003581fd830709169574a7b20a76        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 24 0xb797d2439cd318684f93de852b4928ea75ae6917        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -1519,61 +1519,61 @@ RESULT: PASS Set Guard Rules #1 - permit(gateWithFeeAddress, limitControllerAddr
 RESULT: PASS Set Guard Rules #1 - permit(gateWithFeeAddress, limitControllerAddress, web3.sha3("bumpBurnLimitCounter(uint256)").substring(0, 10), true)
 1
 > 
-RESULT: setGuardRules1_1Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12507 txIx=0 txId=0xf4a9ce2a0f9f5971144f64bd3ffc6d0cc13864da0152e24b82a82f1e91b86b40 @ 1537322298 Wed, 19 Sep 2018 01:58:18 UTC
+RESULT: setGuardRules1_1Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=0 txId=0x3f95b26ffeb8f3b01135e7601b31abbb16e64b56e662642f93ca2c7b57a2eab4 @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_2Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12507 txIx=1 txId=0x1c75c7a119b9ecc67797f2545ebe34e1f5bd81ecd2e2e30b746ad2e0849977b0 @ 1537322298 Wed, 19 Sep 2018 01:58:18 UTC
+RESULT: setGuardRules1_2Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=1 txId=0x5c736981602d08d81b7b7c50280716dbe33895e1d5a8ecfcbe2954892a5ef971 @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_3Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12507 txIx=2 txId=0x491aa84a244eee15bba01646703e70fb6451687764476602cc3549a4f39dac36 @ 1537322298 Wed, 19 Sep 2018 01:58:18 UTC
+RESULT: setGuardRules1_3Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=2 txId=0xa99e8976c5472736983362008373b3a192fe91f8dea418a7df6063da53f4540f @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_4Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=0 txId=0x6e85b43789c8825852c2cb443eca90f8c31038096b0f235775e8a33310862e19 @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_4Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=3 txId=0x963e856917de1a2c8e48ff51f11bb912965c5d9ed73562794579fc3738e2f0d2 @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_5Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=1 txId=0x92552fffab3fd74d2641b24df94085f099924d85640d62ac711c962af6053fe8 @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_5Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=4 txId=0xa2e80dfd3b343980a3fc4d87e24e8fc0c3d53956a3b5c4e9d8e6706c459b7459 @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_6Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=2 txId=0x1369d1abc49da7bcf80e4e5a2794b41918b060e69958526543429cd61cc77961 @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_6Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=5 txId=0x31710d23c2d1c95822351df3fc5d7e9facf3689a010faebe4aae2fb986e0ddb2 @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_7Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=2 txId=0x1369d1abc49da7bcf80e4e5a2794b41918b060e69958526543429cd61cc77961 @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_7Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=51 txIx=5 txId=0x31710d23c2d1c95822351df3fc5d7e9facf3689a010faebe4aae2fb986e0ddb2 @ 1537422253 Thu, 20 Sep 2018 05:44:13 UTC
 undefined
 > 
-RESULT: setGuardRules1_8Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=4 txId=0xcca33705be469f811a448192f91d0d7cf11054294e9ef2f773e5e6a75b9e8197 @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_8Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=52 txIx=1 txId=0xda38f0d669ffea77cf57bf679a59d427a8945884a56bd82159d4dbda8889dd3c @ 1537422254 Thu, 20 Sep 2018 05:44:14 UTC
 undefined
 > 
-RESULT: setGuardRules1_9Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=5 txId=0x27c9986abfeefa108ec557ad4de286a2eeb53adedb54ecf2e1097d5f054f1c0a @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_9Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=52 txIx=2 txId=0x49164ad08a02fd1d1947b8706083a35bd55781d952c533a8288a63e5edfc91aa @ 1537422254 Thu, 20 Sep 2018 05:44:14 UTC
 undefined
 > 
-RESULT: setGuardRules1_10Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=6 txId=0x573fdcd6a5f3627aaeb41ae4371ae0e2916ef5d1ec8cbd31c4f0f5e4c83370c4 @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_10Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=52 txIx=3 txId=0xb95a479c7f7f0399c6f4bf571174502233e7b8c7f569447052d64976a83c1f81 @ 1537422254 Thu, 20 Sep 2018 05:44:14 UTC
 undefined
 > 
-RESULT: setGuardRules1_11Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=7 txId=0x130e1db71d75ca34448d81fe7d5d3efb062a43ea5932e6f1447d65fd30e818bb @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_11Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=52 txIx=4 txId=0xddff6b4ea6f795b61fc0f243deaa7dc3f2823b47997958f050cfaae92fe234e4 @ 1537422254 Thu, 20 Sep 2018 05:44:14 UTC
 undefined
 > 
-RESULT: setGuardRules1_12Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=7 txId=0x130e1db71d75ca34448d81fe7d5d3efb062a43ea5932e6f1447d65fd30e818bb @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_12Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=52 txIx=4 txId=0xddff6b4ea6f795b61fc0f243deaa7dc3f2823b47997958f050cfaae92fe234e4 @ 1537422254 Thu, 20 Sep 2018 05:44:14 UTC
 undefined
 > 
-RESULT: setGuardRules1_13Tx status=0x1 Success gas=400000 gasUsed=47908 costETH=0.000095816 costUSD=0.0417422404 @ ETH/USD=435.65 gasPrice=2 gwei block=12508 txIx=7 txId=0x130e1db71d75ca34448d81fe7d5d3efb062a43ea5932e6f1447d65fd30e818bb @ 1537322299 Wed, 19 Sep 2018 01:58:19 UTC
+RESULT: setGuardRules1_13Tx status=0x1 Success gas=400000 gasUsed=47972 costETH=0.000095944 costUSD=0.0417980036 @ ETH/USD=435.65 gasPrice=2 gwei block=52 txIx=4 txId=0xddff6b4ea6f795b61fc0f243deaa7dc3f2823b47997958f050cfaae92fe234e4 @ 1537422254 Thu, 20 Sep 2018 05:44:14 UTC
 undefined
 > 
-RESULT: tokenGuard.address=FiatTokenGuard:0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44
+RESULT: tokenGuard.address=FiatTokenGuard:0x0e946b999033257976aa5cbe0e3530618ca1582d
 RESULT: tokenGuard.authority=0x0000000000000000000000000000000000000000
 RESULT: tokenGuard.owner=Account #1 - Deployer:0xa11aae29840fbb5c86e6fd4cf809eba183aef433
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for setName(bytes32) #12507 0xf4a9ce2a0f9f5971144f64bd3ffc6d0cc13864da0152e24b82a82f1e91b86b40
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for mint(uint256) #12507 0x1c75c7a119b9ecc67797f2545ebe34e1f5bd81ecd2e2e30b746ad2e0849977b0
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for mint(address,uint256) #12507 0x491aa84a244eee15bba01646703e70fb6451687764476602cc3549a4f39dac36
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for burn(uint256) #12508 0x6e85b43789c8825852c2cb443eca90f8c31038096b0f235775e8a33310862e19
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for burn(address,uint256) #12508 0x92552fffab3fd74d2641b24df94085f099924d85640d62ac711c962af6053fe8
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for setERC20Authority(address) #12508 0x1369d1abc49da7bcf80e4e5a2794b41918b060e69958526543429cd61cc77961
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for setTokenAuthority(address) #12508 0x2815026e99e94e2047a3ffd121e2649742d41fadacf1b4437482ed7132c2048b
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for start() #12508 0xcca33705be469f811a448192f91d0d7cf11054294e9ef2f773e5e6a75b9e8197
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for stop() #12508 0x27c9986abfeefa108ec557ad4de286a2eeb53adedb54ecf2e1097d5f054f1c0a
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for setTransferFeeCollector(address) #12508 0x573fdcd6a5f3627aaeb41ae4371ae0e2916ef5d1ec8cbd31c4f0f5e4c83370c4
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b for setTransferFeeController(address) #12508 0x130e1db71d75ca34448d81fe7d5d3efb062a43ea5932e6f1447d65fd30e818bb
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to LimitController:0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2 for bumpMintLimitCounter(uint256) #12508 0x5fda674bc7e239f676c7e5b3de667efcc0add08a3f5ebbbc59e1256b7c3dacd4
-RESULT: tokenGuard.Permit from GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76 to LimitController:0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2 for bumpBurnLimitCounter(uint256) #12508 0xb0bc8ea51b34731f66d2598ad1f3b9b68e05a1648d579c654cc1cf9006cf7b16
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for setName(bytes32) #51 0x3f95b26ffeb8f3b01135e7601b31abbb16e64b56e662642f93ca2c7b57a2eab4
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for mint(uint256) #51 0x5c736981602d08d81b7b7c50280716dbe33895e1d5a8ecfcbe2954892a5ef971
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for mint(address,uint256) #51 0xa99e8976c5472736983362008373b3a192fe91f8dea418a7df6063da53f4540f
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for burn(uint256) #51 0x963e856917de1a2c8e48ff51f11bb912965c5d9ed73562794579fc3738e2f0d2
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for burn(address,uint256) #51 0xa2e80dfd3b343980a3fc4d87e24e8fc0c3d53956a3b5c4e9d8e6706c459b7459
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for setERC20Authority(address) #51 0x31710d23c2d1c95822351df3fc5d7e9facf3689a010faebe4aae2fb986e0ddb2
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for setTokenAuthority(address) #52 0xcb587f714742af488a41ba84ee400c3ed09daa84c791075aeefdfa25c88ecfe7
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for start() #52 0xda38f0d669ffea77cf57bf679a59d427a8945884a56bd82159d4dbda8889dd3c
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for stop() #52 0x49164ad08a02fd1d1947b8706083a35bd55781d952c533a8288a63e5edfc91aa
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for setTransferFeeCollector(address) #52 0xb95a479c7f7f0399c6f4bf571174502233e7b8c7f569447052d64976a83c1f81
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab for setTransferFeeController(address) #52 0xddff6b4ea6f795b61fc0f243deaa7dc3f2823b47997958f050cfaae92fe234e4
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to LimitController:0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b for bumpMintLimitCounter(uint256) #52 0x31d246dec1b29e8a80aad3a9e4ffabe846fd0df34e6f2722657d0eb968c65f55
+RESULT: tokenGuard.Permit from GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917 to LimitController:0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b for bumpBurnLimitCounter(uint256) #52 0x542f1e2b0f084eb7c0c15286dd96a3de462f158e1f0922b1413e944483c0a661
 undefined
 > 
 RESULT: 
@@ -1597,8 +1597,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.026552996000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.026552996000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.026621092000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.026621092000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -1609,19 +1609,19 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
-RESULT: 24 0x2c8c72c685db003581fd830709169574a7b20a76        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 24 0xb797d2439cd318684f93de852b4928ea75ae6917        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -1631,16 +1631,16 @@ undefined
 RESULT: PASS Transfer Ownership #1 - gateRoles.setOwner(sysAdmin)
 1
 > 
-RESULT: transferOwnership11_1Tx status=0x1 Success gas=400000 gasUsed=30028 costETH=0.000060056 costUSD=0.0261633964 @ ETH/USD=435.65 gasPrice=2 gwei block=12511 txIx=0 txId=0x09fe6d256df7e139d3598fce49c2d8266f9f6f8c987869afe4f55db908cea235 @ 1537322302 Wed, 19 Sep 2018 01:58:22 UTC
+RESULT: transferOwnership11_1Tx status=0x1 Success gas=400000 gasUsed=30028 costETH=0.000060056 costUSD=0.0261633964 @ ETH/USD=435.65 gasPrice=2 gwei block=55 txIx=0 txId=0xf7b318810960ecfcb4db61ac810a21de59c9ec6da9da33dda415128441db14c8 @ 1537422257 Thu, 20 Sep 2018 05:44:17 UTC
 undefined
 > 
-RESULT: gateRoles.address=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateRoles.address=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateRoles.authority=0x0000000000000000000000000000000000000000
 RESULT: gateRoles.owner=Account #2 - SysAdmin:0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976
 RESULT: gateRoles.SYSTEM_ADMIN=SYSTEM_ADMIN:1
 RESULT: gateRoles.KYC_OPERATOR=KYC_OPERATOR:2
 RESULT: gateRoles.MONEY_OPERATOR=MONEY_OPERATOR:3
-RESULT: gateRoles.LogSetOwner 0 #12511 {"owner":"0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976"}
+RESULT: gateRoles.LogSetOwner 0 #55 {"owner":"0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976"}
 undefined
 > 
 RESULT: 
@@ -1666,8 +1666,8 @@ undefined
 > 
 RESULT:  # Account                                             EtherBalanceChange                 (Token A) WETH                  (Token B) DAI Name
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
-RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.026780992000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
-RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.026552996000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
+RESULT:  0 0xa00af22d07c87d96eeeb0ed583f8f6ac7812827e        0.026849088000000000           0.000000000000000000           0.000000000000000000 Account #0 - Miner
+RESULT:  1 0xa11aae29840fbb5c86e6fd4cf809eba183aef433       -0.026621092000000000           0.000000000000000000           0.000000000000000000 Account #1 - Deployer
 RESULT:  2 0xa22ab8a9d641ce77e06d98b7d7065d324d3d6976       -0.000227996000000000           0.000000000000000000           0.000000000000000000 Account #2 - SysAdmin
 RESULT:  3 0xa33a6c312d9ad0e0f2e95541beed0cc081621fd0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #3 - KycOperator
 RESULT:  4 0xa44a08d3f6933c69212114bb66e2df1813651844        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #4 - MoneyOperator
@@ -1678,19 +1678,19 @@ RESULT:  8 0xa88a05d2b88283ce84c8325760b72a64591279a2        0.00000000000000000
 RESULT:  9 0xa99a0ae3354c06b1459fd441a32a3f71005d7da0        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #9
 RESULT: 10 0xaaaa9de1e6c564446ebca0fd102d8bd92093c756        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #10
 RESULT: 11 0xabba43e7594e3b76afb157989e93c6621497fd4b        0.000000000000000000           0.000000000000000000           0.000000000000000000 Account #11
-RESULT: 12 0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
-RESULT: 13 0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
-RESULT: 14 0x83d75d5b9dc6c675266353c9e23a9dde2e00492c        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
-RESULT: 15 0x648a4153597ac44c920f1cc4ea3a5b0d8e935e3f        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
-RESULT: 16 0xce036399e649463d8b59a01c24b9d95b5e24c20d        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
-RESULT: 17 0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
-RESULT: 18 0x19c69daf103746b409da28b213cf74daa893dbf7        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
-RESULT: 19 0xf9706caa2ec5c487d16221aff57a4e3d688f81e7        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
-RESULT: 20 0x3f8862c98c88a31fffe4f135a6bae6fc39089966        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
-RESULT: 21 0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
-RESULT: 22 0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
-RESULT: 23 0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
-RESULT: 24 0x2c8c72c685db003581fd830709169574a7b20a76        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
+RESULT: 12 0x90d8927407c79c4a28ee879b821c76fc9bcc2688        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateRoles
+RESULT: 13 0x0e946b999033257976aa5cbe0e3530618ca1582d        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatTokenGuard
+RESULT: 14 0xdf9f36fd5654d92e0844c78d2d2dd562404cd1ff        0.000000000000000000           0.000000000000000000           0.000000000000000000 Blacklist(AddressStatus)
+RESULT: 15 0xe6ada9beed6e24be4c0259383db61b52bfca85f3        0.000000000000000000           0.000000000000000000           0.000000000000000000 Kyc(AddressStatus)
+RESULT: 16 0xf4441f10804b35b13bad1e664e32237773276253        0.000000000000000000           0.000000000000000000           0.000000000000000000 MockMembership
+RESULT: 17 0x57930444aa5c1e758c1407ded001a8f36aa80b1d        0.000000000000000000           0.000000000000000000           0.000000000000000000 TransferFeeController
+RESULT: 18 0x936e75a404fc4ea6aba4d9c3b20ea67abab3188a        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitSetting
+RESULT: 19 0xb8c31f47dfba40162326aba12cd577ae5cb2ce99        0.000000000000000000           0.000000000000000000           0.000000000000000000 BaseRule
+RESULT: 20 0x0a91add9e3e97057980da7826043aab2a2d4c35b        0.000000000000000000           0.000000000000000000           0.000000000000000000 BoundaryKycRule
+RESULT: 21 0x821ca8becdbfb00ca55e722908796a375bc2d538        0.000000000000000000           0.000000000000000000           0.000000000000000000 FullKycRule
+RESULT: 22 0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b        0.000000000000000000           0.000000000000000000           0.000000000000000000 LimitController
+RESULT: 23 0x1029670471248c1046263e47c431a061a7fa34ab        0.000000000000000000           0.000000000000000000           0.000000000000000000 FiatToken 'USD' 'USDToken'
+RESULT: 24 0xb797d2439cd318684f93de852b4928ea75ae6917        0.000000000000000000           0.000000000000000000           0.000000000000000000 GateWithFee
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
 RESULT:                                                                                     0.000000000000000000           0.000000000000000000 Total Token Balances
 RESULT: -- ------------------------------------------ --------------------------- ------------------------------ ------------------------------ ---------------------------
@@ -1703,28 +1703,28 @@ RESULT: PASS Set GateWithFee TokenAuth - gateWithFee.setERC20Authority(fullKycRu
 RESULT: PASS Set GateWithFee TokenAuth - gateWithFee.setTokenAuthority(fullKycRule)
 1
 > 
-RESULT: setGateWithFeeTokenAuth1_1Tx status=0x1 Success gas=400000 gasUsed=56504 costETH=0.000113008 costUSD=0.0492319352 @ ETH/USD=435.65 gasPrice=2 gwei block=12514 txIx=0 txId=0x60810faebf097eec19bc50de96bd97597798460837c0f598a1bc99d3727da300 @ 1537322305 Wed, 19 Sep 2018 01:58:25 UTC
+RESULT: setGateWithFeeTokenAuth1_1Tx status=0x1 Success gas=400000 gasUsed=56504 costETH=0.000113008 costUSD=0.0492319352 @ ETH/USD=435.65 gasPrice=2 gwei block=58 txIx=0 txId=0xd86df632801c044589eb656304cf6cdb8c0c0eecf1d7070bee5056d15456322d @ 1537422260 Thu, 20 Sep 2018 05:44:20 UTC
 undefined
 > 
-RESULT: setGateWithFeeTokenAuth1_2Tx status=0x1 Success gas=400000 gasUsed=57494 costETH=0.000114988 costUSD=0.0500945222 @ ETH/USD=435.65 gasPrice=2 gwei block=12514 txIx=1 txId=0xc2014933394345002b104812c1975a432d65a0bef265adcc358216135d858608 @ 1537322305 Wed, 19 Sep 2018 01:58:25 UTC
+RESULT: setGateWithFeeTokenAuth1_2Tx status=0x1 Success gas=400000 gasUsed=57494 costETH=0.000114988 costUSD=0.0500945222 @ ETH/USD=435.65 gasPrice=2 gwei block=58 txIx=1 txId=0xd1142cd637fef84b17b5966dbc73ef60b5067e1c908e3e22a176af6f3e8cb1d0 @ 1537422260 Thu, 20 Sep 2018 05:44:20 UTC
 undefined
 > 
-RESULT: gateWithFee.address=GateWithFee:0x2c8c72c685db003581fd830709169574a7b20a76
-RESULT: gateWithFee.authority=GateRoles:0x83cb600fc2f593bfe9f8182a4957ab5922a73e9c
+RESULT: gateWithFee.address=GateWithFee:0xb797d2439cd318684f93de852b4928ea75ae6917
+RESULT: gateWithFee.authority=GateRoles:0x90d8927407c79c4a28ee879b821c76fc9bcc2688
 RESULT: gateWithFee.owner=0x0000000000000000000000000000000000000000
-RESULT: gateWithFee.limitController=LimitController:0x1bf91f9c4c3423b436c2c7cf9428c2e4a0e37eb2
+RESULT: gateWithFee.limitController=LimitController:0x8b97d31ff6bfc0c2fd7a0fff69d6b4bd485a832b
 RESULT: gateWithFee.mintFeeCollector=Account #6 - MintFeeCollector:0xa66a85ede0cbe03694aa9d9de0bb19c99ff55bd9
 RESULT: gateWithFee.burnFeeCollector=Account #7 - BurnFeeCollector:0xa77a2b9d4b1c010a22a7c565dc418cef683dbcec
 RESULT: gateWithFee.stopped=false
-RESULT: gateWithFee.token=FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b
+RESULT: gateWithFee.token=FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab
 undefined
 > 
-RESULT: tokenAContractAddress=FiatToken 'USD' 'USDToken':0x4e5745553a47e9c4fde3b2eb7104a598df7bd98b
-RESULT: token.authority=FiatTokenGuard:0x8c1f3a9ba6571f3d8f17ce030f678b836ec87e44
+RESULT: tokenAContractAddress=FiatToken 'USD' 'USDToken':0x1029670471248c1046263e47c431a061a7fa34ab
+RESULT: token.authority=FiatTokenGuard:0x0e946b999033257976aa5cbe0e3530618ca1582d
 RESULT: token.owner=0x0000000000000000000000000000000000000000
-RESULT: token.erc20Authority=FullKycRule:0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383
-RESULT: token.tokenAuthority=FullKycRule:0x0a6a2eb2ac3e7d625eb6edf99cd07fb757228383
-RESULT: token.transferFeeController=TransferFeeController:0xae64c85221050aa2021b9c8062f2ecb6d5fe6ce1
+RESULT: token.erc20Authority=FullKycRule:0x821ca8becdbfb00ca55e722908796a375bc2d538
+RESULT: token.tokenAuthority=FullKycRule:0x821ca8becdbfb00ca55e722908796a375bc2d538
+RESULT: token.transferFeeController=TransferFeeController:0x57930444aa5c1e758c1407ded001a8f36aa80b1d
 RESULT: token.transferFeeCollector=Account #5 - TransferFeeCollector:0xa55a151eb00fded1634d27d1127b4be4627079ea
 RESULT: token.symbol=USD
 RESULT: token.name=USDToken

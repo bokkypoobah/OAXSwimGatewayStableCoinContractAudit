@@ -8,6 +8,7 @@ Source file [../../chain/contracts/TokenAuth.sol](../../chain/contracts/TokenAut
 
 ```solidity
 // BK Ok
+// BK Ok
 pragma solidity 0.4.23;
 
 // BK Ok
@@ -16,12 +17,11 @@ import "dappsys.sol"; // Uses auth.sol, token.sol
 // BK NOTE - Implemented in TokenRules:BaseRule -> TokenRules:BoundaryKycRule and TokenRules:FullKycRule
 // BK Ok
 interface ERC20Authority {
-    // BK NOTE - Consider setting canApprove(...), canTransferFrom(...) and canTransfer(...) as view functions
     // BK NOTE - src = msg.sender; dst = contract address
     // BK Next 3 Ok
-    function canApprove(address src, address dst, address guy, uint wad) external returns (bool);
-    function canTransfer(address src, address dst, address to, uint wad) external returns (bool);
-    function canTransferFrom(address src, address dst, address from, address to, uint wad) external returns (bool);
+    function canApprove(address src, address dst, address guy, uint wad) external view returns (bool);
+    function canTransfer(address src, address dst, address to, uint wad) external view returns (bool);
+    function canTransferFrom(address src, address dst, address from, address to, uint wad) external view returns (bool);
 }
 
 
@@ -83,11 +83,10 @@ contract ERC20Auth is DSAuth {
 
 // BK NOTE - Implemented in TokenRules:BaseRule -> TokenRules:BoundaryKycRule and TokenRules:FullKycRule
 interface TokenAuthority {
-    // BK NOTE - Consider setting canMint(...) and canBurn(...) as view functions
     // BK NOTE - src = msg.sender; dst = contract address
     // BK Next 2 Ok
-    function canMint(address src, address dst, address guy, uint wad) external returns (bool);
-    function canBurn(address src, address dst, address guy, uint wad) external returns (bool);
+    function canMint(address src, address dst, address guy, uint wad) external view returns (bool);
+    function canBurn(address src, address dst, address guy, uint wad) external view returns (bool);
 }
 
 
@@ -104,20 +103,22 @@ contract TokenAuth is DSAuth {
     // BK NOTE - Used in FiatToken.mint(...)
     modifier authMint(address guy, uint wad) {
         // BK NOTE - Calling TokenRules:BaseRule.canMint(...) and TokenRules:BoundaryKycRule.canMint(...)
-        // BK NOTE - Could use `require(...)` instead of `assert(...)` to save gas on error
         // BK Ok
-        assert(tokenAuthority.canMint(msg.sender, this, guy, wad));
-        // BK Ok
+        require(
+            tokenAuthority.canMint(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use mint function"
+        );
         _;
     }
 
     // BK NOTE - Used in FiatToken.burn(...)
     modifier authBurn(address guy, uint wad) {
         // BK NOTE - Calling TokenRules:BaseRule.canBurn(...) and TokenRules:BoundaryKycRule.canBurn(...)
-        // BK NOTE - Could use `require(...)` instead of `assert(...)` to save gas on error
         // BK Ok
-        assert(tokenAuthority.canBurn(msg.sender, this, guy, wad));
-        // BK Ok
+        require(
+            tokenAuthority.canBurn(msg.sender, this, guy, wad),
+            "Message sender is not authorized to use burn function"
+        );
         _;
     }
 
