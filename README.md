@@ -55,21 +55,6 @@ maintenance/evolution.
 Further documentation can be found under
 [chain/README.md](./chain/README.md).
 
-### New, simpler contracts
-
-The current contract hierarchy is more complicated than it should be.
-It means it's more error prone and also hard to reason about.
-
-The new, proposed structure can be seen in
-[doc/contracts-hierarchy-next.puml](./doc/contracts-hierarchy-next.puml).
-
-It aims to replace the current `Kyc.sol` with the following, currently
-unused contract files:
-
-* `AddressStatus.sol`
-* `Membership.sol`
-* `TokenRules.sol`
-
 ### `doc/`
 
 This folder contains further, more detailed documentation, including some
