@@ -280,6 +280,20 @@ Source code for the component files (first column) were code-reviewed. Flattened
             <td>8</td>
         </tr>
         <tr>
+            <td><a href="code-review/TokenAuth.md">TokenAuth</a></td>
+            <td>ERC20Authority, ERC20Auth, TokenAuthority, TokenAuth</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>2</td>
+            <td></td>
+            <td>6</td>
+            <td>9</td>
+        </tr>
+        <tr>
             <td><a href="code-review/AddressStatus.md">AddressStatus</a></td>
             <td>AddressStatus</td>
             <td></td>
@@ -322,18 +336,18 @@ Source code for the component files (first column) were code-reviewed. Flattened
             <td>10</td>
         </tr>
         <tr>
-            <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
-            <td>TransferFeeController</td>
+            <td><a href="code-review/FiatToken.md">FiatToken</a></td>
+            <td>FiatToken</td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td>4</td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td>15</td>
+            <td>8</td>
+            <td>11</td>
         </tr>
         <tr>
             <td><a href="code-review/LimitSetting.md">LimitSetting</a></td>
@@ -348,20 +362,6 @@ Source code for the component files (first column) were code-reviewed. Flattened
             <td>4</td>
             <td></td>
             <td>12</td>
-        </tr>
-        <tr>
-            <td><a href="code-review/TokenAuth.md">TokenAuth</a></td>
-            <td>ERC20Authority, ERC20Auth, TokenAuthority, TokenAuth</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>2</td>
-            <td></td>
-            <td>6</td>
-            <td>9</td>
         </tr>
         <tr>
             <td><a href="code-review/TokenRules.md">TokenRules</a></td>
@@ -392,20 +392,6 @@ Source code for the component files (first column) were code-reviewed. Flattened
             <td>13</td>
         </tr>
         <tr>
-            <td><a href="code-review/FiatToken.md">FiatToken</a></td>
-            <td>FiatToken</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>8</td>
-            <td>11</td>
-        </tr>
-        <tr>
             <td><a href="code-review/Gate.md">Gate</a></td>
             <td>Gate</td>
             <td></td>
@@ -418,6 +404,20 @@ Source code for the component files (first column) were code-reviewed. Flattened
             <td></td>
             <td></td>
             <td>14</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
+            <td>TransferFeeController</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>4</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>15</td>
         </tr>
         <tr>
             <td><a href="code-review/GateWithFee.md">GateWithFee</a></td>
