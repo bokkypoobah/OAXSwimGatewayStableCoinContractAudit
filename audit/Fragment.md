@@ -23,13 +23,13 @@
         <tr>
             <th>File</th>
             <th>Component</th>
-            <th>[GateRoles](flattened/GateRoles_flattened.sol)</th>
+            <th><a href="flattened/GateRoles_flattened.sol">GateRoles</a></th>
             <th>FiatTokenGuard</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td rowspan=6>[dappsys.sol](code-review/dappsys.md)</td>
+            <td rowspan=6><a href="code-review/dappsys.md">dappsys.sol</a></td>
             <td>DSMath</td>
             <td></td>
         </tr>
@@ -54,7 +54,7 @@
             <td></td>
         </tr>
         <tr>
-            <td>[GateRoles.sol](code-review/GateRoles.md)</td>
+            <td><a href="code-review/GateRoles.md">GateRoles.sol</a></td>
             <td>GateRoles</td>
             <td>3</td>
         </tr>
