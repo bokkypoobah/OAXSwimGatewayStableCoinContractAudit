@@ -145,7 +145,7 @@ Source code for the component files (first column downwards) were code-reviewed.
     <thead>
         <tr>
             <th>Code Review</th>
-            <th>Component</th>
+            <th>Contracts &amp; Interfaces</th>
             <th><a href="flattened/GateRoles_flattened.sol">GateRoles</a></th>
             <th><a href="flattened/DSGuard_flattened.sol">DSGuard</a></th>
             <th><a href="flattened/AddressStatus_flattened.sol">AddressStatus</a></th>
