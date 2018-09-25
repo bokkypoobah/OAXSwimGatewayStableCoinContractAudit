@@ -719,4 +719,4 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 <br />
 
-(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 20 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
+(c) BokkyPooBah / Bok Consulting Pty Ltd for OAX - Sep 26 2018. Done with assistance from [Adrian Guerrera](https://github.com/apguerrera). The MIT Licence.
