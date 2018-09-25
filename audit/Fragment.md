@@ -32,6 +32,7 @@
             <th><a href="flattened/TokenRules_flattened.sol">TokenRules</a></th>
             <th><a href="flattened/LimitController_flattened.sol">LimitController</a></th>
             <th><a href="flattened/FiatToken_flattened.sol">FiatToken</a></th>
+            <th><a href="flattened/GateWithFee_flattened.sol">GateWithFee</a></th>
         </tr>
     </thead>
     <tbody>
@@ -47,6 +48,7 @@
             <td></td>
             <td>1</td>
             <td>1</td>
+            <td>1</td>
         </tr>
         <tr>
             <td>ERC20Events, ERC20</td>
@@ -58,6 +60,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td>2</td>
             <td>2</td>
         </tr>
         <tr>
@@ -71,6 +74,7 @@
             <td>1</td>
             <td>2</td>
             <td>3</td>
+            <td>3</td>
         </tr>
         <tr>
             <td>DSNote, DSStop</td>
@@ -83,11 +87,13 @@
             <td></td>
             <td>3</td>
             <td>4</td>
+            <td>4</td>
         </tr>
         <tr>
             <td>DSGuardEvents, DSGuard</td>
             <td></td>
             <td>2</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -107,6 +113,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td>5</td>
         </tr>
         <tr>
             <td>DSTokenBase and DSToken</td>
@@ -119,6 +126,21 @@
             <td></td>
             <td></td>
             <td>5</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/solovault.md">solovault</a></td>
+            <td>DSSoloVault</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>7</td>
         </tr>
         <tr>
             <td><a href="code-review/GateRoles.md">GateRoles</a></td>
@@ -132,10 +154,11 @@
             <td></td>
             <td></td>
             <td></td>
+            <td>8</td>
         </tr>
         <tr>
             <td><a href="code-review/AddressStatus.md">AddressStatus</a></td>
-            <td>GateRoles</td>
+            <td>AddressStatus</td>
             <td></td>
             <td></td>
             <td>2</td>
@@ -143,6 +166,7 @@
             <td></td>
             <td></td>
             <td>3</td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -158,10 +182,11 @@
             <td>4</td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
-            <td>TransferFeeControllerInterface,  TransferFeeController</td>
+            <td><a href="code-review/TransferFeeControllerInterface.md">TransferFeeControllerInterface</a></td>
+            <td>TransferFeeControllerInterface</td>
             <td></td>
             <td></td>
             <td></td>
@@ -171,6 +196,21 @@
             <td></td>
             <td></td>
             <td>7</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
+            <td>TransferFeeController</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>4</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>15</td>
         </tr>
         <tr>
             <td><a href="code-review/LimitSetting.md">LimitSetting</a></td>
@@ -184,6 +224,7 @@
             <td></td>
             <td>4</td>
             <td></td>
+            <td>12</td>
         </tr>
         <tr>
             <td><a href="code-review/TokenAuth.md">TokenAuth</a></td>
@@ -197,6 +238,7 @@
             <td>2</td>
             <td></td>
             <td>6</td>
+            <td>9</td>
         </tr>
         <tr>
             <td><a href="code-review/TokenRules.md">TokenRules</a></td>
@@ -208,6 +250,7 @@
             <td></td>
             <td></td>
             <td>5</td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -223,6 +266,7 @@
             <td></td>
             <td>5</td>
             <td></td>
+            <td>13</td>
         </tr>
         <tr>
             <td><a href="code-review/FiatToken.md">FiatToken</a></td>
@@ -236,6 +280,35 @@
             <td></td>
             <td></td>
             <td>8</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/Gate.md">Gate</a></td>
+            <td>Gate</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>14</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/GateWithFee.md">GateWithFee</a></td>
+            <td>GateWithFee</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>16</td>
         </tr>
     </tbody>
 </table>
