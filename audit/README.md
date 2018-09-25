@@ -131,7 +131,7 @@ highlight any areas of weaknesses.
 
 ## Risks
 
-The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*).
+The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*). It it important for these permissions to be set up and maintained correctly to prevent the unauthorised execution of the smart contract functionality.
 
 <br />
 
