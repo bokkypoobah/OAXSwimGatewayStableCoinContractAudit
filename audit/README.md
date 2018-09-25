@@ -139,7 +139,7 @@ The permissioning for the execution of functions for this set of contracts is de
 
 ## Code Review Of Components
 
-Source code for the component files (first column) were code-reviewed. Flattened versions of the deployed consolidated contracts (columns 3 onwards) were generated to create a listing of contracts for each consolidated flattened contract.
+Source code for the component files (first column downwards) were code-reviewed. Flattened (consolidated) versions of the contracts (columns 3 and to the right) were generated to understand the structure of the contract that will be deployed.
 
 <table>
     <thead>
