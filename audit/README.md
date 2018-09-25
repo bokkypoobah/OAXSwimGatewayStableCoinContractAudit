@@ -26,6 +26,8 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [DSGuard](#dsguard)
   * [AddressStatus](#addressstatus)
   * [Membership](#membership)
+  * [TransferFeeController](#transferfeecontroller)
+  * [LimitSetting](#limitsetting)
 * [Recommendations](#recommendations)
 * [Potential Vulnerabilities](#potential-vulnerabilities)
 * [Scope](#scope)
@@ -105,6 +107,47 @@ No potential vulnerabilities have been identified in this component.
 
 <br />
 
+### TransferFeeController
+
+Membership maintains an AddressStatus list of members. Currently the MockMembership contract returns a *true* status for any address not defined in the membership list.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
+
+* [x] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+
+<br />
+
+<br />
+
+### LimitSetting
+
+LimitSetting restricts the number of tokens that can be minted or burnt per day.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
+
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
+  * [x] Removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In *LimitSetting*, overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
+  * [x] Duplicate removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant
+  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
+  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+* [x] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
+* [x] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
+  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+
+<br />
+
 <hr />
 
 ## Recommendations
@@ -123,8 +166,6 @@ No potential vulnerabilities have been identified in this component.
   * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
   * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
-  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
   * [x] Removed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
@@ -139,17 +180,6 @@ No potential vulnerabilities have been identified in this component.
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas for errors
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
-  * [x] Removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
-* [x] **LOW IMPORTANCE** In *LimitSetting*, overloading the events `AdjustMintLimitRequested(...)` and `AdjustBurnLimitRequested(...)` makes it difficult to retrieve the events with JavaScript
-  * [x] Duplicate removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
-* [x] **LOW IMPORTANCE** In `LimitSetting.getDefaultDelayHours()`, instead of using the magic number, use 30 days or a named constant
-  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
-* [x] **LOW IMPORTANCE** In `LimitSetting.setSettingDefaultDelayHours(...)`, consider adding a check that the `_hours` is a reasonable number
-  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
-* [x] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
-* [x] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
-  * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
 * [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
