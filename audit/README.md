@@ -28,6 +28,8 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [Membership](#membership)
   * [TransferFeeController](#transferfeecontroller)
   * [LimitSetting](#limitsetting)
+  * [TokenRules](#tokenrules)
+  * [LimitController](#limitcontroller)
 * [Recommendations](#recommendations)
 * [Potential Vulnerabilities](#potential-vulnerabilities)
 * [Scope](#scope)
@@ -122,8 +124,6 @@ No potential vulnerabilities have been identified in this component.
 
 <br />
 
-<br />
-
 ### LimitSetting
 
 LimitSetting restricts the number of tokens that can be minted or burnt per day.
@@ -145,6 +145,38 @@ No potential vulnerabilities have been identified in this component.
 * [x] **LOW IMPORTANCE** In the *LimitSetting* constructor, `_defaultLimitCounterResetTimeffset` should be named `_defaultLimitCounterResetTimeOffset`
 * [x] **LOW IMPORTANCE** In *LimitSetting*, \*DefaultDelayHours\* sometimes refers to *hours* and sometimes *seconds*. Consider renaming to remove ambiguity
   * [x] Updated in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
+
+<br />
+
+### TokenRules
+
+TokenRules enforces the rules for the transferring, minting and burning of tokens in the BaseRule, BoundaryKycRule and FullKycRule contracts.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
+
+* [x] **LOW IMPORTANCE** Consider setting `canApprove(...)`, `canTransferFrom(...)`, `canTransfer(...)`, `canMint(...)` and `canBurn(...)` to view functions - in *TokenAuth.sol* and *TokenRules.sol*
+  * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
+
+<br />
+
+### LimitController
+
+LimitController records the daily minting and burning and checks these against the daily limits.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
+
+* [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas for errors
+  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 
 <br />
 
@@ -174,17 +206,11 @@ No potential vulnerabilities have been identified in this component.
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider making `TokenAuth:TokenAuth.tokenAuthority` public for traceability
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
-  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* to save on gas for errors
-  * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in `LimitController.resetLimit()` to save on gas for errors
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
-  * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
-* [x] **LOW IMPORTANCE** Consider setting `canApprove(...)`, `canTransferFrom(...)`, `canTransfer(...)`, `canMint(...)` and `canBurn(...)` to view functions - in *TokenAuth.sol* and *TokenRules.sol*
   * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
 
 <br />
