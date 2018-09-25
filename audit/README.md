@@ -56,6 +56,22 @@ No potential vulnerabilities have been identified in this component.
 
 <br />
 
+### DSGuard
+
+DSGuard provides the dappsys-style permissions for GateWithFee to execute specified functions in the FiatToken and LimitController contracts.
+
+It is important to set up and maintain the permissions and accounts assigned these roles to prevent unauthorised execution of the smart contract functions.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
+
+None identified
+
+<br />
+
 <hr />
 
 ## Recommendations
