@@ -25,8 +25,8 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [Potential Vulnerabilities](#potential-vulnerabilities)
 * [Scope](#scope)
 * [Risks](#risks)
+* [Code Review Of Components](#code-review-of-components)
 * [Testing](#testing)
-* [Code Review](#code-review)
 
 <br />
 
@@ -88,18 +88,6 @@ No potential vulnerabilities have been identified in the smart contracts.
 
 <br />
 
-[code-review/Kyc.md](code-review/Kyc.md) is not longer used from [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
-
-* [ ] ~~**LOW IMPORTANCE** Consider logging events for `Kyc:MembershipWithNoKycAmlRule.setMembershipAuthority(...)`, `Kyc:MembershipWithBoundaryKycAmlRule.setMembershipAuthority(...)` and `Kyc:MembershipWithFullKycAmlRule.setMembershipAuthority(...)`~~
-* [ ] ~~**LOW IMPORTANCE** Set `Kyc:ControllableKycAmlRule.addressControlStatus` to *public*~~
-* [ ] ~~**LOW IMPORTANCE** Set `Kyc:BoundaryKycAmlRule.kycAmlStatus` to *public*~~
-* [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:ControllableKycAmlRule.addressControlStatus` public for traceability~~
-* [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:BoundaryKycAmlRule.kycAmlStatus` public for traceability~~
-* [ ] ~~**LOW IMPORTANCE** Consider making `Kyc:MembershipWithNoKycAmlRule.membershipAuthority`, `Kyc:MembershipWithBoundaryKycAmlRule.membershipAuthority` and `Kyc:MembershipWithFullKycAmlRule.membershipAuthority` public for traceability~~
-* [ ] ~~**LOW IMPORTANCE** In *Kyc:NoKycAmlRule*, the `& true` statement is redundant~~
-
-<br />
-
 <hr />
 
 ## Notes
@@ -144,82 +132,6 @@ highlight any areas of weaknesses.
 ## Risks
 
 The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*).
-
-<br />
-
-<hr />
-
-## Testing
-
-Details of the testing environment can be found in [test](test).
-
-[../chain/index.js](../chain/index.js) and [../chain/lib/deployerProd.js](../chain/lib/deployerProd.js) were used as a guide for the security model used with this set of contracts.
-
-The following functions were tested using the script [test/01_test1.sh](test/01_test1.sh) with the summary results saved
-in [test/test1results.txt](test/test1results.txt) and the detailed output saved in [test/test1output.txt](test/test1output.txt):
-
-* [x] Group #1 deployment
-  * [x] `GateRoles()`
-  * [x] `FiatTokenGuard()`
-* [x] Group #2 deployment
-  * [x] `Blacklist"AddressStatus"(GateRoles)`
-  * [x] `Kyc"AddressStatus"(GateRoles)`
-  * [x] `MockMembership(GateRoles)`
-  * [x] `TransferFeeController(GateRoles, 0, 0)`
-  * [x] `LimitSetting(GateRoles, {mint limit}, {burn limit}, ...)`
-* [x] Group #3 deployment
-  * [x] `BaseRule(Blacklist)`
-  * [x] `BoundaryKycRule(Blacklist, Kyc, MockMembership)`
-  * [x] `FullKycRule(Blacklist, Kyc, MockMembership)`
-  * [x] `LimitController(FiatTokenGuard, LimitSetting)`
-  * [x] `FiatToken(FiatTokenGuard, {symbol}, {name}, {transferFeeCollector}, TransferFeeController)`
-* [x] Set User Roles
-  * [x] `GateRoles([sysAdmin=SYSTEM_ADMIN_ROLE(1), kycOperator=KYC_OPERATOR_ROLE(2), moneyOperator=MONEY_OPERATOR_ROLE(3)])`
-* [x] Set Roles Rules #1
-  * [x] `GateRoles.setRoleCapability(KYC_OPERATOR_ROLE, Kyc(AddressStatus), sig("set(address,bool)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, Blacklist(AddressStatus), sig("set(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultDelayHours(uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setLimitCounterResetTimeOffset(int256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultMintDailyLimit(uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultBurnDailyLimit(uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setCustomMintDailyLimit(address,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setCustomBurnDailyLimit(address,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeController, sig("setDefaultTransferFee(uint256,uint256)"))`
-* [x] Group #4 deployment
-  * [x] `GateWithFee(GateRoles, FiatToken, LimitController, {mintFeeCollector}, {burnFeeCollector}, TransferFeeController)`
-* [x] Set Roles Rules #2
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("mint(uint256)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("mint(address,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("burn(uint256)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("burn(address,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("start()"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("stop()"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("startToken()"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("stopToken()"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setERC20Authority(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setTokenAuthority(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setLimitController(address)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("mintWithFee(address,uint256,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("burnWithFee(address,uint256,uint256)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setFeeCollector(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setTransferFeeCollector(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setTransferFeeController(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setMintFeeCollector(address)"))`
-  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setBurnFeeCollector(address)"))`
-* [x] Set Guard Rules #1
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setName(bytes32)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("mint(uint256)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("mint(address,uint256)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("burn(uint256)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("burn(address,uint256)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setERC20Authority(address)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setTokenAuthority(address)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("start()"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("stop()"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setTransferFeeCollector(address)"))`
-  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setTransferFeeController(address)"))`
-  * [x] `FiatToken.permit(GateWithFee, LimitController, sig("bumpMintLimitCounter(uint256)"))`
-  * [x] `FiatToken.permit(GateWithFee, LimitController, sig("bumpBurnLimitCounter(uint256)"))`
 
 <br />
 
@@ -588,6 +500,82 @@ The Gnosis Multisig wallet smart contract is outside the scope of this audit, bu
 
 * [x] [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) - This is the Gnosis MultiSigWallet.sol and MultiSigWalletFactory.sol but the factory is included twice
   * [x] In commit [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593), the code has been moved to [../chain/contracts/vendors/MultiSigWallet.sol](../chain/contracts/vendors/MultiSigWallet.sol) and is the same as [https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWallet.sol](https://github.com/gnosis/MultiSigWallet/blob/e1b25e8632ca28e9e9e09c81bd20bf33fdb405ce/contracts/MultiSigWallet.sol) with some differences in the whitespace characters
+
+<br />
+
+<hr />
+
+## Testing
+
+Details of the testing environment can be found in [test](test).
+
+[../chain/index.js](../chain/index.js) and [../chain/lib/deployerProd.js](../chain/lib/deployerProd.js) were used as a guide for the security model used with this set of contracts.
+
+The following functions were tested using the script [test/01_test1.sh](test/01_test1.sh) with the summary results saved
+in [test/test1results.txt](test/test1results.txt) and the detailed output saved in [test/test1output.txt](test/test1output.txt):
+
+* [x] Group #1 deployment
+  * [x] `GateRoles()`
+  * [x] `FiatTokenGuard()`
+* [x] Group #2 deployment
+  * [x] `Blacklist"AddressStatus"(GateRoles)`
+  * [x] `Kyc"AddressStatus"(GateRoles)`
+  * [x] `MockMembership(GateRoles)`
+  * [x] `TransferFeeController(GateRoles, 0, 0)`
+  * [x] `LimitSetting(GateRoles, {mint limit}, {burn limit}, ...)`
+* [x] Group #3 deployment
+  * [x] `BaseRule(Blacklist)`
+  * [x] `BoundaryKycRule(Blacklist, Kyc, MockMembership)`
+  * [x] `FullKycRule(Blacklist, Kyc, MockMembership)`
+  * [x] `LimitController(FiatTokenGuard, LimitSetting)`
+  * [x] `FiatToken(FiatTokenGuard, {symbol}, {name}, {transferFeeCollector}, TransferFeeController)`
+* [x] Set User Roles
+  * [x] `GateRoles([sysAdmin=SYSTEM_ADMIN_ROLE(1), kycOperator=KYC_OPERATOR_ROLE(2), moneyOperator=MONEY_OPERATOR_ROLE(3)])`
+* [x] Set Roles Rules #1
+  * [x] `GateRoles.setRoleCapability(KYC_OPERATOR_ROLE, Kyc(AddressStatus), sig("set(address,bool)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, Blacklist(AddressStatus), sig("set(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultDelayHours(uint256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setLimitCounterResetTimeOffset(int256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultMintDailyLimit(uint256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setDefaultBurnDailyLimit(uint256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setCustomMintDailyLimit(address,uint256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, LimitSetting, sig("setCustomBurnDailyLimit(address,uint256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, transferFeeController, sig("setDefaultTransferFee(uint256,uint256)"))`
+* [x] Group #4 deployment
+  * [x] `GateWithFee(GateRoles, FiatToken, LimitController, {mintFeeCollector}, {burnFeeCollector}, TransferFeeController)`
+* [x] Set Roles Rules #2
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("mint(uint256)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("mint(address,uint256)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("burn(uint256)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("burn(address,uint256)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("start()"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("stop()"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("startToken()"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("stopToken()"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setERC20Authority(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setTokenAuthority(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setLimitController(address)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("mintWithFee(address,uint256,uint256)"))`
+  * [x] `GateRoles.setRoleCapability(MONEY_OPERATOR_ROLE, GateWithFee, sig("burnWithFee(address,uint256,uint256)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setFeeCollector(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setTransferFeeCollector(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setTransferFeeController(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setMintFeeCollector(address)"))`
+  * [x] `GateRoles.setRoleCapability(SYSTEM_ADMIN_ROLE, GateWithFee, sig("setBurnFeeCollector(address)"))`
+* [x] Set Guard Rules #1
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setName(bytes32)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("mint(uint256)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("mint(address,uint256)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("burn(uint256)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("burn(address,uint256)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setERC20Authority(address)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setTokenAuthority(address)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("start()"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("stop()"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setTransferFeeCollector(address)"))`
+  * [x] `FiatToken.permit(GateWithFee, FiatToken, sig("setTransferFeeController(address)"))`
+  * [x] `FiatToken.permit(GateWithFee, LimitController, sig("bumpMintLimitCounter(uint256)"))`
+  * [x] `FiatToken.permit(GateWithFee, LimitController, sig("bumpBurnLimitCounter(uint256)"))`
 
 <br />
 
