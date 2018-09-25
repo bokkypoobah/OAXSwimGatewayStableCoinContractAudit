@@ -31,6 +31,7 @@
             <th><a href="flattened/LimitSetting_flattened.sol">LimitSetting</a></th>
             <th><a href="flattened/TokenRules_flattened.sol">TokenRules</a></th>
             <th><a href="flattened/LimitController_flattened.sol">LimitController</a></th>
+            <th><a href="flattened/FiatToken_flattened.sol">FiatToken</a></th>
         </tr>
     </thead>
     <tbody>
@@ -45,6 +46,7 @@
             <td></td>
             <td></td>
             <td>1</td>
+            <td>1</td>
         </tr>
         <tr>
             <td>ERC20Events, ERC20</td>
@@ -56,6 +58,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td>2</td>
         </tr>
         <tr>
             <td>DSAuthority, DSAuthEvents, DSAuth</td>
@@ -67,6 +70,7 @@
             <td>1</td>
             <td>1</td>
             <td>2</td>
+            <td>3</td>
         </tr>
         <tr>
             <td>DSNote, DSStop</td>
@@ -78,6 +82,7 @@
             <td>2</td>
             <td></td>
             <td>3</td>
+            <td>4</td>
         </tr>
         <tr>
             <td>DSGuardEvents, DSGuard</td>
@@ -89,10 +94,12 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>DSRoles</td>
             <td>2</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -111,11 +118,13 @@
             <td></td>
             <td></td>
             <td></td>
+            <td>5</td>
         </tr>
         <tr>
             <td><a href="code-review/GateRoles.md">GateRoles</a></td>
             <td>GateRoles</td>
             <td>3</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -135,6 +144,7 @@
             <td></td>
             <td>3</td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td><a href="code-review/Membership.md">Membership</a></td>
@@ -146,6 +156,7 @@
             <td></td>
             <td></td>
             <td>4</td>
+            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -159,6 +170,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td>7</td>
         </tr>
         <tr>
             <td><a href="code-review/LimitSetting.md">LimitSetting</a></td>
@@ -171,6 +183,7 @@
             <td>3</td>
             <td></td>
             <td>4</td>
+            <td></td>
         </tr>
         <tr>
             <td><a href="code-review/TokenAuth.md">TokenAuth</a></td>
@@ -183,6 +196,7 @@
             <td></td>
             <td>2</td>
             <td></td>
+            <td>6</td>
         </tr>
         <tr>
             <td><a href="code-review/TokenRules.md">TokenRules</a></td>
@@ -194,6 +208,7 @@
             <td></td>
             <td></td>
             <td>5</td>
+            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -207,6 +222,20 @@
             <td></td>
             <td></td>
             <td>5</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/FiatToken.md">FiatToken</a></td>
+            <td>FiatToken</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>8</td>
         </tr>
     </tbody>
 </table>
