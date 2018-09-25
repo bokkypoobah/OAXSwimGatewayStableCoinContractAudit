@@ -29,6 +29,7 @@
             <th><a href="flattened/Membership_flattened.sol">Membership</a></th>
             <th><a href="flattened/TransferFeeController_flattened.sol">TransferFeeController</a></th>
             <th><a href="flattened/LimitSetting_flattened.sol">LimitSetting</a></th>
+            <th><a href="flattened/TokenRules_flattened.sol">TokenRules</a></th>
         </tr>
     </thead>
     <tbody>
@@ -40,9 +41,11 @@
             <td></td>
             <td></td>
             <td>1</td>
+            <td></td>
         </tr>
         <tr>
             <td>ERC20Events, ERC20</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -58,6 +61,7 @@
             <td>1</td>
             <td>2</td>
             <td>1</td>
+            <td>1</td>
         </tr>
         <tr>
             <td>DSNote, DSStop</td>
@@ -67,11 +71,13 @@
             <td></td>
             <td></td>
             <td>2</td>
+            <td></td>
         </tr>
         <tr>
             <td>DSGuardEvents, DSGuard</td>
             <td></td>
             <td>2</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -85,9 +91,11 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>DSTokenBase and DSToken</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -104,6 +112,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td><a href="code-review/AddressStatus.md">AddressStatus</a></td>
@@ -114,6 +123,7 @@
             <td>2</td>
             <td></td>
             <td></td>
+            <td>3</td>
         </tr>
         <tr>
             <td><a href="code-review/Membership.md">Membership</a></td>
@@ -124,6 +134,7 @@
             <td>3</td>
             <td></td>
             <td></td>
+            <td>4</td>
         </tr>
         <tr>
             <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
@@ -133,6 +144,7 @@
             <td></td>
             <td></td>
             <td>3</td>
+            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -144,6 +156,29 @@
             <td></td>
             <td></td>
             <td>3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TokenAuth.md">TokenAuth</a></td>
+            <td>ERC20Authority, ERC20Auth, TokenAuthority, TokenAuth</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TokenRules.md">TokenRules</a></td>
+            <td>BaseRule, BoundaryKycRule, FullKycRule</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>5</td>
         </tr>
     </tbody>
 </table>
