@@ -25,13 +25,14 @@
             <th>Component</th>
             <th><a href="flattened/GateRoles_flattened.sol">GateRoles</a></th>
             <th><a href="flattened/DSGuard_flattened.sol">DSGuard</a></th>
-            <th>FiatTokenGuard</th>
+            <th><a href="flattened/AddressStatus_flattened.sol">AddressStatus</a></th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td rowspan=6><a href="code-review/dappsys.md">dappsys.sol</a></td>
+            <td rowspan=6><a href="code-review/dappsys.md">dappsys</a></td>
             <td>DSMath</td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
@@ -39,9 +40,11 @@
             <td>ERC20Events and ERC20</td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>DSAuthority, DSAuthEvents and DSAuth</td>
+            <td>1</td>
             <td>1</td>
             <td>1</td>
         </tr>
@@ -49,22 +52,33 @@
             <td>DSGuardEvents and DSGuard</td>
             <td></td>
             <td>2</td>
+            <td></td>
         </tr>
         <tr>
             <td>DSRoles</td>
             <td>2</td>
+            <td></td>
             <td></td>
         </tr>
         <tr>
             <td>DSTokenBase and DSToken</td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td><a href="code-review/GateRoles.md">GateRoles.sol</a></td>
+            <td><a href="code-review/GateRoles.md">GateRoles</a></td>
             <td>GateRoles</td>
             <td>3</td>
             <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/AddressStatus.md">AddressStatus</a></td>
+            <td>GateRoles</td>
+            <td></td>
+            <td></td>
+            <td>2</td>
         </tr>
     </tbody>
 </table>
