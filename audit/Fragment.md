@@ -142,8 +142,8 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>3</td>
             <td></td>
+            <td>3</td>
         </tr>
     </tbody>
 </table>
