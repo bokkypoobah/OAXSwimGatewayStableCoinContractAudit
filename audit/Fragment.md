@@ -18,6 +18,8 @@
 
 ## Components
 
+Source code for the component files (first column) were code-reviewed. Flattened versions of the deployed consolidated contracts (columns 3 onwards) were generated to create a listing of contracts for each consolidated flattened contract.
+
 <table>
     <thead>
         <tr>

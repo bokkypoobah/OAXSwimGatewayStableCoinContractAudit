@@ -143,7 +143,7 @@ highlight any areas of weaknesses.
 
 ## Risks
 
-The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*). 
+The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*).
 
 <br />
 
@@ -225,7 +225,308 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
 
 <hr />
 
-## Code Review
+## Code Review Of Components
+
+Source code for the component files (first column) were code-reviewed. Flattened versions of the deployed consolidated contracts (columns 3 onwards) were generated to create a listing of contracts for each consolidated flattened contract.
+
+<table>
+    <thead>
+        <tr>
+            <th>Code Review</th>
+            <th>Component</th>
+            <th><a href="flattened/GateRoles_flattened.sol">GateRoles</a></th>
+            <th><a href="flattened/DSGuard_flattened.sol">DSGuard</a></th>
+            <th><a href="flattened/AddressStatus_flattened.sol">AddressStatus</a></th>
+            <th><a href="flattened/Membership_flattened.sol">Membership</a></th>
+            <th><a href="flattened/TransferFeeController_flattened.sol">TransferFeeController</a></th>
+            <th><a href="flattened/LimitSetting_flattened.sol">LimitSetting</a></th>
+            <th><a href="flattened/TokenRules_flattened.sol">TokenRules</a></th>
+            <th><a href="flattened/LimitController_flattened.sol">LimitController</a></th>
+            <th><a href="flattened/FiatToken_flattened.sol">FiatToken</a></th>
+            <th><a href="flattened/GateWithFee_flattened.sol">GateWithFee</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=7><a href="code-review/dappsys.md">dappsys</a></td>
+            <td>DSMath</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td></td>
+            <td></td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>ERC20Events, ERC20</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>DSAuthority, DSAuthEvents, DSAuth</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>2</td>
+            <td>1</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>DSNote, DSStop</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>2</td>
+            <td></td>
+            <td>3</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>DSGuardEvents, DSGuard</td>
+            <td></td>
+            <td>2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>DSRoles</td>
+            <td>2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>DSTokenBase and DSToken</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>5</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/solovault.md">solovault</a></td>
+            <td>DSSoloVault</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>7</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/GateRoles.md">GateRoles</a></td>
+            <td>GateRoles</td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>8</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/AddressStatus.md">AddressStatus</a></td>
+            <td>AddressStatus</td>
+            <td></td>
+            <td></td>
+            <td>2</td>
+            <td>2</td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/Membership.md">Membership</a></td>
+            <td>MembershipInterface,  MockOAXMembership</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td>4</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TransferFeeControllerInterface.md">TransferFeeControllerInterface</a></td>
+            <td>TransferFeeControllerInterface</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>7</td>
+            <td>10</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
+            <td>TransferFeeController</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>4</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>15</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/LimitSetting.md">LimitSetting</a></td>
+            <td>LimitSetting</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+            <td></td>
+            <td>4</td>
+            <td></td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TokenAuth.md">TokenAuth</a></td>
+            <td>ERC20Authority, ERC20Auth, TokenAuthority, TokenAuth</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>2</td>
+            <td></td>
+            <td>6</td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/TokenRules.md">TokenRules</a></td>
+            <td>BaseRule, BoundaryKycRule, FullKycRule</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>5</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/LimitController.md">LimitController</a></td>
+            <td>LimitController</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>5</td>
+            <td></td>
+            <td>13</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/FiatToken.md">FiatToken</a></td>
+            <td>FiatToken</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>8</td>
+            <td>11</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/Gate.md">Gate</a></td>
+            <td>Gate</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>14</td>
+        </tr>
+        <tr>
+            <td><a href="code-review/GateWithFee.md">GateWithFee</a></td>
+            <td>GateWithFee</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>16</td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+
+Following is the list of code-reviewed contracts showing the inheritance structure:
 
 * [code-review/AddressStatus.md](code-review/AddressStatus.md)
   * contract AddressStatus is DSAuth
@@ -237,24 +538,13 @@ in [test/test1results.txt](test/test1results.txt) and the detailed output saved 
   * [x] contract GateRoles is DSRoles
 * [x] [code-review/GateWithFee.md](code-review/GateWithFee.md)
   * [x] contract GateWithFee is Gate
-* [x] ~~[code-review/Kyc.md](code-review/Kyc.md)~~ **NOT USED FROM [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)**
-  * [x] ~~contract AddressControlStatus is DSAuth~~
-  * [x] ~~contract KycAmlStatus is DSAuth~~
-  * [x] ~~contract ControllableKycAmlRule is ERC20Authority, TokenAuthority~~
-  * [x] ~~contract NoKycAmlRule is ControllableKycAmlRule~~
-  * [x] ~~contract BoundaryKycAmlRule is NoKycAmlRule~~
-  * [x] ~~contract FullKycAmlRule is BoundaryKycAmlRule~~
-  * [x] ~~contract MembershipAuthorityInterface~~
-  * [x] ~~contract MembershipWithNoKycAmlRule is DSAuth, NoKycAmlRule~~
-  * [x] ~~contract MembershipWithBoundaryKycAmlRule is DSAuth, BoundaryKycAmlRule~~
-  * [x] ~~contract MembershipWithFullKycAmlRule is DSAuth, FullKycAmlRule~~
 * [x] [code-review/LimitController.md](code-review/LimitController.md)
   * [x] contract LimitController is DSMath, DSStop
 * [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
   * [x] contract LimitSetting is DSAuth, DSStop
 * [x] [code-review/Membership.md](code-review/Membership.md)
   * [x] interface MembershipInterface
-  * [x] contract MockOAXMembership is AddressStatus, MembershipInterface **NOTE that this test contract should not be included with production code**
+  * [x] contract MockOAXMembership is AddressStatus, MembershipInterface **Note the unusual naming of this contract**
 * [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
   * [x] interface ERC20Authority
   * [x] contract ERC20Auth is DSAuth
