@@ -33,7 +33,7 @@
     </thead>
     <tbody>
         <tr>
-            <td rowspan=6><a href="code-review/dappsys.md">dappsys</a></td>
+            <td rowspan=7><a href="code-review/dappsys.md">dappsys</a></td>
             <td>DSMath</td>
             <td></td>
             <td></td>
@@ -48,6 +48,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>DSAuthority, DSAuthEvents, DSAuth</td>
@@ -56,11 +57,22 @@
             <td>1</td>
             <td>1</td>
             <td>2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>DSNote, DSStop</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>2</td>
         </tr>
         <tr>
             <td>DSGuardEvents, DSGuard</td>
             <td></td>
             <td>2</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -72,9 +84,11 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td>DSTokenBase and DSToken</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -89,6 +103,7 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td><a href="code-review/AddressStatus.md">AddressStatus</a></td>
@@ -97,6 +112,7 @@
             <td></td>
             <td>2</td>
             <td>2</td>
+            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -107,6 +123,7 @@
             <td></td>
             <td>3</td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
             <td><a href="code-review/TransferFeeController.md">TransferFeeController</a></td>
@@ -116,6 +133,17 @@
             <td></td>
             <td></td>
             <td>3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="code-review/LimitSetting.md">LimitSetting</a></td>
+            <td>LimitSetting</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>3</td>
+            <td></td>
         </tr>
     </tbody>
 </table>
