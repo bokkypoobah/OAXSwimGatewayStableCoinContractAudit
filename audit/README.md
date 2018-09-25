@@ -440,36 +440,6 @@ Source code for the component files (first column downwards) were code-reviewed.
 
 Following is the list of code-reviewed contracts showing the inheritance structure:
 
-* [code-review/AddressStatus.md](code-review/AddressStatus.md)
-  * contract AddressStatus is DSAuth
-* [x] [code-review/FiatToken.md](code-review/FiatToken.md)
-  * [x] contract FiatToken is DSToken, ERC20Auth, TokenAuth
-* [x] [code-review/Gate.md](code-review/Gate.md)
-  * [x] contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop
-* [x] [code-review/GateRoles.md](code-review/GateRoles.md)
-  * [x] contract GateRoles is DSRoles
-* [x] [code-review/GateWithFee.md](code-review/GateWithFee.md)
-  * [x] contract GateWithFee is Gate
-* [x] [code-review/LimitController.md](code-review/LimitController.md)
-  * [x] contract LimitController is DSMath, DSStop
-* [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
-  * [x] contract LimitSetting is DSAuth, DSStop
-* [x] [code-review/Membership.md](code-review/Membership.md)
-  * [x] interface MembershipInterface
-  * [x] contract MockOAXMembership is AddressStatus, MembershipInterface **Note the unusual naming of this contract**
-* [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
-  * [x] interface ERC20Authority
-  * [x] contract ERC20Auth is DSAuth
-  * [x] interface TokenAuthority
-  * [x] contract TokenAuth is DSAuth
-* [x] [code-review/TokenRules.md](code-review/TokenRules.md)
-  * [x] contract BaseRules is ERC20Authority, TokenAuthority
-  * [x] contract BoundaryKycRules is BaseRules
-  * [x] contract FullKycRules is BoundaryKycRules
-* [x] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
-  * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
-* [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
-  * [x] contract TransferFeeControllerInterface
 * [x] [code-review/dappsys.md](code-review/dappsys.md)
   * [x] contract DSMath
   * [x] contract ERC20Events
@@ -491,6 +461,36 @@ Following is the list of code-reviewed contracts showing the inheritance structu
   * [x] contract DSThing is DSAuth, DSNote, DSMath **(Not used in these contracts)**
 * [x] [code-review/solovault.md](code-review/solovault.md)
   * [x] contract DSSoloVault is DSAuth
+* [x] [code-review/GateRoles.md](code-review/GateRoles.md)
+  * [x] contract GateRoles is DSRoles
+* [x] [code-review/TokenAuth.md](code-review/TokenAuth.md)
+  * [x] interface ERC20Authority
+  * [x] contract ERC20Auth is DSAuth
+  * [x] interface TokenAuthority
+  * [x] contract TokenAuth is DSAuth
+* [x] [code-review/AddressStatus.md](code-review/AddressStatus.md)
+  * [x] contract AddressStatus is DSAuth
+* [x] [code-review/Membership.md](code-review/Membership.md)
+  * [x] interface MembershipInterface
+  * [x] contract MockOAXMembership is AddressStatus, MembershipInterface **Note the unusual naming of this contract**
+* [x] [code-review/TransferFeeControllerInterface.md](code-review/TransferFeeControllerInterface.md)
+  * [x] contract TransferFeeControllerInterface
+* [x] [code-review/FiatToken.md](code-review/FiatToken.md)
+  * [x] contract FiatToken is DSToken, ERC20Auth, TokenAuth
+* [x] [code-review/LimitSetting.md](code-review/LimitSetting.md)
+  * [x] contract LimitSetting is DSAuth, DSStop
+* [x] [code-review/TokenRules.md](code-review/TokenRules.md)
+  * [x] contract BaseRules is ERC20Authority, TokenAuthority
+  * [x] contract BoundaryKycRules is BaseRules
+  * [x] contract FullKycRules is BoundaryKycRules
+* [x] [code-review/LimitController.md](code-review/LimitController.md)
+  * [x] contract LimitController is DSMath, DSStop
+* [x] [code-review/Gate.md](code-review/Gate.md)
+  * [x] contract Gate is DSSoloVault, ERC20Events, DSMath, DSStop
+* [x] [code-review/TransferFeeController.md](code-review/TransferFeeController.md)
+  * [x] contract TransferFeeController is TransferFeeControllerInterface, DSMath, DSAuth
+* [x] [code-review/GateWithFee.md](code-review/GateWithFee.md)
+  * [x] contract GateWithFee is Gate
 
 <br />
 
