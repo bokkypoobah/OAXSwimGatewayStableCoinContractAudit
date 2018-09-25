@@ -21,6 +21,8 @@ No potential vulnerabilities have been identified in the smart contracts.
 ## Table Of Contents
 
 * [Summary](#summary)
+* [Scope](#scope)
+* [Risks](#risks)
 * [Components](#components)
   * [GateRoles](#gateroles)
   * [DSGuard](#dsguard)
@@ -31,12 +33,29 @@ No potential vulnerabilities have been identified in the smart contracts.
   * [TokenRules](#tokenrules)
   * [LimitController](#limitcontroller)
   * [FiatToken](#fiattoken)
-* [Recommendations](#recommendations)
-* [Potential Vulnerabilities](#potential-vulnerabilities)
-* [Scope](#scope)
-* [Risks](#risks)
+  * [GateWithFee](#gatewithfee)
+  * [Other Issues](#other-issues)
 * [Code Review Of Components](#code-review-of-components)
 * [Testing](#testing)
+
+<br />
+
+<hr />
+
+## Scope
+
+This audit is into the technical aspects of the OAX swim gateway stable coin smart contracts. The primary aim of this audit is to ensure that funds
+stored in these contracts are not easily attacked or stolen by third parties. The secondary aim of this audit is to
+ensure the coded algorithms work as expected. This audit does not guarantee that that the code is bugfree, but intends to
+highlight any areas of weaknesses.
+
+<br />
+
+<hr />
+
+## Risks
+
+The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*). It it important for these permissions to be set up and maintained correctly to prevent the unauthorised execution of the smart contract functionality.
 
 <br />
 
@@ -195,12 +214,20 @@ No potential vulnerabilities have been identified in this component.
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** In *DSToken*, `name()` and `symbol()` are defined as *bytes32* instead of *string* as specified in the [ERC20 token standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). There are other token contracts using *bytes32* and they are operating without problems in the blockchain explorers
   * [x] Developer and auditor agreed that no action is required
+* [x] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 
 <br />
 
-<hr />
+### GateWithFee
 
-## Recommendations
+GateWithFee allows a gateway to mint and burn tokens within the restricted daily limits.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
 
 * [x] ~~**MEDIUM IMPORTANCE**~~ See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below
   * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance. I have added a new recommendation to add `auth` for both `approve(...)` functions
@@ -208,13 +235,9 @@ No potential vulnerabilities have been identified in this component.
   * [x] Kirsten has responded that the fee account flows will be accounted for in OAX's accounting reconciliation
 * [x] **LOW IMPORTANCE** `Gate.mint(...)` currently logs an `emit Transfer(0x0, guy, wad);` event, but this is not required for this non-token contract as it should be tracked on the *FiatToken* contract. Consider renaming to `Deposited(guy, wad)`
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
-  * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
-  * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** `GateWithFee.transferFeeController` is not used
   * [x] Removed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** Consider logging events for `FiatToken.setTransferFeeCollector(...)` and `FiatToken.setTransferFeeController(...)`
+* [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Consider logging events for `TokenAuth:ERC20Auth.setERC20Authority(...)` and `TokenAuth:TokenAuth.setTokenAuthority(...)`
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
@@ -222,26 +245,18 @@ No potential vulnerabilities have been identified in this component.
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:ERC20Auth.\*(...)* to save on gas for errors
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
-* [x] **LOW IMPORTANCE** See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below - add the `auth` permissioning to both the `DSSoloVault.approve(...)` functions, just to be sure that it will not be used by unauthorised accounts
-  * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
   * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
 
-<br />
+#### Notes
 
-<hr />
-
-## Notes
-
-### GateWithFee Approve And TransferFrom
+##### GateWithFee Approve And TransferFrom
 
 ~~**MEDIUM IMPORTANCE**~~ If the *GateWithFee* contract has a *FiatToken* token balance, any KYC-ed user account can execute `approve(address,uint)` or `approve(address)`, and then execute `FiatToken.transferFrom(...)` this token balance to the user's account. However, the *MONEY_OPERATOR* can freeze the user's account.
 
 * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance. I have added a new recommendation to add `auth` for both `approve(...)` functions
 
-<br />
-
-### GateWithFee Fee Accounting
+##### GateWithFee Fee Accounting
 
 **NOTE** Reference `GateWithFee.mint(...)` - If there is a deposit of 1 dollar, with a 1 dollar fee, the token issuing entity will receive 2 dollars of which 1 dollar will go into a trust account and 1 dollar will go into a fee account. 2 tokens will be issued in the FiatToken contract, and backing this is the 1 dollar deposited into the trust account. The maths will not work out unless the entity's fee account balance is also reflected in the FiatToken contract balances. This also applies to the `GateWithFee.burn(...)` function.
 
@@ -249,30 +264,12 @@ No potential vulnerabilities have been identified in this component.
 
 <br />
 
-<hr />
+### Other Issues
 
-## Potential Vulnerabilities
-
-No potential vulnerabilities have been identified in the smart contracts.
-
-<br />
-
-<hr />
-
-## Scope
-
-This audit is into the technical aspects of the OAX swim gateway stable coin smart contracts. The primary aim of this audit is to ensure that funds
-stored in these contracts are not easily attacked or stolen by third parties. The secondary aim of this audit is to
-ensure the coded algorithms work as expected. This audit does not guarantee that that the code is bugfree, but intends to
-highlight any areas of weaknesses.
-
-<br />
-
-<hr />
-
-## Risks
-
-The permissioning for the execution of functions for this set of contracts is dependent on *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*). It it important for these permissions to be set up and maintained correctly to prevent the unauthorised execution of the smart contract functionality.
+* [x] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
+  * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
+* [x] **LOW IMPORTANCE** Please note that [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol) does not include the *Factory* contract that is required for *MultiSigWalletFactory*
+  * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
 
 <br />
 
