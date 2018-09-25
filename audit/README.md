@@ -22,6 +22,9 @@ No potential vulnerabilities have been identified in the smart contracts.
 
 * [Summary](#summary)
 * [Components](#components)
+  * [GateRoles](#gateroles)
+  * [DSGuard](#dsguard)
+  * [AddressStatus](#addressstatus)
 * [Recommendations](#recommendations)
 * [Potential Vulnerabilities](#potential-vulnerabilities)
 * [Scope](#scope)
@@ -61,6 +64,20 @@ No potential vulnerabilities have been identified in this component.
 DSGuard provides the dappsys-style permissions for GateWithFee to execute specified functions in the FiatToken and LimitController contracts.
 
 It is important to set up and maintain the permissions and accounts assigned these roles to prevent unauthorised execution of the smart contract functions.
+
+#### Potential Vulnerabilities
+
+No potential vulnerabilities have been identified in this component.
+
+#### Issues
+
+None identified
+
+<br />
+
+### AddressStatus
+
+AddressStatus provides the contracts to maintain the blacklist and KYC-ed addresses for Membership, BaseRule, BoundaryKycRule and FullKycRule.
 
 #### Potential Vulnerabilities
 
