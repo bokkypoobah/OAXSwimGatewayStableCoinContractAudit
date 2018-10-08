@@ -63,7 +63,7 @@ The permissioning for the execution of functions for this set of contracts is de
 
 ## Results
 
-The OAX Swim Gateway Stable Coin contracts have been built using the [Dappsys](https://github.com/dapphub/dappsys) components. There were a several potential vulnerabilities identified and these have all been resolved with updates to the code. The details are listed below for each component contract.
+The OAX Swim Gateway Stable Coin contracts have been built using the [Dappsys](https://github.com/dapphub/dappsys) components. There were several potential vulnerabilities identified - these have all been resolved with updates to the code. The details are listed below for each component contract.
 
 <br />
 
