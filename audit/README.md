@@ -23,7 +23,7 @@ No potential vulnerabilities have been identified in the smart contracts.
 * [Summary](#summary)
 * [Scope](#scope)
 * [Risks](#risks)
-* [Components](#components)
+* [Results](#results)
   * [GateRoles](#gateroles)
   * [DSGuard](#dsguard)
   * [AddressStatus](#addressstatus)
@@ -61,7 +61,7 @@ The permissioning for the execution of functions for this set of contracts is de
 
 <hr />
 
-## Components
+## Results
 
 The OAX Swim Gateway Stable Coin contracts have been built using the [Dappsys](https://github.com/dapphub/dappsys) components.
 
@@ -77,7 +77,7 @@ It is important to set up and maintain the permissions and accounts assigned the
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **MEDIUM IMPORTANCE** *DSRoles* (implemented in *GateRoles*) and *DSGuard* (implemented *FiatTokenGuard*) are two permissioning modules for these set of contracts, and are critical to the security of these set of contracts. While the *DSGuard* permission setting functions log events, the *DSRoles* permission setting functions do not. Search for `// BK NOTE` in [test/modifiedContracts/dappsys.sol](test/modifiedContracts/dappsys.sol) for the an example of the events that should be added to *DSRoles* to provide more visibility into the state of the permissioning
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
@@ -122,7 +122,7 @@ Membership maintains an AddressStatus list of members. Currently the MockMembers
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **LOW IMPORTANCE** The name *MockOAXMembership* implies that the contract is for testing and not to be included with the production code in Membership.sol
   * [x] Developer has advised that the name *MockOAXMembership* will be used in the current form
@@ -137,7 +137,7 @@ Membership maintains an AddressStatus list of members. Currently the MockMembers
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **LOW IMPORTANCE** Add event to log calls to `TransferFeeController.setDefaultTransferFee(...)`
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
@@ -152,7 +152,7 @@ LimitSetting restricts the number of tokens that can be minted or burnt per day.
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *LimitSetting* to save on gas when errored
   * [x] Removed in [a57697c](https://github.com/swim-gateway/stable-coin/commit/a57697cd1b1131b198a7d755ad33e613a4b8cff1)
@@ -176,7 +176,7 @@ TokenRules enforces the rules for the transferring, minting and burning of token
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **LOW IMPORTANCE** Consider setting `canApprove(...)`, `canTransferFrom(...)`, `canTransfer(...)`, `canMint(...)` and `canBurn(...)` to view functions - in *TokenAuth.sol* and *TokenRules.sol*
   * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
@@ -191,7 +191,7 @@ LimitController records the daily minting and burning and checks these against t
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **LOW IMPORTANCE** Consider making `LimitController.limitSetting` public for traceability
   * [x] Updated in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
@@ -208,7 +208,7 @@ FiatToken is the token contract that is restricted by the TokenAuth and Transfer
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] **MEDIUM IMPORTANCE** For the token total supply and movements to be transparently tracked on blockchain explorers, `emit Transfer(address(0), guy, wad)` should be added to  `FiatToken.mint(...)` and `emit Transfer(guy, address(0), wad)` should be added to `FiatToken.burn(...)`
   * [x] Added in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
@@ -227,7 +227,7 @@ GateWithFee allows a gateway to mint and burn tokens within the restricted daily
 
 No potential vulnerabilities have been identified in this component.
 
-#### Issues
+#### Resolved Issues
 
 * [x] ~~**MEDIUM IMPORTANCE**~~ See [Notes - GateWithFee Approve And TransferFrom](#gatewithfee-approve-and-transferfrom) below
   * [x] Alex has responded that *GateWithFee* will not hold any *FiatToken* token balance. I have added a new recommendation to add `auth` for both `approve(...)` functions
@@ -248,7 +248,7 @@ No potential vulnerabilities have been identified in this component.
 * [x] **LOW IMPORTANCE** Could use `require(...)` instead of `assert(...)` in *TokenAuth:TokenAuth.\*(...)* to save on gas for errors
   * [x] Updated in [cb7c991](https://github.com/swim-gateway/stable-coin/commit/cb7c9914d05112df7967c69500a86b764db84d1e)
 
-#### Notes
+#### Notes On Resolved Issues
 
 ##### GateWithFee Approve And TransferFrom
 
@@ -258,13 +258,13 @@ No potential vulnerabilities have been identified in this component.
 
 ##### GateWithFee Fee Accounting
 
-**NOTE** Reference `GateWithFee.mint(...)` - If there is a deposit of 1 dollar, with a 1 dollar fee, the token issuing entity will receive 2 dollars of which 1 dollar will go into a trust account and 1 dollar will go into a fee account. 2 tokens will be issued in the FiatToken contract, and backing this is the 1 dollar deposited into the trust account. The maths will not work out unless the entity's fee account balance is also reflected in the FiatToken contract balances. This also applies to the `GateWithFee.burn(...)` function.
+Reference `GateWithFee.mint(...)` - If there is a deposit of 1 dollar, with a 1 dollar fee, the token issuing entity will receive 2 dollars of which 1 dollar will go into a trust account and 1 dollar will go into a fee account. 2 tokens will be issued in the FiatToken contract, and backing this is the 1 dollar deposited into the trust account. The maths will not work out unless the entity's fee account balance is also reflected in the FiatToken contract balances. This also applies to the `GateWithFee.burn(...)` function.
 
 * [x] Kirsten has responded that the fee account flows will be accounted for in OAX's accounting reconciliation
 
 <br />
 
-### Other Issues
+### Other Resolved Issues
 
 * [x] **LOW IMPORTANCE** Remove the duplicate *MultiSigWalletFactory* from the bottom of [../chain/contracts/Multisig.sol](../chain/contracts/Multisig.sol)
   * [x] Fixed in [daa965a](https://github.com/swim-gateway/stable-coin/commit/daa965ad77e41629d6389879e120e68eb34c3593)
